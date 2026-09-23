@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tu comunidad hoy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Chivo+Mono:wght@400..600&display=swap">
+<style>
+  :root {
+    --bg: #EDF1F0; --surface: #FFFFFF; --panel: #F5F7F6; --ink: #0F1F1E; --muted: #566A69;
+    --line: #D3DCDA; --line-strong: #AFBEBB;
+    --accent: #5B3FC2; --on-accent: #FFFFFF; --accent-soft: #EDE8FB; --accent-ink: #3E2A8F;
+    --ok: #0B7A70; --ok-soft: #DCEFEC; --warn: #B3590B; --warn-soft: #F8E9D6;
+    --shadow: 0 1px 2px rgba(15,31,30,0.05), 0 8px 24px rgba(15,31,30,0.06);
+    --f-ui: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "Chivo Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1514; --surface: #12211F; --panel: #172826; --ink: #E4EEEC; --muted: #8FA5A2;
+    --line: #24403B; --line-strong: #3A5A54;
+    --accent: #A98BFF; --on-accent: #120B2A; --accent-soft: #241B44; --accent-ink: #C9B8FF;
+    --ok: #35C4B1; --ok-soft: #123532; --warn: #F0A43C; --warn-soft: #3A2A10;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.5; margin: 0; padding: 0 20px 9rem; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  .mono { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .wide { font-stretch: 118%; font-weight: 800; letter-spacing: -0.01em; }
+  input, select, textarea, button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---------- masthead ---------- */
+  .top { padding: 34px 0 18px; display: grid; gap: 14px; }
+  .top h1 { margin: 4px 0 0; font-size: clamp(1.7rem, 3.6vw, 2.5rem); line-height: 1.02; text-wrap: balance; max-width: 20ch; }
+  .top h1 span { color: var(--accent); }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: end; padding-top: 14px; border-top: 1px solid var(--line); }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field input, .field select { border: 0; border-bottom: 1.5px solid var(--line-strong); background: transparent; padding: 5px 0; border-radius: 0; font-size: 15.5px; width: 100%; }
+  .field select { width: auto; padding-right: 4px; } option { color: #0F1F1E; }
+  .field input:focus-visible, .field select:focus-visible { outline: none; border-bottom-color: var(--accent); }
+  .meta .field { min-width: 11rem; }
+
+  /* ---------- steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 18px; }
+  .stepbtn { text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 10px; padding: 10px 14px; cursor: pointer; display: grid; gap: 2px; }
+  .stepbtn b { font-weight: 650; color: inherit; font-size: 15px; }
+  .stepbtn[aria-current="step"] { border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+  .stepbtn[aria-current="step"] .mono { color: var(--accent); }
+  .screen[hidden] { display: none; }
+
+  /* ---------- sections ---------- */
+  .block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-top: 14px; padding: 20px 24px 22px; }
+  .block.lift { box-shadow: var(--shadow); }
+  h2 { margin: 0 0 12px; font-size: 12px; font-family: var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  h2.strong { color: var(--ink); }
+  /* who does what: a strip the prospect looks at while Paul says it his way. Never spoken lines on the shared screen. */
+  .roles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 24px; margin-top: 8px; }
+  .role { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; }
+  .role .mono { display: block; margin-bottom: 3px; color: var(--accent); }
+  .role p { margin: 0; font-size: 1rem; line-height: 1.4; }
+  .intro { font-size: 0.95rem; color: var(--muted); margin: -4px 0 12px; max-width: 68ch; }
+  .note { display: none; margin: 4px 0 0; font-size: 0.8rem; color: var(--warn); font-family: var(--f-mono); }
+  body.notes .note { display: block; }
+
+  /* ---------- conversation ---------- */
+  .group { padding: 6px 0 4px; }
+  .group + .group { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 18px; }
+  .group h2 { margin-bottom: 4px; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 28px; align-items: start; padding: 14px 0 12px; }
+  .row + .row { border-top: 1px dashed var(--line); }
+  .qt { margin: 0; font-size: 1.05rem; line-height: 1.4; max-width: 60ch; }
+  .qalt { margin: 3px 0 0; font-size: 0.86rem; color: var(--muted); max-width: 60ch; }
+  .nums { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: flex-end; align-items: end; }
+  .nums .field { width: 7.6rem; }
+  .nums .field.w { width: 10rem; }
+  .nums input[type="number"] { font-family: var(--f-mono); font-size: 1.25rem; font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; appearance: textfield; -moz-appearance: textfield; padding: 2px 0 4px; }
+  .nums input[type="number"]::-webkit-outer-spin-button, .nums input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .text { grid-column: 1 / -1; }
+  .text textarea { width: 100%; border: 0; border-bottom: 1.5px solid var(--line-strong); background: transparent; padding: 6px 0; resize: vertical; min-height: 2.2rem; font-size: 1rem; line-height: 1.45; border-radius: 0; }
+  .text textarea:focus-visible { outline: none; border-bottom-color: var(--accent); }
+  .row.key .qt { font-weight: 650; }
+  .row.key textarea { border-bottom: 2px solid var(--accent); }
+  .side { grid-column: 1 / -1; }
+  .side:empty { display: none; }
+  .calc { display: inline-block; font-family: var(--f-mono); font-size: 0.82rem; color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 3px 10px; }
+  .calc:empty { display: none; }
+  .calc.warn { color: var(--warn); background: var(--warn-soft); }
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; margin-top: 2px; }
+  .seg button { border: 0; background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 600; padding: 6px 10px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+  details.tip { grid-column: 1 / -1; margin-top: 2px; max-width: 72ch; }
+  details.tip summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding: 2px 0; }
+  details.tip summary::-webkit-details-marker { display: none; }
+  details.tip summary::before { content: ""; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s; }
+  details.tip[open] summary::before { transform: rotate(45deg); }
+  details.tip p { margin: 6px 0 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink); background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; }
+
+  /* the rest of a block folds: asked only if the conversation goes there */
+  details.rest { margin-top: 6px; }
+  details.rest summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 6px 0; }
+  details.rest summary::-webkit-details-marker { display: none; }
+  details.rest summary::before { content: ""; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s; }
+  details.rest[open] summary::before { transform: rotate(45deg); }
+  details.rest .row { border-top: 1px dashed var(--line); }
+
+  /* ---------- gate + choices ---------- */
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .opt { border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-weight: 600; font-size: 0.92rem; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+  .opt:hover { border-color: var(--accent); }
+  .opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+  /* ---------- timeline frame ---------- */
+  .frame-wrap { position: relative; margin-top: 16px; }
+  .frame { width: 100%; height: 820px; border: 0; border-radius: 12px; background: var(--bg); display: block; }
+  .frame-full { position: absolute; top: 12px; right: 12px; background: var(--surface); box-shadow: var(--shadow); }
+  /* native fullscreen on the wrap: the frame takes the whole screen, the button stays to come back */
+  .frame-wrap:fullscreen { background: var(--bg); }
+  .frame-wrap:fullscreen .frame { height: 100vh; border-radius: 0; }
+  /* fallback when the browser refuses fullscreen: the wrap covers the page above the bar */
+  body.tl-full .frame-wrap { position: fixed; inset: 0; z-index: 11; margin: 0; background: var(--bg); }
+  body.tl-full .frame { height: 100%; border-radius: 0; }
+  .frame-note { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-size: 0.82rem; color: var(--muted); margin: 8px 0 0; }
+  .frame-note a { color: var(--accent); }
+
+  /* ---------- floor ---------- */
+  .ledger { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .litem { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 20px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .llabel { font-weight: 650; font-size: 1rem; }
+  .lamt { font-family: var(--f-mono); font-size: 1.25rem; font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .lamt.zero { color: var(--muted); }
+  .lnote { grid-column: 1 / -1; margin: 0; font-size: 0.84rem; color: var(--muted); max-width: 72ch; }
+  .lnote.warn { color: var(--warn); }
+  .ltotal { display: grid; grid-template-columns: 1fr auto auto; gap: 4px 28px; align-items: baseline; padding: 16px 0 4px; }
+  .ltotal .lbl { font-weight: 650; }
+  .ltotal .cell { text-align: right; }
+  .ltotal .big { font-family: var(--f-mono); font-size: 1.8rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1; }
+  .ltotal .big.sec { font-size: 1.2rem; color: var(--ink); }
+  .ltotal .mono { display: block; margin-top: 4px; }
+  .honesty { font-size: 0.92rem; color: var(--muted); margin: 14px 0 0; max-width: 72ch; }
+
+  /* ---------- offer ---------- */
+  .echo { font-size: 1.25rem; line-height: 1.35; margin: 4px 0 0; max-width: 60ch; font-weight: 500; }
+  .echo em { font-style: normal; background: linear-gradient(transparent 62%, var(--accent-soft) 62%); }
+  .empty { color: var(--muted); font-size: 0.92rem; margin: 0; }
+  .three { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 0; }
+  .three li { counter-increment: s; display: grid; grid-template-columns: 2.2rem 1fr; gap: 12px; padding: 10px 0; font-size: 1rem; line-height: 1.45; }
+  .three li + li { border-top: 1px solid var(--line); }
+  .three li::before { content: counter(s); font-family: var(--f-mono); font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 8px; width: 2rem; height: 2rem; display: grid; place-items: center; }
+  .prices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 4px; }
+  .price { text-align: left; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); border-radius: 14px; padding: 18px 20px 16px; cursor: pointer; display: grid; gap: 2px; }
+  .price:hover { border-color: var(--accent); }
+  .price[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); background: var(--accent-soft); }
+  .price .pfix { font-family: var(--f-mono); font-size: 2.2rem; font-weight: 600; line-height: 1.05; color: var(--accent); font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .price .pfix small { font-family: var(--f-ui); font-size: 0.85rem; font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .price .pvar { font-size: 1rem; font-weight: 600; }
+  .price .pkeep { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line-strong); display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .price .pkeep b { color: var(--ink); font-weight: 500; }
+  .price .pkeep .ok { grid-column: 1 / -1; color: var(--ok); font-weight: 600; }
+  .price .pkeep .hint { grid-column: 1 / -1; }
+  .terms { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 72ch; font-size: 0.95rem; line-height: 1.45; }
+  .terms li { padding-left: 16px; position: relative; }
+  .terms li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  details.adjust { margin-top: 14px; font-size: 0.85rem; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: 10px; padding: 8px 12px; }
+  details.adjust summary { cursor: pointer; }
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; margin-top: 8px; }
+  .fields.one { grid-template-columns: 1fr; }
+  .fields textarea { width: 100%; border: 0; border-bottom: 1.5px solid var(--line-strong); background: transparent; padding: 6px 0; resize: vertical; min-height: 2.2rem; font-size: 1rem; border-radius: 0; }
+  .fields textarea:focus-visible { outline: none; border-bottom-color: var(--accent); }
+  .ask { font-size: 1.25rem; font-weight: 600; margin: 18px 0 8px; max-width: 60ch; line-height: 1.4; }
+  .ask input { display: inline-block; width: 10rem; border: 0; border-bottom: 2px solid var(--accent); background: transparent; font-weight: 600; font-size: 1.15rem; padding: 0 2px; }
+  .ask input:focus-visible { outline: none; }
+  .inline2 { display: grid; grid-template-columns: repeat(2, minmax(0, 15rem)); gap: 10px 24px; margin-top: 6px; }
+  .tips-out { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 72ch; }
+  .tips-out li { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; }
+  .tips-out li.empty { background: transparent; padding: 0; }
+
+  /* ---------- bar ---------- */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 24px rgba(15,31,30,0.08); padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+  .bar .inner { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 10px 18px; align-items: center; }
+  .nav { display: flex; gap: 8px; justify-content: flex-start; }
+  .util { border: 1px solid var(--line-strong); background: transparent; color: var(--ink); font-size: 0.8rem; font-weight: 600; padding: 9px 14px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+  .util:hover { border-color: var(--accent); }
+  .util.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .util:disabled { opacity: 0.4; cursor: default; }
+  .more { position: relative; display: flex; gap: 8px; align-items: center; }
+  .more details { position: relative; }
+  .more summary { list-style: none; cursor: pointer; border: 1px solid var(--line-strong); border-radius: 9px; padding: 9px 12px; font-size: 0.8rem; font-weight: 600; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more .menu { position: absolute; right: 0; bottom: calc(100% + 8px); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); display: grid; min-width: 13rem; padding: 6px; }
+  .more .menu button { text-align: left; border: 0; background: transparent; padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 0.9rem; }
+  .more .menu button:hover { background: var(--panel); }
+  .copy-warn { max-width: 960px; margin: 0 auto 8px; font-size: 0.85rem; font-weight: 600; color: var(--warn); background: var(--warn-soft); border-radius: 8px; padding: 8px 12px; }
+
+  @media (max-width: 760px) {
+    body { padding-bottom: 11rem; }
+    .row { grid-template-columns: 1fr; }
+    .nums { justify-content: flex-start; }
+    .prices, .fields, .inline2, .roles { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .frame { height: 560px; }
+    .bar .inner { grid-template-columns: 1fr; }
+    .ltotal { grid-template-columns: 1fr; }
+    .ltotal .cell { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) { details.tip summary::before { transition: none; } html { scroll-behavior: auto; } }
+</style>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("llamada-unica-theme")==="dark"?"dark":"light");}catch(e){document.documentElement.setAttribute("data-theme","light");}</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="mono">Lane A · 45 minutos, con tus números</div>
+      <h1 class="wide">Tu comunidad hoy, <span id="h-name">y lo que sigue</span></h1>
+    </div>
+    <div class="meta">
+      <label class="field"><span class="mono">Nombre</span><input id="f-name" type="text" autocomplete="off"></label>
+      <label class="field"><span class="mono">Comunidad</span><input id="f-com" type="text" autocomplete="off" placeholder="cómo se llama"></label>
+      <label class="field"><span class="mono">Fecha</span><input id="f-date" type="text" autocomplete="off"></label>
+      <label class="field"><span class="mono">Moneda</span><select id="f-cur"><option value="$">USD $</option><option value="€">EUR €</option></select></label>
+    </div>
+    <nav class="steps" aria-label="Pantallas">
+      <button class="stepbtn" data-step="1" type="button"><span class="mono">01 · min 0 a 23</span><b>La conversación</b></button>
+      <button class="stepbtn" data-step="2" type="button"><span class="mono">02 · min 23 a 30</span><b>De hoy a tu número</b></button>
+      <button class="stepbtn" data-step="3" type="button"><span class="mono">03 · min 30 a 45</span><b>La propuesta</b></button>
+    </nav>
+  </header>
+
+  <!-- ================= 1 ================= -->
+  <div class="screen" id="s1">
+    <section class="block lift">
+      <!-- no spoken lines on the shared screen: Paul frames the call in his own words (the invitation says it already) -->
+      <p class="note">Encuadre, con tus palabras: tus números, por cada uno algo que podés hacer vos, y al final cómo trabajamos y cuánto sale, o te lo digo. "¿Te sirve?"</p>
+      <div class="fields">
+        <label class="field"><span class="mono">¿Qué tenés adelante en las próximas cuatro semanas?</span><textarea data-k="g.adelante" rows="1" placeholder="viaje, lanzamiento, socio"></textarea></label>
+        <label class="field"><span class="mono">¿Esto lo decidís vos, o hay alguien más?</span><textarea data-k="g.decide" rows="1"></textarea></label>
+      </div>
+    </section>
+
+    <section class="block" id="conv"></section>
+
+    <section class="block">
+      <h2 class="strong">Minuto 20</h2>
+      <p class="note">Hay encaje si nombró algo que le duele, hay un número en la cuenta, y el que decide está acá. Si falta uno, hoy no.</p>
+      <div class="choices">
+        <button class="opt" data-mode="encaje" type="button">Seguimos: de hoy a tu número</button>
+        <button class="opt" data-mode="hoyno" type="button">Hoy no: lo que podés hacer vos, y una fecha</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= 2 ================= -->
+  <div class="screen" id="s2" hidden>
+    <div id="m2-encaje">
+      <section class="block lift">
+        <h2 class="strong">Quién hace qué</h2>
+        <p class="note">Lo decís con tus palabras: somos dos, vos lo atendés y armás el plan, Martín está adentro todos los días. Después, "Pantalla completa".</p>
+        <div class="roles">
+          <div class="role"><span class="mono">Vos</span><p>El contenido y los vivos.</p></div>
+          <div class="role"><span class="mono">Paul</span><p>Te atiende y arma el plan.</p></div>
+          <div class="role"><span class="mono">Martín, adentro todos los días</span><p>Cobros, bajas, la lista del pase, el reporte.</p></div>
+        </div>
+        <div class="frame-wrap" id="tl-wrap">
+          <iframe class="frame" id="tl" title="De hoy a tu número" loading="lazy" allowfullscreen></iframe>
+          <button class="util frame-full" id="btn-full" type="button" aria-label="Pantalla completa">Pantalla completa</button>
+        </div>
+        <p class="frame-note"><span>Pantalla completa para recorrerla; Esc para volver. Si el marco no carga, abrís la línea de tiempo aparte o mostrás la captura del Miro.</span><a id="tl-link" href="docs/diagramas/linea-de-tiempo.html" target="_blank" rel="noopener">Abrir aparte</a></p>
+      </section>
+
+      <section class="block">
+        <h2 class="strong">Pecando de menos, con tus números</h2>
+        <p class="intro">Solo lo que hoy se te va y se recupera operando, y lo que ya te piden. Nada de audiencia nueva. Por mes, por encima de lo que entra hoy.</p>
+        <div class="ledger" id="ledger"></div>
+        <p class="honesty">Lo típico en el mercado hispano es llegar a entre 1.000 y 10.000 de recurrente por mes; una comunidad de 300 a 800 pagos ya es top 10%. Este es el piso con tus números; lo que sume tu audiencia va encima, y eso no te lo prometo.</p>
+      </section>
+
+      <section class="block">
+        <h2 class="strong">Tu número</h2>
+        <div class="row" style="padding-top:0;border:0">
+          <div>
+            <p class="qt">¿A qué número querés llegar por mes, entre el mes 6 y el 12?</p>
+            <p class="qalt">Facturación total, no solo lo recurrente. Es tu número, no el nuestro; la proyección fina sale con tus datos reales, después de la firma.</p>
+            <p class="note">Si es más de tres veces el piso: "bajémoslo a algo que los dos creamos".</p>
+          </div>
+          <div class="nums"><label class="field w"><span class="mono">Tu objetivo</span><input type="text" data-k="obj" placeholder="de 3.500 a 8.000" autocomplete="off" style="border:0;border-bottom:1.5px solid var(--line-strong);background:transparent;padding:5px 0;font-size:1.05rem"></label></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="m2-hoyno" hidden>
+      <section class="block lift">
+        <h2 class="strong">Lo que te llevás hoy</h2>
+        <p class="note">El "hoy no" lo decís vos, antes de mostrar esto: "te soy sincero: hoy no veo dónde sumarte". La pantalla no lo dice por vos.</p>
+        <ul class="tips-out" id="tips-out"></ul>
+        <div class="fields one" style="margin-top:16px">
+          <label class="field"><span class="mono">Por dónde empezaría yo, y por qué</span><textarea data-k="c.accion" rows="1"></textarea></label>
+          <label class="field"><span class="mono">Qué tendría que cambiar para que volvamos a hablar</span><textarea data-k="c.disparador" rows="1"></textarea></label>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= 3 ================= -->
+  <div class="screen" id="s3" hidden>
+    <div id="m3-encaje">
+      <section class="block lift">
+        <h2>Lo que vos me dijiste</h2>
+        <p class="intro">Esta vez, para que funcione, tendría que ser distinto esto:</p>
+        <p class="echo" id="echo"></p>
+      </section>
+
+      <section class="block">
+        <h2 class="strong">Lo que haríamos</h2>
+        <ol class="three">
+          <li><span><strong>Días 1 a 30.</strong> Arrancamos por <strong id="prio-echo">lo que más se te va</strong>. En la semana 2 tenés por escrito cuánto hay para recuperar, con tus datos reales.</span></li>
+          <li><span><strong>Todos los días.</strong> Cobros, bienvenidas y la lista del pase. Reporte el día 5 y liquidación el día 10 de cada mes.</span></li>
+          <li><span><strong>Cada 1 a 3 meses.</strong> Una ventana con miembros nuevos y el precio un escalón arriba, y el pase a lo que vendés arriba, por camadas.</span></li>
+        </ol>
+      </section>
+
+      <section class="block lift">
+        <h2 class="strong">Lo que cuesta</h2>
+        <p class="intro">Es el mismo trabajo. Elegís cómo lo pagás. ¿Cuál te hace más sentido, la primera o la segunda?</p>
+        <div class="prices">
+          <button class="price" data-pick="1" type="button">
+            <span class="mono">Primera</span>
+            <span class="pfix"><span id="p1f"></span><small>por mes</small></span>
+            <span class="pvar">más el <span id="p1p"></span>% de lo que crezca</span>
+            <span class="pkeep" id="k1"></span>
+          </button>
+          <button class="price" data-pick="2" type="button">
+            <span class="mono">Segunda</span>
+            <span class="pfix"><span id="p2f"></span><small>por mes</small></span>
+            <span class="pvar">más el <span id="p2p"></span>% de lo que crezca</span>
+            <span class="pkeep" id="k2"></span>
+          </button>
+        </div>
+        <ul class="terms">
+          <li>Lo que ya entra hoy es tuyo y no lo toco: el porcentaje corre solo sobre lo que crezca por encima de tu línea base, que hoy ronda <strong id="base-echo"></strong> por mes. El número exacto es el promedio de tus últimos 90 días y queda fijo en el contrato.</li>
+          <li>Sin pago de arranque. El fijo corre desde la firma, por adelantado, y el mes uno es el arranque. El porcentaje se liquida el día 10 sobre lo cobrado el mes anterior y se paga el día 20.</li>
+          <li>Mínimo tres meses. Después, mes a mes, y cualquiera de los dos corta con 30 días de aviso. Te llevás todo: datos, accesos, cuentas.</li>
+          <li>A cambio de este precio: publicamos el caso con tus cifras reales.</li>
+          <li>Tu parte: los accesos, aprobar lo que sale a tu nombre, tu contenido y los vivos, y avisarnos cuándo no vas a estar.</li>
+        </ul>
+        <details class="adjust" id="adjust" hidden>
+          <summary>Ajustar cifras (solo con #prep al final de la dirección)</summary>
+          <div class="fields">
+            <label class="field"><span class="mono">Primera: fijo</span><input type="number" data-k="o.f1" min="0"></label>
+            <label class="field"><span class="mono">Primera: %</span><input type="number" data-k="o.p1" min="0"></label>
+            <label class="field"><span class="mono">Segunda: fijo</span><input type="number" data-k="o.f2" min="0"></label>
+            <label class="field"><span class="mono">Segunda: %</span><input type="number" data-k="o.p2" min="0"></label>
+            <label class="field"><span class="mono">Línea base (si no es miembros × precio)</span><input type="number" data-k="o.base" min="0"></label>
+          </div>
+          <p class="note" id="prep-check" style="display:block"></p>
+        </details>
+      </section>
+
+      <section class="block">
+        <h2 class="strong">La pregunta</h2>
+        <label class="field"><span class="mono">¿Qué te hace ruido de todo esto?</span><textarea data-k="o.ruido" rows="1" class="wide-ta"></textarea></label>
+        <p class="ask">Con todo lo que vimos, ¿arrancamos con <input type="text" data-k="o.mes" placeholder="tu próxima ventana" autocomplete="off"> como mes uno?</p>
+        <div class="choices" id="resp"></div>
+        <div id="resp-more"></div>
+      </section>
+    </div>
+
+    <section class="block">
+      <h2 class="strong">Próximo paso, con día y hora</h2>
+      <p class="intro" id="next-line"></p>
+      <div class="inline2">
+        <label class="field"><span class="mono">Día</span><input type="text" data-k="nx.dia" placeholder="martes 29" autocomplete="off"></label>
+        <label class="field"><span class="mono">Hora (la tuya y la mía)</span><input type="text" data-k="nx.hora" placeholder="16:00 ES · 11:00 AR" autocomplete="off"></label>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="bar">
+  <p class="copy-warn" id="copy-warn" hidden></p>
+  <div class="inner">
+    <div class="nav">
+      <button class="util" id="btn-prev" type="button">Atrás</button>
+      <button class="util primary" id="btn-next" type="button">Siguiente</button>
+    </div>
+    <div class="more">
+      <button class="util" id="btn-copy" type="button">Copiar resumen</button>
+      <button class="util" id="btn-theme" type="button" aria-label="Cambiar tema">Oscuro</button>
+      <details id="more">
+        <summary aria-label="Más">···</summary>
+        <div class="menu">
+          <button type="button" id="btn-notes">Notas para Paul: apagadas</button>
+          <button type="button" id="btn-reset">Reiniciar la llamada</button>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = "llamada-unica-v3", THEME_KEY = "llamada-unica-theme", TL_KEY = "laneA.lineaDeTiempo.v1";
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+const DEFAULTS = {
+  step: 1, name: "", com: "", date: "", cur: "$", mode: "", seenFloor: false, seenOffer: false, obj: "", notes: false,
+  g: { adelante: "", decide: "" },
+  n: { miembros: "", precio: "", ticket: "", cupo: "", bajas: "", caidos: "", trials: "", quedaron: "", caliente: "", compradores: "", pidieron: "", agendas: "", shows: "", cierres: "", historias: "", reels: "", costo: "" },
+  cobro: "vez",
+  t: { desconecto: "", proxima: "", pesa: "", distinto: "" },
+  o: { f1: 1500, p1: 25, f2: 1000, p2: 30, base: "", pick: "", ruido: "", mes: "", resp: "", falta: "" },
+  c: { accion: "", disparador: "" },
+  nx: { dia: "", hora: "" }
+};
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+  for (const k in saved) {
+    if (saved[k] && typeof saved[k] === "object") state[k] = Object.assign({}, state[k], saved[k]); else state[k] = saved[k];
+  }
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+function getK(p) { return p.split(".").reduce((o, k) => (o == null ? o : o[k]), state); }
+function setK(p, v) { const a = p.split("."); let o = state; while (a.length > 1) o = o[a.shift()]; o[a[0]] = v; }
+const num = k => { const v = parseFloat(state.n[k]); return isFinite(v) && v > 0 ? v : 0; };
+const fmt = n => state.cur + Math.round(n).toLocaleString("es-AR");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pct = (a, b) => (b ? Math.round(a / b * 100) : 0);
+
+/* ---------- 1 · the conversation: four blocks, one thing per question, a tip that opens once the number is in.
+   Eleven rows are the conversation (what the floor and the gate need, at Paul's real pace of ~2 min per row);
+   the rows marked `rest` fold under "si hay tiempo" and are asked only if the conversation goes there. ---------- */
+const NUM = (k, label, w) => ({ k, label, w });
+const BLOCKS = [
+  { title: "Qué vendés y a cuántos", rows: [
+    { q: "Te pregunto, arrancando por lo más simple: ¿cuántos te pagan hoy? ¿Y a cuánto por mes?", alt: "Los que pagan hoy, con el precio de hoy.",
+      note: "Del panel, no de la página. Si hay dos cifras, va la del panel.",
+      nums: [NUM("miembros", "Pagan hoy"), NUM("precio", "Precio por mes")],
+      side: () => num("miembros") && num("precio") ? `Recurrente aproximado: ${fmt(num("miembros") * num("precio"))} por mes` : "" },
+    { q: "¿Qué vendés arriba, y a cuánto?", alt: "Un programa, una mentoría, un tier con más acceso. Si no hay nada, queda vacío.",
+      nums: [NUM("ticket", "Precio de arriba")], seg: true },
+    { q: "¿A cuántos podés atender arriba a la vez?", alt: "Con tu tiempo o el de tu equipo.",
+      note: "Es el techo de la cuenta del pase, no el mercado. Siempre se pregunta.",
+      nums: [NUM("cupo", "A la vez")] }
+  ]},
+  { title: "Qué se escapa", rows: [
+    { q: "El mes pasado, ¿cuántos se te fueron?", alt: "Cancelaron o dejaron de pagar.",
+      note: "Si no lo sabe, ese \"no sé\" ya es el dato. Campo vacío.",
+      nums: [NUM("bajas", "Se fueron")],
+      side: () => num("bajas") && num("precio") ? `${fmt(num("bajas") * num("precio"))} por mes que se va${num("miembros") ? ` · ${pct(num("bajas"), num("miembros"))}% de tus miembros` : ""}` : "",
+      tip: "A los diez días sin entrar, un mensaje tuyo, antes de que cancele. Y un lugar donde te digan qué les falta." },
+    { q: "¿Y cuántos pagos se cayeron?", alt: "Tarjeta vencida, sin fondos, rechazada: los avisos de la plataforma.",
+      note: "Si hay aire: \"al último, ¿alguien le escribió?\"",
+      nums: [NUM("caidos", "Pagos caídos")],
+      side: () => num("caidos") && num("precio") ? `${fmt(num("caidos") * num("precio"))} por mes que se cae` : "",
+      tip: "El mismo día, otro link de pago desde tu número, no solo el mail de la plataforma. Tres toques en la semana, y anotás por qué." },
+    { rest: true, q: "¿Cuándo fue la última vez que te desconectaste una semana entera? ¿Qué pasó?", alt: "Una semana entera, sin entrar.",
+      note: "Pedí la última vez, con fecha. Si dice \"en general\": \"pero la última vez, ¿cuándo fue?\"",
+      text: "t.desconecto", tip: "Por cada cosa que se rompió esa semana, un nombre y un plazo, por escrito. Lo que no tiene dueño, se rompe." }
+  ]},
+  { title: "Cómo entra la gente", rows: [
+    { q: "La última ventana: ¿cuántos entraron a probar, y cuántos se quedaron?", alt: "Prueba gratis, puertas abiertas o lanzamiento. Si no hubo, queda vacío.",
+      nums: [NUM("trials", "Entraron"), NUM("quedaron", "Se quedaron")],
+      side: () => num("trials") && num("quedaron") ? `Convierte ${pct(num("quedaron"), num("trials"))}%` : "",
+      tip: "Al que entra, un mensaje de una persona el primer día, con una sola cosa para hacer. En 48 horas, un primer resultado chico. Al que no aparece, se le escribe." },
+    { q: "¿Cuántos te pidieron entrar en los últimos 90 días?", alt: "Preguntó el precio, empezó la prueba o se anotó en la lista. El que solo dejó el mail en un anuncio no cuenta.",
+      note: "Si suena a lista de mails y no a gente que pidió entrar, pedí los compradores históricos (abajo, si hay tiempo): la página los compara.",
+      nums: [NUM("caliente", "Pidieron entrar")],
+      side: () => num("caliente") && num("compradores") && num("caliente") > 3 * num("compradores") ? "Ese número parece gente que solo dejó su contacto. Acá entra solo quien pidió entrar." : "",
+      sideWarn: true,
+      tip: "Esa lista se entera de la próxima ventana primero, uno a uno, antes que el feed. Con fecha." },
+    { q: "¿Cuántos te pidieron lo de arriba en los últimos 90 días, sin que lo ofrecieras?", alt: "Los que preguntaron por el programa, el precio o cómo entrar.",
+      nums: [NUM("pidieron", "Pidieron lo de arriba")],
+      tip: "Los que comentan, van a la llamada y llevan tres meses pagando: esa es tu lista del pase. Se los invita uno a uno, nunca con un anuncio en el feed." },
+    { q: "¿Cuándo es tu próxima ventana?", alt: "Si no hay fecha, cuándo te gustaría.",
+      note: "Ese es el mes uno.",
+      text: "t.proxima" },
+    { rest: true, q: "¿Cuánta gente te pagó alguna vez?", alt: "Compradores desde el día uno. Con este número la página sabe si la lista de los que pidieron entrar es real.",
+      nums: [NUM("compradores", "Pagaron alguna vez")] },
+    { rest: true, q: "Si lo de arriba se vende por llamada: el mes pasado, ¿cuántas agendaste, cuántas se presentaron, cuántas cerraron?", alt: "Solo si se vende por llamada. Aproximados sirven.",
+      nums: [NUM("agendas", "Agendas"), NUM("shows", "Se presentaron"), NUM("cierres", "Cerraron")],
+      side: () => num("agendas") && num("shows") ? `Show ${pct(num("shows"), num("agendas"))}%${num("cierres") ? ` · cierre ${pct(num("cierres"), num("shows"))}%` : ""}` : "",
+      tip: "Confirmación el día antes y una hora antes, desde tu número. El show sube solo." },
+    { rest: true, q: "Una historia tuya pidiendo algo, ¿cuántas views tiene? ¿Y un reel?", alt: "Una historia que pide algo, y un reel cualquiera.",
+      note: "No entra en el piso: mide lo que hay más allá de su lista. Si lo viste en el recon, lo tipeás sin preguntar.",
+      nums: [NUM("historias", "Historia con pedido"), NUM("reels", "Un reel")] }
+  ]},
+  { title: "Lo que más pesa hoy", rows: [
+    { q: "De todo lo que vimos, ¿qué es lo que más te pesa hoy?",
+      note: "Preguntás y te callás. No lo contestes vos. Si contesta corto: \"¿y si sigue igual seis meses más, qué pasa?\"",
+      text: "t.pesa" },
+    { q: "¿Y qué tendría que ser distinto esta vez para que eso cambie?",
+      note: "Su frase, textual y corta. Vuelve arriba de la propuesta. Si no sale: \"te pregunto derecho, ¿por qué esto no lo resolviste hasta ahora?\"",
+      text: "t.distinto", key: true },
+    { rest: true, q: "Hoy, ¿quién te lleva todo esto, y cuánto te sale por mes?", alt: "Vos, un asistente, una agencia, herramientas.",
+      note: "Sirve para \"es caro\" en la propuesta. Si no lo preguntaste, la objeción se contesta con las bajas y los caídos.",
+      nums: [NUM("costo", "Por mes")] }
+  ]}
+];
+function rowHas(r) { return (r.nums || []).some(n => num(n.k)) || (r.text && (getK(r.text) || "").trim()); }
+function rowHtml(r, bi, ri) {
+  return `
+    <div class="row ${r.key ? "key" : ""}" data-row="${bi}-${ri}">
+      <div><p class="qt">${r.q}</p>${r.alt ? `<p class="qalt">${r.alt}</p>` : ""}${r.note ? `<p class="note">${r.note}</p>` : ""}</div>
+      ${r.nums ? `<div class="nums">${r.nums.map(n => `<label class="field ${n.w ? "w" : ""}"><span class="mono">${n.label}</span><input type="number" min="0" data-k="n.${n.k}"></label>`).join("")}${r.seg ? `<div class="field"><span class="mono">Se cobra</span><div class="seg"><button type="button" data-cobro="mes" aria-pressed="${state.cobro === "mes"}">por mes</button><button type="button" data-cobro="vez" aria-pressed="${state.cobro === "vez"}">una vez</button></div></div>` : ""}</div>` : ""}
+      ${r.text ? `<div class="text"><textarea rows="1" data-k="${r.text}"></textarea></div>` : ""}
+      ${r.side ? `<div class="side"><span class="calc ${r.sideWarn ? "warn" : ""}" data-side="${bi}-${ri}">${esc(r.side())}</span></div>` : ""}
+      ${r.tip ? `<details class="tip" data-tip="${bi}-${ri}" ${rowHas(r) ? "open" : ""}><summary>Lo que podés hacer vos</summary><p>${r.tip}</p></details>` : ""}
+    </div>`;
+}
+function renderConv() {
+  $("#conv").innerHTML = BLOCKS.map((b, bi) => {
+    const core = b.rows.map((r, ri) => r.rest ? "" : rowHtml(r, bi, ri)).join("");
+    const rest = b.rows.filter(r => r.rest);
+    const restHtml = rest.length ? `<details class="rest" ${rest.some(rowHas) ? "open" : ""}><summary>Si hay tiempo: ${rest.length === 1 ? "una más" : rest.length + " más"}</summary>${b.rows.map((r, ri) => r.rest ? rowHtml(r, bi, ri) : "").join("")}</details>` : "";
+    return `<div class="group"><h2 class="strong">${b.title}</h2>${core}${restHtml}</div>`;
+  }).join("");
+}
+function refreshSides(el) {
+  BLOCKS.forEach((b, bi) => b.rows.forEach((r, ri) => {
+    if (r.side) { const s = $(`[data-side="${bi}-${ri}"]`); if (s) s.textContent = r.side(); }
+    if (r.tip && el) {
+      const row = el.closest(".row"); if (row && row.dataset.row === `${bi}-${ri}` && rowHas(r)) { const d = $(`[data-tip="${bi}-${ri}"]`); if (d) d.open = true; }
+    }
+  }));
+}
+
+/* ---------- 2 · the floor: four lines, low rates, his numbers ---------- */
+function floor() {
+  const precio = num("precio"), miembros = num("miembros"), ticket = num("ticket"), cupo = num("cupo");
+  const L = [];
+  const c = num("caidos") * precio * 0.20;
+  L.push({ name: "Pagos caídos, recuperados", amt: c, note: num("caidos") && precio ? `20% de los ${num("caidos")} que se caen, ${fmt(num("caidos") * precio)} por mes. Hoy se recupera casi nada.` : "Sin número de pagos caídos: no se cuenta." });
+  let b6 = 0, b12 = 0, bnote = "Sin bajas o sin miembros: no se cuenta.";
+  if (num("bajas") && miembros && precio) {
+    const churn = num("bajas") / miembros * 100;
+    if (churn > 8) {
+      const gap = churn - 8, cut = gap / 4;
+      b6 = miembros * (cut / 100) * 6 * 0.5 * precio; b12 = b6 * 2;
+      bnote = `Se van ${Math.round(churn)}% por mes. Bajarlo ${cut.toFixed(1)} puntos, acumulado seis meses, y la mitad de eso.`;
+    } else bnote = `Se van ${Math.round(churn)}% por mes: por debajo del 8%, sano. No se cuenta.`;
+  }
+  L.push({ name: "Bajas evitables", amt: b6, amt12: b12, note: bnote });
+  let v = 0, vnote = "Sin ventana anterior ni lista de los que pidieron entrar: no se cuenta.";
+  if (num("trials") && precio) { v = num("trials") * 0.05 * precio; vnote = `Cinco puntos más de conversión sobre los mismos ${num("trials")} que entraron${num("quedaron") ? ` (hoy ${pct(num("quedaron"), num("trials"))}%)` : ""}. Una ventana.`; }
+  else if (num("caliente") && precio) {
+    if (num("compradores") && num("caliente") > 3 * num("compradores")) { v = 0; vnote = "La lista parece recontacto, no gente que pidió entrar. No se corre hasta separarla."; }
+    else { v = num("caliente") * 0.06 * precio; vnote = `6% de los ${num("caliente")} que pidieron entrar, a ${fmt(precio)}. Una ventana.`; }
+  }
+  L.push({ name: "Una ventana operada", amt: v, amt12: v * 1.5, note: vnote });
+  let p = 0, p12 = 0, pnote = "Sin precio de arriba, o sin compradores ni pedidos: no se cuenta.";
+  if (ticket) {
+    const cands = [], why = [];
+    if (num("compradores")) { cands.push(num("compradores") * 0.02); why.push("2% de tus compradores"); }
+    if (num("pidieron")) { cands.push(num("pidieron") * 2); why.push("el doble de los que ya te lo piden"); }
+    if (cupo) { cands.push(cupo); why.push("tu cupo"); }
+    if (cands.length) {
+      const base = Math.min(...cands), reason = why[cands.indexOf(base)];
+      let rate = 1;
+      if (num("shows") && num("cierres")) rate = Math.min(1, num("cierres") / num("shows"));
+      const n = base * rate;
+      if (state.cobro === "mes") { p = n * ticket; p12 = Math.min(n * 2, cupo || n * 2) * ticket; pnote = `${n.toFixed(0)} personas (manda ${reason}) × ${fmt(ticket)} por mes. Primera camada; la segunda, a los 12 meses.`; }
+      else { p = n * ticket / 3; p12 = p; pnote = `${n.toFixed(0)} por camada (manda ${reason}) × ${fmt(ticket)}, repartido en tres meses.`; }
+      if (rate < 1) pnote += ` Con tu cierre del ${Math.round(rate * 100)}%.`;
+    }
+  }
+  L.push({ name: "El pase, primera camada", amt: p, amt12: p12, note: pnote });
+  const m6 = L.reduce((s, l) => s + l.amt, 0);
+  const m12 = L.reduce((s, l) => s + (l.amt12 == null ? l.amt : l.amt12), 0);
+  return { L, m6, m12 };
+}
+function baseline() { const b = parseFloat(state.o.base); return isFinite(b) && b > 0 ? b : num("miembros") * num("precio"); }
+function renderLedger() {
+  const f = floor();
+  $("#ledger").innerHTML = f.L.map(l => `<div class="litem"><span class="llabel">${l.name}</span><span class="lamt ${l.amt ? "" : "zero"}">${l.amt ? fmt(l.amt) : "·"}</span><p class="lnote ${/no se corre|parece/.test(l.note) ? "warn" : ""}">${l.note}</p></div>`).join("")
+    + `<div class="ltotal"><span class="lbl">Piso, por mes</span><span class="cell"><span class="big">${f.m6 ? fmt(f.m6) : "·"}</span><span class="mono">a los seis meses</span></span><span class="cell"><span class="big sec">${f.m12 ? fmt(f.m12) : "·"}</span><span class="mono">a los doce, con la segunda ventana y camada</span></span></div>`;
+}
+function tipsForHoyNo() {
+  const out = [];
+  BLOCKS.forEach(b => b.rows.forEach(r => { if (r.tip && rowHas(r)) out.push(r.tip); }));
+  $("#tips-out").innerHTML = out.length ? out.map(t => `<li>${t}</li>`).join("") : `<li class="empty">Todavía no hay números cargados; los consejos salen de lo que contó.</li>`;
+}
+
+/* ---------- timeline handoff ---------- */
+function pushTimeline() {
+  try {
+    const prev = JSON.parse(localStorage.getItem(TL_KEY) || "{}");
+    localStorage.setItem(TL_KEY, JSON.stringify(Object.assign({}, prev, {
+      cliente: state.name || "", objetivo: state.obj || "",
+      comunidad: num("miembros") ? "viva" : (prev.comunidad || "viva"),
+      arriba: num("ticket") ? (state.cobro === "mes" ? "recurrente" : "ht") : "nada"
+    })));
+  } catch (e) {}
+  const fr = $("#tl"); const src = "docs/diagramas/linea-de-tiempo.html#theme=" + (isDark() ? "dark" : "light");
+  if (fr.getAttribute("src") !== src) fr.setAttribute("src", src); else if (fr.contentWindow) { try { fr.contentWindow.location.reload(); } catch (e) {} }
+}
+/* the timeline moves stop by stop with the wheel; inside a frame on a scrolling page the wheel fights the page,
+   so the pitch runs it full screen. Native fullscreen on the wrap (Esc comes back); if the browser refuses,
+   the wrap covers the page instead and the same button (or Esc) closes it. */
+function tlIsFull() { return document.fullscreenElement === $("#tl-wrap") || document.body.classList.contains("tl-full"); }
+function tlFullLabel() { $("#btn-full").textContent = tlIsFull() ? "Volver" : "Pantalla completa"; }
+function tlToggleFull() {
+  const wrap = $("#tl-wrap");
+  if (tlIsFull()) {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    document.body.classList.remove("tl-full"); tlFullLabel(); return;
+  }
+  const fallback = () => { document.body.classList.add("tl-full"); tlFullLabel(); };
+  if (!wrap.requestFullscreen) return fallback();
+  wrap.requestFullscreen().then(tlFullLabel).catch(fallback);
+}
+$("#btn-full").addEventListener("click", tlToggleFull);
+document.addEventListener("fullscreenchange", tlFullLabel);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("tl-full")) tlToggleFull(); });
+
+/* ---------- 3 · offer, fairness, the ask ---------- */
+const RESP = [["si", "Sí, arrancamos"], ["todavia", "Todavía no"], ["no", "No"]];
+function fairness(f, p, m6, m12) {
+  const pay6 = f + p / 100 * m6, keep6 = m6 - pay6, pay12 = f + p / 100 * m12, keep12 = m12 - pay12;
+  return { pay6, keep6, pay12, keep12, ok6: keep6 >= 0, ok12: keep12 >= m12 / 2 };
+}
+function renderOffer() {
+  const d = (state.t.distinto || "").trim();
+  $("#echo").innerHTML = d ? `<em>${esc(d)}</em>` : `<span class="empty">Falta anotarlo: la última pregunta de la conversación.</span>`;
+  const f = floor(); const top = f.L.slice().sort((a, b) => b.amt - a.amt)[0];
+  $("#prio-echo").textContent = top && top.amt ? top.name.toLowerCase() : "lo que más se te va";
+  $("#p1f").textContent = fmt(state.o.f1 || 0); $("#p1p").textContent = state.o.p1;
+  $("#p2f").textContent = fmt(state.o.f2 || 0); $("#p2p").textContent = state.o.p2;
+  $("#base-echo").textContent = baseline() ? fmt(baseline()) : "lo que leamos de tu panel";
+  [["#k1", state.o.f1, state.o.p1], ["#k2", state.o.f2, state.o.p2]].forEach(([id, ff, pp]) => {
+    if (!f.m6) { $(id).innerHTML = `<span class="hint">Con tus números de la conversación, acá aparece lo que te queda.</span>`; return; }
+    const r = fairness(+ff || 0, +pp || 0, f.m6, f.m12);
+    $(id).innerHTML = `<span>Mes 6</span><span>pagás <b>${fmt(r.pay6)}</b>, te quedan <b>${fmt(r.keep6)}</b></span><span>Mes 12</span><span>pagás <b>${fmt(r.pay12)}</b>, te quedan <b>${fmt(r.keep12)}</b></span>${r.ok12 ? '<span class="ok">✓ te queda más de la mitad</span>' : ""}`;
+  });
+  const r1 = f.m6 ? fairness(+state.o.f1 || 0, +state.o.p1 || 0, f.m6, f.m12) : null, r2 = f.m6 ? fairness(+state.o.f2 || 0, +state.o.p2 || 0, f.m6, f.m12) : null;
+  $("#prep-check").textContent = !f.m6 ? "Sin piso todavía." : `Prueba de la mitad (ADR-0001): primera ${r1.ok6 && r1.ok12 ? "pasa" : "NO pasa"} · segunda ${r2.ok6 && r2.ok12 ? "pasa" : "NO pasa"}. Si ninguna pasa, bajá el fijo acá o la llamada termina en "hoy no".`;
+  $$("[data-pick]").forEach(b => b.setAttribute("aria-pressed", String(state.o.pick === b.dataset.pick)));
+  $("#resp").innerHTML = RESP.map(r => `<button class="opt" type="button" data-resp="${r[0]}" aria-pressed="${state.o.resp === r[0]}">${r[1]}</button>`).join("");
+  const more = $("#resp-more"), r = state.o.resp;
+  more.innerHTML = r === "si" ? `<div class="roles" style="margin-top:16px"><div class="role"><span class="mono">Hoy</span><p>La página con todo lo que vimos.</p></div><div class="role"><span class="mono">El día anotado abajo</span><p>El contrato y el link de pago.</p></div></div>`
+    : r ? `<div class="fields one" style="margin-top:14px"><label class="field"><span class="mono">${r === "no" ? "Un no hoy me sirve más que un lo pienso. ¿Qué fue lo que no cerró?" : "¿Qué tendría que pasar para que sea un sí?"}</span><textarea rows="1" data-k="o.falta"></textarea></label></div>` : "";
+  bindInputs(more);
+  const mesIn = $('[data-k="o.mes"]'); if (mesIn && state.t.proxima) mesIn.placeholder = state.t.proxima;
+  $("#next-line").textContent = state.mode === "hoyno" ? "Lo que podés hacer vos te llega por audio hoy, y este día te vuelvo a escribir."
+    : r === "si" ? "¿Firmamos este día o el siguiente, a esta hora?" : "No cortamos sin fecha: ¿lo cerramos el martes o el jueves, a esta hora?";
+}
+
+/* ---------- plumbing ---------- */
+function bindInputs(root) {
+  $$("[data-k]", root).forEach(el => {
+    const v = getK(el.dataset.k);
+    if (document.activeElement !== el) el.value = v == null ? "" : v;
+    if (el._bound) return; el._bound = true;
+    el.addEventListener("input", () => { setK(el.dataset.k, el.value); save(); refresh(el); });
+  });
+}
+function applyMode() {
+  $$("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === state.mode)));
+  $("#m2-encaje").hidden = state.mode === "hoyno"; $("#m2-hoyno").hidden = state.mode !== "hoyno";
+  $("#m3-encaje").hidden = state.mode === "hoyno";
+}
+function applyNotes() { document.body.classList.toggle("notes", !!state.notes); $("#btn-notes").textContent = state.notes ? "Notas para Paul: encendidas" : "Notas para Paul: apagadas"; }
+function refreshHead() {
+  const n = state.name.trim();
+  $("#h-name").textContent = n ? `para ${n}` : "y lo que sigue";
+  $$("[data-com]").forEach(e => e.textContent = state.com.trim() || "tu comunidad");
+}
+function refresh(el) {
+  refreshSides(el); refreshHead();
+  if (state.step === 2) { renderLedger(); tipsForHoyNo(); if (el && el.dataset.k === "obj") pushTimeline(); }
+  if (state.step === 3 && !(el && el.closest("#resp-more"))) renderOffer();
+  $("#copy-warn").hidden = true;
+}
+const NAMES = ["", "La conversación", "De hoy a tu número", "La propuesta"];
+function go(step) {
+  state.step = Math.min(3, Math.max(1, step));
+  if (state.step === 2 && state.mode !== "hoyno") { state.seenFloor = true; pushTimeline(); }
+  if (state.step === 3 && state.mode !== "hoyno") state.seenOffer = true;
+  save();
+  for (let i = 1; i <= 3; i++) $("#s" + i).hidden = i !== state.step;
+  $$(".stepbtn").forEach(b => b.dataset.step == state.step ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current"));
+  $("#btn-prev").disabled = state.step === 1; $("#btn-next").hidden = state.step === 3;
+  applyMode(); renderLedger(); tipsForHoyNo(); renderOffer(); bindInputs(document); refreshSides(); refreshHead();
+  window.scrollTo(0, 0);
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.step) return go(+t.dataset.step);
+  if (t.dataset.mode) { state.mode = t.dataset.mode; save(); return go(2); }
+  if (t.dataset.cobro) { state.cobro = t.dataset.cobro; $$("[data-cobro]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.cobro === state.cobro))); }
+  else if (t.dataset.pick) state.o.pick = state.o.pick === t.dataset.pick ? "" : t.dataset.pick;
+  else if (t.dataset.resp) state.o.resp = state.o.resp === t.dataset.resp ? "" : t.dataset.resp;
+  else return;
+  save(); refresh();
+});
+$("#btn-prev").addEventListener("click", () => go(state.step - 1));
+$("#btn-next").addEventListener("click", () => go(state.step + 1));
+[["#f-name", "name"], ["#f-com", "com"], ["#f-date", "date"], ["#f-cur", "cur"]].forEach(([sel, k]) => {
+  const el = $(sel); el.value = state[k] || (k === "cur" ? "$" : "");
+  el.addEventListener("input", () => { state[k] = el.value; save(); refresh(); });
+});
+$("#btn-notes").addEventListener("click", () => { state.notes = !state.notes; save(); applyNotes(); $("#more").open = false; });
+
+/* summary: the page refuses to copy until the call ended the way it must */
+function missing() {
+  const m = [];
+  if (!state.name.trim()) m.push("el nombre");
+  if (!(num("miembros") && num("precio"))) m.push("miembros y precio (la línea base aproximada)");
+  if (!(state.t.distinto || "").trim()) m.push("lo que tendría que ser distinto, con sus palabras");
+  if (!state.mode) m.push("la compuerta del minuto 20 (seguimos u hoy no)");
+  if (state.mode === "encaje") {
+    if (!state.seenFloor) m.push("mostrar el piso con sus números");
+    if (!state.seenOffer) m.push("mostrar la propuesta con la cifra");
+    if (!state.o.resp) m.push("la respuesta a «¿arrancamos?»");
+    if (state.o.resp && state.o.resp !== "si" && !(state.o.falta || "").trim()) m.push("qué tendría que pasar para un sí");
+  }
+  if (!state.nx.dia.trim() || !state.nx.hora.trim()) m.push("el próximo paso con día y hora");
+  return m;
+}
+function summary() {
+  const n = state.n, f = floor(), L = [];
+  const v = (k, money) => (n[k] === "" ? "sin dato" : money ? fmt(num(k)) : n[k]);
+  L.push(`${state.name || "Sin nombre"} · ${state.com || "comunidad"} · llamada única · ${state.date || "sin fecha"}`, "");
+  L.push("ENCUADRE", `Próximas cuatro semanas: ${state.g.adelante || "sin dato"}`, `Quién decide: ${state.g.decide || "sin dato"}`, "");
+  L.push("SUS NÚMEROS", `Pagan ${v("miembros")} a ${v("precio", 1)} (≈ ${baseline() ? fmt(baseline()) : "sin dato"} por mes) · arriba ${v("ticket", 1)} ${state.cobro === "mes" ? "por mes" : "una vez"} · cupo ${v("cupo")}`,
+    `Bajas/mes ${v("bajas")} · pagos caídos ${v("caidos")} · última desconexión: ${state.t.desconecto || "sin dato"}`,
+    `Última ventana ${v("trials")} → ${v("quedaron")} · pidieron entrar (90d) ${v("caliente")} · compradores ${v("compradores")} · pidieron lo de arriba ${v("pidieron")}`,
+    `Agendas ${v("agendas")} · show ${v("shows")} · cierres ${v("cierres")} · historia con pedido ${v("historias")} · reel ${v("reels")}`,
+    `Próxima ventana: ${state.t.proxima || "sin dato"} · hoy le sale ${v("costo", 1)}`,
+    `Lo que más le pesa: ${state.t.pesa || "sin dato"}`, `Lo que tendría que ser distinto: ${state.t.distinto || "sin dato"}`, "");
+  L.push("PISO (pecando de menos)"); f.L.forEach(l => L.push(`- ${l.name}: ${l.amt ? fmt(l.amt) : "·"} · ${l.note}`));
+  L.push(`Piso mes 6: ${f.m6 ? fmt(f.m6) : "·"} · mes 12: ${f.m12 ? fmt(f.m12) : "·"}`, `Su objetivo: ${state.obj || "sin dato"}`, "");
+  if (state.mode === "hoyno") {
+    L.push("HOY NO (sin encaje)", `Por dónde empezaría: ${state.c.accion || "sin dato"}`, `Qué tendría que cambiar: ${state.c.disparador || "sin dato"}`);
+  } else {
+    const o = state.o, r1 = f.m6 ? fairness(+o.f1, +o.p1, f.m6, f.m12) : null, r2 = f.m6 ? fairness(+o.f2, +o.p2, f.m6, f.m12) : null;
+    L.push("PROPUESTA", `Cifras en pantalla: ${fmt(o.f1)} + ${o.p1}% (${r1 ? (r1.ok6 && r1.ok12 ? "pasa" : "NO pasa") : "sin piso"}) / ${fmt(o.f2)} + ${o.p2}% (${r2 ? (r2.ok6 && r2.ok12 ? "pasa" : "NO pasa") : "sin piso"}) · línea base aproximada ${baseline() ? fmt(baseline()) : "sin dato"} (la exacta: promedio de 90 días, en el contrato)`,
+      `Mostrada: ${state.seenOffer ? "sí" : "NO"} · eligió: ${o.pick === "1" ? "primera" : o.pick === "2" ? "segunda" : "no eligió"} · ruido: ${o.ruido || "sin dato"} · mes uno: ${o.mes || state.t.proxima || "sin dato"}`,
+      `Respuesta: ${o.resp === "si" ? "SÍ" : o.resp === "no" ? "NO" : o.resp === "todavia" ? "todavía no" : "no se preguntó"}${o.resp && o.resp !== "si" ? ` · qué tendría que pasar / qué no cerró: ${o.falta || "sin dato"}` : ""}`);
+  }
+  L.push("", `PRÓXIMO PASO: ${state.nx.dia || "SIN DÍA"} · ${state.nx.hora || "SIN HORA"}`);
+  return L.join("\n");
+}
+$("#btn-copy").addEventListener("click", async () => {
+  const m = missing(), w = $("#copy-warn");
+  if (m.length) { w.textContent = "Antes de copiar falta: " + m.join(" · ") + "."; w.hidden = false; return; }
+  try { await navigator.clipboard.writeText(summary()); $("#btn-copy").textContent = "Copiado"; } catch (e) { window.prompt("Copiá el resumen:", summary()); }
+  setTimeout(() => ($("#btn-copy").textContent = "Copiar resumen"), 1600);
+});
+$("#btn-reset").addEventListener("click", () => {
+  $("#more").open = false;
+  if (!window.confirm("¿Borrar todo lo cargado de esta llamada?")) return;
+  const keep = state.o, notes = state.notes; state = JSON.parse(JSON.stringify(DEFAULTS)); state.notes = notes;
+  ["f1", "p1", "f2", "p2"].forEach(k => (state.o[k] = keep[k]));
+  save(); ["#f-name", "#f-com", "#f-date"].forEach(s => ($(s).value = "")); $("#f-cur").value = "$"; renderConv(); go(1);
+});
+
+/* light by default, whatever the OS says: this is a shared screen. Dark only when chosen here. */
+let theme = "light"; try { theme = localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light"; } catch (e) {}
+const isDark = () => theme === "dark";
+function applyTheme() { document.documentElement.setAttribute("data-theme", theme); $("#btn-theme").textContent = isDark() ? "Claro" : "Oscuro"; }
+$("#btn-theme").addEventListener("click", () => { theme = isDark() ? "light" : "dark"; try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} applyTheme(); if (state.step === 2 && state.mode !== "hoyno") pushTimeline(); });
+
+/* prep mode: llamada-unica.html#prep shows the figure editor and the fairness verdict; never share the screen in this mode */
+function prepMode() { const on = location.hash === "#prep"; $("#adjust").hidden = !on; if (on) $("#adjust").open = true; }
+window.addEventListener("hashchange", prepMode); prepMode();
+
+renderConv(); applyTheme(); applyNotes(); go(state.step);
+</script>
+</body>
+</html>

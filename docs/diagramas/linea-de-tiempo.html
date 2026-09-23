@@ -1,0 +1,589 @@
+<title>De hoy a tu número</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Chivo+Mono:wght@300..700&display=swap">
+<script>/* llamada-unica.html la abre con #theme=light|dark para que las dos pantallas vayan iguales */(function(){function apply(){try{var m=(location.hash||"").match(/theme=(light|dark)/);if(m)document.documentElement.setAttribute("data-theme",m[1]);}catch(e){}}apply();window.addEventListener("hashchange",apply);})();</script>
+<style>
+  :root{
+    --bg:#EDF1F0; --surface:#FFFFFF; --ink:#0F1F1E; --muted:#566A69; --line:#C9D5D3; --soft:#DDE6E4;
+    --c-hoy:#5A6B75; --c-arr:#0B7A70; --c-ope:#B3590B; --c-pase:#6A3FC4; --c-obj:#0F1F1E; --on-obj:#FFFFFF;
+    --f-text:"Archivo","Segoe UI",Arial,sans-serif;
+    --f-mono:"Chivo Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+    --gutter:20px; --maxw:1240px; --colw:300px;
+    --edge:max(var(--gutter), calc((100% - var(--maxw)) / 2));
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0B1514; --surface:#12211F; --ink:#E4EEEC; --muted:#8FA5A2; --line:#24403B; --soft:#1A2E2B;
+      --c-hoy:#93A4AE; --c-arr:#35C4B1; --c-ope:#F0A43C; --c-pase:#A98BFF; --c-obj:#E4EEEC; --on-obj:#0B1514;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0B1514; --surface:#12211F; --ink:#E4EEEC; --muted:#8FA5A2; --line:#24403B; --soft:#1A2E2B;
+    --c-hoy:#93A4AE; --c-arr:#35C4B1; --c-ope:#F0A43C; --c-pase:#A98BFF; --c-obj:#E4EEEC; --on-obj:#0B1514;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-text);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  button,input,select{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--c-pase);outline-offset:2px;border-radius:4px}
+  .wrap{max-width:calc(var(--maxw) + 2 * var(--gutter));margin-inline:auto;padding-inline:var(--gutter)}
+  .mono{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .wide{font-stretch:125%;font-weight:800;letter-spacing:-.01em}
+
+  /* ---------- cabecera ---------- */
+  .top{padding-block:40px 26px;display:grid;gap:26px}
+  .top h1{margin:6px 0 10px;font-size:clamp(2rem,4.4vw,3.35rem);line-height:1.02;text-wrap:balance;max-width:17ch}
+  .lede{margin:0;max-width:56ch;color:var(--muted);font-size:1.0625rem}
+  .ctrl{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:end;padding-top:18px;border-top:1px solid var(--line)}
+  .field{display:grid;gap:6px;min-width:0}
+  .seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:3px;gap:3px}
+  .seg label{position:relative;cursor:pointer}
+  .seg input{position:absolute;opacity:0;inset:0;cursor:pointer}
+  .seg span{display:block;padding:7px 12px;border-radius:6px;font-size:14.5px;font-weight:500}
+  .seg input:checked + span{background:var(--ink);color:var(--bg)}
+  .seg input:focus-visible + span{outline:2px solid var(--c-pase);outline-offset:2px}
+  select,input[type="text"],input[type="date"]{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 11px;font-size:14.5px;max-width:100%}
+  details.pers{flex:1 1 100%}
+  details.pers summary{cursor:pointer;width:max-content;max-width:100%;font-size:14.5px;font-weight:600;color:var(--muted)}
+  .pers-grid{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:end;padding-top:14px}
+  .pers-grid .field{flex:1 1 220px}
+  .pers-grid input{width:100%}
+  .ghost{border:1px solid var(--line);background:transparent;border-radius:8px;padding:9px 13px;font-size:14.5px;font-weight:600;cursor:pointer}
+  .ghost:hover{background:var(--soft)}
+  .hint{margin:10px 0 0;font-size:13px;color:var(--muted)}
+
+  /* ---------- recorrido (siempre entra en pantalla) ---------- */
+  .ov{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px 10px}
+  .ov ol{list-style:none;margin:0;padding:0;display:flex}
+  .ov li{flex:1 1 0;min-width:0}
+  .ov button{display:block;width:100%;border:0;background:none;padding:0 6px 0 0;text-align:left;cursor:pointer;color:var(--muted)}
+  .ov-band{display:block;height:6px;background:var(--pc);position:relative;transition:background-color .35s ease}
+  .ov li.after .ov-band{background:color-mix(in srgb,var(--pc) 28%,var(--bg))}
+  .ov li.after .ov-dot{border-color:color-mix(in srgb,var(--pc) 45%,var(--bg))}
+  .ov li:first-child .ov-band{border-radius:3px 0 0 3px}
+  .ov li:last-child .ov-band{border-radius:0 3px 3px 0}
+  .ov-dot{position:absolute;left:0;top:-4px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:4px solid var(--pc);transition:transform .25s cubic-bezier(.22,.8,.24,1),border-color .35s ease,box-shadow .35s ease}
+  .ov-day{display:block;margin-top:10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em}
+  .ov-lab{display:block;font-size:12.5px;line-height:1.25;font-weight:500;padding-right:4px}
+  .ov-short{display:none}
+  .ov button[aria-current="true"]{color:var(--ink)}
+  .ov button[aria-current="true"] .ov-dot{transform:scale(1.35);background:var(--pc);box-shadow:0 0 0 4px color-mix(in srgb,var(--pc) 24%,transparent)}
+  .ov button[aria-current="true"] .ov-lab{font-weight:700}
+  @media (prefers-reduced-motion: reduce){.ov-dot,.ov-band,.dot,.label .num{transition:none}.stop.is-active .dot{animation:none}}
+
+  /* ---------- tira de paradas ---------- */
+  .strip-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:26px 6px}
+  .nav{display:flex;gap:8px}
+  .strip{overflow-x:auto;padding-bottom:18px;scrollbar-width:none;cursor:grab;--fl:0px;--fr:80px;
+         -webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);
+         mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
+  .strip::-webkit-scrollbar{display:none}
+  .strip.scrolled{--fl:80px}
+  .strip.at-end{--fr:0px}
+  .strip.dragging{cursor:grabbing;user-select:none}
+  .grid{display:grid;grid-auto-columns:var(--colw);grid-template-rows:auto auto auto auto auto;width:max-content;
+        padding-left:var(--edge);padding-right:var(--edge);padding-bottom:16px;position:relative;z-index:0}
+  .stop{display:contents}
+  .ghead{grid-row:1;padding:18px 14px 6px}
+  .ghead-in{position:sticky;left:var(--edge);width:max-content;max-width:min(640px,82vw);display:flex;flex-wrap:wrap;gap:14px 34px}
+  .ph{display:grid;grid-template-columns:14px minmax(0,1fr);column-gap:10px;max-width:300px}
+  .ph i{width:14px;height:14px;border-radius:50%;background:var(--pc);margin-top:7px}
+  .ph h2{margin:0;font-size:1.375rem;line-height:1.15}
+  .ph .mono{grid-column:2}
+  .ph p{grid-column:2;margin:4px 0 0;font-style:italic;color:var(--muted);font-size:15px;line-height:1.35}
+
+  .ev{grid-row:2;grid-column:var(--col);align-self:end;padding:16px 14px 16px;display:flex;flex-direction:column;gap:10px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 13px 13px;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:start}
+  .card h3{margin:0;font-size:15.5px;line-height:1.25;font-weight:650}
+  .card p{margin:3px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+  .th{width:56px;height:40px;color:var(--muted);stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .th *{fill:none}
+  .th .a{fill:var(--pc);stroke:none}
+  .th .s{stroke-opacity:.55}
+
+  .today{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 15px}
+  .today h3{margin:0 0 8px;font-size:15.5px;font-weight:650}
+  .today ol{margin:0;padding:0;list-style:none;display:grid;gap:7px;counter-reset:t}
+  .today li{display:grid;grid-template-columns:22px minmax(0,1fr);font-size:14px;line-height:1.35;counter-increment:t}
+  .today li::before{content:counter(t);font-family:var(--f-mono);font-size:11px;color:var(--pc);padding-top:2px}
+
+  .goal{background:var(--c-obj);color:var(--on-obj);border-radius:6px;padding:16px 16px 18px}
+  .goal .mono{color:inherit;opacity:.7}
+  .goal strong{display:block;margin-top:6px;font-size:1.5rem;line-height:1.15;overflow-wrap:anywhere}
+  .goal p{margin:8px 0 0;font-size:13.5px;line-height:1.4;opacity:.8}
+  .blank{border-bottom:2px dashed currentColor;opacity:.75;font-weight:700}
+
+  .rails{grid-row:3;grid-column:var(--col);position:relative;height:36px}
+  .rail-main{position:absolute;left:0;right:0;top:17px;height:10px;background:var(--pc)}
+  .rail-pase{position:absolute;left:0;right:0;top:6px;height:3px;background:var(--c-pase)}
+  .rail-pase.thick{top:3px;height:8px}
+  .rail-pase.off{background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
+  .dot{position:absolute;left:14px;top:12px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:5px solid var(--pc)}
+  .dot{transition:transform .35s cubic-bezier(.22,.8,.24,1),background-color .3s ease,box-shadow .35s ease}
+  .stop.is-active .dot{background:var(--pc);transform:scale(1.45);box-shadow:0 0 0 7px color-mix(in srgb,var(--pc) 24%,transparent);animation:ping .7s ease-out 1}
+  @keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--pc) 55%,transparent)}100%{box-shadow:0 0 0 7px color-mix(in srgb,var(--pc) 24%,transparent)}}
+  .dot-pase{position:absolute;left:19px;top:2px;width:10px;height:10px;border-radius:50%;background:var(--c-pase)}
+  .stop.first .rail-main{border-radius:5px 0 0 5px}
+  .stop.last .rail-main{right:14px}
+  .stop.last .rail-main::after{content:"";position:absolute;right:-13px;top:-5px;border-left:14px solid var(--pc);border-top:10px solid transparent;border-bottom:10px solid transparent}
+  .stop.last .rail-pase{display:none}
+
+  .label{grid-row:4;grid-column:var(--col);padding:10px 14px 0;scroll-margin-top:110px}
+  .label .num{display:flex;align-items:baseline;gap:8px;font-size:3.5rem;line-height:1;margin-top:2px;opacity:.5;transition:opacity .35s ease,color .35s ease}
+  .stop.is-active .label .num{opacity:1;color:var(--pc)}
+  .label .num small{font-family:var(--f-text);font-stretch:100%;font-weight:600;font-size:1rem;letter-spacing:0;color:var(--muted)}
+  .label h3{margin:6px 0 0;font-size:1.0625rem;line-height:1.25;font-weight:700;text-wrap:balance}
+  .when{display:flex;gap:8px;flex-wrap:wrap}
+  .when b{font-weight:500;color:var(--ink);letter-spacing:.04em}
+
+  .ct{grid-row:5;grid-column:var(--col);padding:14px 14px 0;display:grid;gap:8px;align-content:start}
+  .ct div{border:1px dashed var(--line);border-radius:6px;padding:8px 11px}
+  .ct b{display:block;font-size:14px;line-height:1.3;font-weight:650}
+  .ct span{display:block;font-size:13px;line-height:1.35;color:var(--muted)}
+
+  /* ---------- el ritmo que se repite ---------- */
+  .sect{padding-block:44px 8px}
+  .sect h2{margin:6px 0 8px;font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.1;text-wrap:balance}
+  .sect .lede{font-size:1rem}
+  .rhythm{margin-top:24px;display:grid;gap:0;border-top:1px solid var(--line)}
+  .row{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:8px 28px;align-items:center;padding-block:16px;border-bottom:1px solid var(--line)}
+  .row h3{margin:2px 0 0;font-size:1.0625rem;line-height:1.3;font-weight:700}
+  .row p{margin:2px 0 0;font-size:14px;color:var(--muted);line-height:1.4}
+  .track{position:relative;height:30px}
+  .track::before{content:"";position:absolute;left:0;right:0;top:14px;height:2px;background:var(--soft)}
+  .track i{position:absolute;top:9px;width:12px;height:12px;border-radius:50%;background:var(--pc);transform:translateX(-50%)}
+  .track i.sm{top:11px;width:8px;height:8px}
+  .track i.lg{top:6px;width:18px;height:18px;border-radius:4px;transform:translateX(-50%) rotate(45deg)}
+  .row.off .track i{background:var(--line)}
+  .months{display:grid;grid-template-columns:repeat(6,1fr);margin-left:calc(260px + 28px);padding-top:8px}
+  .months span{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+  /* ---------- objetivo ---------- */
+  .final{margin-block:44px 0;background:var(--c-obj);color:var(--on-obj);border-radius:10px;padding:clamp(24px,4vw,44px);display:grid;gap:26px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}
+  .final .mono{color:inherit;opacity:.7}
+  .final h2{margin:8px 0 0;font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.04;overflow-wrap:anywhere;text-wrap:balance}
+  .final p{margin:14px 0 0;max-width:46ch;opacity:.82;font-size:15.5px}
+  .hitos{list-style:none;margin:0;padding:0;display:grid;gap:0}
+  .hitos li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;padding-block:13px;border-top:1px solid color-mix(in srgb,var(--on-obj) 22%,transparent);font-size:15px;line-height:1.35}
+  .hitos li:last-child{border-bottom:1px solid color-mix(in srgb,var(--on-obj) 22%,transparent)}
+  .hitos .mono{padding-top:3px}
+  .foot{padding-block:26px 56px;color:var(--muted);font-size:13.5px;max-width:74ch}
+
+  /* ---------- teléfono y tableta: la tira pasa a vertical ---------- */
+  @media (max-width: 860px){
+    .top{padding-block:28px 20px}
+    .ov-lab,.ov-full{display:none}
+    .ov-short{display:inline}
+    .ov-day{font-size:10px;letter-spacing:0}
+    .ov button{padding-right:2px}
+    .nav{display:none}
+    .strip{overflow-x:visible;cursor:auto;-webkit-mask-image:none;mask-image:none}
+    .grid{display:block;width:auto;padding-inline:var(--gutter)}
+    .ghead{padding:26px 0 14px}
+    .ghead-in{position:static;width:auto;max-width:none}
+    .grid{padding-bottom:0}
+    .stop{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px}
+    .rails{grid-column:1;grid-row:1 / span 3;height:auto;width:30px}
+    .rail-main{left:16px;right:auto;top:0;bottom:0;width:10px;height:auto}
+    .rail-pase,.rail-pase.thick{left:8px;right:auto;top:0;bottom:0;width:3px;height:auto}
+    .rail-pase.thick{left:5px;width:7px}
+    .rail-pase.off{background:repeating-linear-gradient(180deg,var(--line) 0 8px,transparent 8px 14px)}
+    .dot{left:11px;top:4px}
+    .dot-pase{left:4px;top:30px}
+    .stop.first .rail-main{border-radius:5px 5px 0 0}
+    .stop.last .rail-main{right:auto;bottom:24px}
+    .stop.last .rail-main::after{right:auto;left:-5px;top:auto;bottom:-13px;border-top:14px solid var(--pc);border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:0}
+    .label{grid-column:2;grid-row:1;padding:0}
+    .label .num{font-size:2.75rem}
+    .ev{grid-column:2;grid-row:2;align-self:start;padding:14px 0 0}
+    .ct{grid-column:2;grid-row:3;padding:10px 0 30px}
+    .row{grid-template-columns:minmax(0,1fr)}
+    .months{margin-left:0}
+    .final{grid-template-columns:minmax(0,1fr)}
+  }
+</style>
+
+<header class="wrap top">
+  <div>
+    <div class="mono" id="eyebrow">Lane A · después de la firma</div>
+    <h1 class="wide">Qué pasa después de que dices que sí</h1>
+    <p class="lede">Tu línea de tiempo con nosotros, día por día: qué recibes, cuándo hablamos contigo y adónde llegas.</p>
+  </div>
+  <form class="ctrl" id="ctrl" autocomplete="off" onsubmit="return false">
+    <div class="field">
+      <span class="mono">Tu comunidad</span>
+      <div class="seg" role="radiogroup" aria-label="Tu comunidad">
+        <label><input type="radio" name="comunidad" id="com-viva" value="viva" checked><span>Ya está viva</span></label>
+        <label><input type="radio" name="comunidad" id="com-cero" value="cero"><span>Empiezo desde cero</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label class="mono" for="arriba">Lo que vendes arriba de la comunidad</label>
+      <select id="arriba" name="arriba">
+        <option value="recurrente">Solo recurrente, sin tier medio</option>
+        <option value="ht">Ya tengo un programa o high ticket</option>
+        <option value="nada">Todavía nada</option>
+      </select>
+    </div>
+    <details class="pers" id="pers">
+      <summary>Poner tu nombre, tu fecha y tu número</summary>
+      <div class="pers-grid">
+        <div class="field"><label class="mono" for="p-cliente">Nombre</label><input type="text" id="p-cliente" placeholder="Lucía"></div>
+        <div class="field"><label class="mono" for="p-kickoff">Fecha del kickoff</label><input type="date" id="p-kickoff"></div>
+        <div class="field"><label class="mono" for="p-objetivo">Tu objetivo, de tu propuesta</label><input type="text" id="p-objetivo" placeholder="de $8.000 a $12.000 por mes"></div>
+        <button type="button" class="ghost" id="p-clear">Borrar</button>
+      </div>
+      <p class="hint">Se guarda solo en este navegador. Con la fecha del kickoff, cada parada muestra su día del calendario.</p>
+    </details>
+  </form>
+</header>
+
+<nav class="ov" aria-label="Recorrido completo"><div class="wrap"><ol id="ov"></ol></div></nav>
+
+<main>
+  <div class="wrap strip-head">
+    <div class="mono">Parada por parada</div>
+    <div class="nav">
+      <button type="button" class="ghost" id="prev" aria-label="Parada anterior">Anterior</button>
+      <button type="button" class="ghost" id="next" aria-label="Parada siguiente">Siguiente</button>
+    </div>
+  </div>
+  <div class="strip" id="strip" tabindex="0" aria-label="Línea de tiempo, parada por parada"><div class="grid" id="grid"></div></div>
+
+  <section class="wrap sect" aria-labelledby="ritmo-h">
+    <div class="mono">Después del día 30</div>
+    <h2 class="wide" id="ritmo-h">El ritmo que se repite</h2>
+    <p class="lede">No es un programa con final. Es una operación: todos los meses pasa lo mismo, y tú lo ves.</p>
+    <div class="rhythm" id="rhythm"></div>
+    <div class="months" aria-hidden="true"><span>mes 2</span><span>mes 3</span><span>mes 4</span><span>mes 5</span><span>mes 6</span><span>mes 7</span></div>
+  </section>
+
+  <div class="wrap">
+    <section class="final" aria-labelledby="obj-h">
+      <div>
+        <div class="mono">Tu objetivo · mes 6 a 12</div>
+        <h2 class="wide" id="obj-h"></h2>
+        <p>Es tu facturación mensual total: lo recurrente más lo que vendes arriba. El rango sale de tu auditoría y está escrito en tu propuesta. No es una promesa: es el punto al que apuntamos juntos, y lo medimos cada mes contra tu línea base.</p>
+      </div>
+      <ol class="hitos" id="hitos"></ol>
+    </section>
+    <p class="foot">Las cifras de esta página son rangos estimados que salen de tu auditoría y de tu propuesta. Cobramos un fijo y un porcentaje de lo que crece por encima de tu línea base: si no creces, el porcentaje es cero.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  /* Para una versión ya lista para un cliente, completar CONFIG y publicar el archivo. */
+  var CONFIG = { cliente:"", kickoff:"", objetivo:"", comunidad:"viva", arriba:"recurrente" };
+  var LS = "laneA.lineaDeTiempo.v1";
+  var state = Object.assign({}, CONFIG);
+  try { var saved = JSON.parse(localStorage.getItem(LS) || "null"); if (saved) Object.assign(state, saved); } catch (e) {}
+  function save(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {} }
+
+  var PC = { hoy:"var(--c-hoy)", arr:"var(--c-arr)", ope:"var(--c-ope)", pase:"var(--c-pase)", obj:"var(--c-obj)" };
+
+  var TH = {
+    doc:'<rect class="s" x="15" y="3" width="26" height="34" rx="2"/><path class="s" d="M20 11h16M20 16h16M20 21h10"/><rect class="a" x="20" y="26" width="11" height="6" rx="1"/>',
+    sheet:'<rect class="s" x="6" y="6" width="44" height="28" rx="2"/><path class="s" d="M6 15h44M6 24h44M21 6v28M36 6v28"/><rect class="a" x="22" y="16" width="13" height="7"/>',
+    bars:'<path class="s" d="M8 34h40"/><rect class="s" x="12" y="22" width="7" height="12"/><rect class="s" x="23" y="16" width="7" height="18"/><rect class="a" x="34" y="8" width="7" height="26"/>',
+    list:'<circle class="a" cx="12" cy="10" r="3.5"/><circle class="s" cx="12" cy="20" r="3.5"/><circle class="s" cx="12" cy="30" r="3.5"/><path class="s" d="M21 10h26M21 20h22M21 30h17"/>',
+    cal:'<rect class="s" x="8" y="6" width="40" height="30" rx="2"/><rect class="a" x="8" y="6" width="40" height="8" rx="2"/><path class="s" d="M16 21h2M24 21h2M32 21h2M40 21h2M16 29h2M24 29h2M32 29h2"/>',
+    play:'<rect class="s" x="6" y="5" width="44" height="30" rx="3"/><path class="a" d="M24 13l11 7-11 7z"/>',
+    ladder:'<rect class="s" x="8" y="26" width="13" height="9"/><rect class="s" x="21.5" y="17" width="13" height="18"/><rect class="a" x="35" y="7" width="13" height="28"/>',
+    funnel:'<path class="s" d="M8 6h40l-7 10H15z"/><path class="s" d="M17 19h22l-5 8H22z"/><path class="a" d="M24 30h8v6h-8z"/>',
+    gauge:'<path class="s" d="M8 34h40"/><rect class="s" x="14" y="24" width="10" height="10"/><rect class="a" x="32" y="9" width="10" height="25"/><path class="s" d="M19 18l8-7m0 0h-5m5 0v5"/>',
+    pay:'<rect class="s" x="7" y="8" width="42" height="26" rx="3"/><path class="s" d="M7 16h42"/><rect class="a" x="12" y="23" width="10" height="6" rx="1"/>'
+  };
+  function thumb(k){ return '<svg class="th" viewBox="0 0 56 40" aria-hidden="true" focusable="false">' + TH[k] + '</svg>'; }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  function model(){
+    var viva = state.comunidad !== "cero", up = state.arriba;
+    var paseLine = up === "ht" ? "Tu comunidad, semillero de tu programa"
+                 : up === "nada" ? "Primero el piso; lo de arriba, con resultados"
+                 : "Tu escalón, lanzado adentro de tu comunidad";
+    var groups = [
+      { phases:[{pc:"hoy", name:"Hoy", tag:"El día que firmas", line:"Ese mismo día ya pasa algo"}] },
+      { phases:[{pc:"arr", name:"Arranque", tag:"Fase 1 · días 0 a 30",
+                 line: viva ? "Tu comunidad operando y el dinero volviendo, en 30 días" : "Tu comunidad armada y lanzada, en 30 días"}] },
+      { phases:[{pc:"ope", name:"Operación", tag:"Fase 2 · desde el día 30, cada mes", line:"Alguien adentro todos los días: cobros, retención, tu gente"},
+                {pc:"pase", name:"El pase", tag:"Fase 3 · la lista desde el día 1", line:paseLine}] },
+      { phases:[{pc:"obj", name:"Tu objetivo", tag:"Mes 6 a 12", line:"El punto al que apuntamos juntos"}] }
+    ];
+    var weekly = {t:"Mensaje semanal, tres líneas", w:"Qué hicimos, qué viene, qué necesitamos de ti"};
+    var est = {k:"bars", t:"El dinero sobre la mesa", p:"Cuánto se recupera cada mes, en conservador y en pesimista"};
+    var rec = {k:"play", t:"Primera sesión de grabación", p:"Nosotros los guiones, tú grabas"};
+    var stops = [
+      { g:0, pc:"hoy", num:"Hoy", short:"Hoy", label:"Firmas", off:null, today:true, ct:[] },
+      { g:1, pc:"arr", tag:"Día", num:"0", short:"0", label:"Kickoff", off:[0],
+        cards:[{k:"doc", t:"Tu plan de 30 días", p:"Por escrito, en 24 horas"},{k:"sheet", t:"Tus números, por escrito", p:"De dónde partes hoy y tus tres metas, dichas por ti"}],
+        ct:[{t:"Kickoff, 60 minutos", w:"Paul y Martín, contigo"}, weekly] },
+      { g:1, pc:"arr", tag:"Día", num:"7", short:"7", label: viva ? "Tu oferta, releída" : "Tu oferta y tus precios", off:[7],
+        cards: viva ? [{k:"ladder", t:"Tu escalera en una hoja", p:"Qué vendes, a quién y en qué orden"}]
+                    : [{k:"ladder", t:"Tu oferta y tus precios", p:"Promesa, precio de fundadores y precio oficial, aprobados por ti"}],
+        ct:[weekly] },
+      { g:1, pc:"arr", tag:"Día", num:"14", short:"14", label: viva ? "El dinero sobre la mesa" : "Tu comunidad, armada", off:[14],
+        cards: viva ? [est, {k:"pay", t:"Tarjetas caídas, recuperándose", p:"Desde el día 1, una por una"}]
+                    : [{k:"sheet", t:"Tu comunidad, armada", p:"Classroom, bienvenida y checkout probado con una compra real"}, est],
+        ct:[weekly] },
+      { g:1, pc:"arr", tag:"Día", num:"21", short:"21", label: viva ? "Tu ventana, armada" : "Lista de espera abierta", off:[21],
+        cards: viva ? [{k:"cal", t:"Tu ventana, armada", p:"Fecha, precio y mensajes aprobados por ti"}, rec]
+                    : [{k:"list", t:"Lista de espera abierta", p:"La gente entra por un link, nunca agregada"}, rec],
+        ct:[{t:"Aprobación de la ventana", w:"Fecha, precio y oferta, contigo"}] },
+      { g:1, pc:"arr", tag:"Día", num:"30", short:"30", label: viva ? "Ventana abierta y primer reporte" : "Lanzamiento fundador y primer reporte", off:[30],
+        cards:[{k:"play", t: viva ? "Ventana abierta" : "Lanzamiento fundador", p:"Tú al frente del directo; nosotros el chat, el link y los cobros"},
+               {k:"doc", t:"Tu primer reporte", p:"Una página, con tu línea base al lado"}],
+        ct:[{t:"El directo", w:"Tú al frente"},{t:"Día 37: balance de la ventana", w:"Lista, asistencia, compras y la fecha de la próxima"}] },
+      { g:2, pc:"ope", paseDot:true, tag:"Día", num:"45", suf:"a 60", short:"45", off:[45,60],
+        label: up === "ht" ? "Tus agendas, marcadas" : up === "nada" ? "El piso, primero" : "Primera camada de tu escalón",
+        cards: [{k:"list", t:"La lista del pase", p:"Quién está listo para subir, cada lunes"}].concat(
+               up === "ht" ? [{k:"funnel", t:"Cada agenda que nace adentro", p:"Marcada en tu reporte, con nombre y fecha"}]
+             : up === "nada" ? [{k:"ladder", t:"Lo de arriba, con resultados", p:"Construirlo es la segunda etapa del trabajo"}]
+             : [{k:"funnel", t:"Primera camada de tu escalón", p:"Invitados uno a uno, nunca un anuncio en el feed"}]),
+        ct: up === "ht" ? [{t:"Tu equipo cierra como hoy", w:"Nosotros medimos y alimentamos"}]
+          : up === "nada" ? [{t:"Reporte mensual", w:"Con el bloque del pase desde el primer mes"}]
+          : [{t:"Aprobación de la camada", w:"Fecha, cupo y precio, contigo"}] },
+      { g:2, pc:"ope", tag:"Día", num:"90", short:"90", label:"Resultados sobre la mesa", off:[90],
+        cards:[{k:"gauge", t:"Tu caso, con cifras", p:"Las que acordemos por escrito"}].concat(
+               up === "ht" ? [{k:"sheet", t:"Con el dato en la mano", p:"Decidimos juntos cómo sigue el pase"}]
+             : up === "nada" ? [{k:"ladder", t:"Conversación sobre lo de arriba", p:"Con resultados, no antes"}]
+             : [{k:"funnel", t:"Segunda camada", p:"Con los resultados de la primera"}]),
+        ct:[{t:"Conversación del caso", w:"Y relectura de tu auditoría"},{t:"Cada trimestre: tu calendario", w:"Cuándo no vas a estar"}] },
+      { g:2, pc:"ope", tag:"Día", num:"120", short:"120", label:"Lo que facturas hoy, en recurrente", off:[120],
+        cards:[{k:"bars", t:"Tu segunda meta", p:"Lo que hoy facturas en un mes, replicado como recurrente"}],
+        ct:[{t:"Día 5: tu reporte", w:"Con 10 minutos de llamada o un audio"},{t:"Día 10: liquidación", w:"Lo que creció sobre tu línea base"}] },
+      { g:3, pc:"obj", tag:"Mes", num:"6", suf:"a 12", short:"M6", label:"Tu objetivo", months:[6,12], goal:true, ct:[] }
+    ];
+    return { groups:groups, stops:stops, up:up };
+  }
+
+  function parseDate(s){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); return m ? new Date(+m[1], +m[2]-1, +m[3]) : null; }
+  function fmtDay(d){ return d.toLocaleDateString("es", {day:"numeric", month:"short"}).replace(".", ""); }
+  function fmtMon(d){ return d.toLocaleDateString("es", {month:"short", year:"numeric"}).replace(".", ""); }
+  function whenText(st){
+    var k = parseDate(state.kickoff); if (!k) return "";
+    if (st.off){ return st.off.map(function(n){ var d = new Date(k); d.setDate(d.getDate()+n); return fmtDay(d); }).join(" a "); }
+    if (st.months){ return st.months.map(function(n){ var d = new Date(k); d.setMonth(d.getMonth()+n); return fmtMon(d); }).join(" a "); }
+    return "";
+  }
+  function goalHTML(){ return state.objetivo ? esc(state.objetivo) : '<span class="blank">«tu número»</span>'; }
+
+  var grid = document.getElementById("grid"), ov = document.getElementById("ov"), strip = document.getElementById("strip");
+  var labels = [], active = 0, M;
+
+  function render(){
+    M = model();
+    /* recorrido */
+    ov.innerHTML = M.stops.map(function(st, i){
+      return '<li style="--pc:' + PC[st.pc] + '"><button type="button" data-i="' + i + '"><span class="ov-band"><span class="ov-dot"></span></span>' +
+             '<span class="ov-day"><span class="ov-full">' + (st.tag ? st.tag.toLowerCase() + " " : "") + esc(st.num + (st.suf ? " " + st.suf : "")) + '</span><span class="ov-short">' + esc(st.short) + '</span></span>' +
+             '<span class="ov-lab">' + esc(st.label) + '</span></button></li>';
+    }).join("");
+    /* tira */
+    var html = "", col = 0, counts = M.groups.map(function(_, g){ return M.stops.filter(function(s){ return s.g === g; }).length; });
+    M.groups.forEach(function(gr, g){
+      html += '<header class="ghead" style="grid-column:' + (col+1) + ' / span ' + counts[g] + '"><div class="ghead-in">' +
+        gr.phases.map(function(p){ return '<div class="ph" style="--pc:' + PC[p.pc] + '"><i></i><h2 class="wide">' + esc(p.name) + '</h2><div class="mono">' + esc(p.tag) + '</div><p>' + esc(p.line) + '</p></div>'; }).join("") +
+        '</div></header>';
+      M.stops.forEach(function(st, i){
+        if (st.g !== g) return;
+        col++;
+        var cls = "stop" + (i === 0 ? " first" : "") + (i === M.stops.length-1 ? " last" : "");
+        var ev = "";
+        if (st.today){
+          ev = '<div class="today"><h3>Lo que recibes hoy</h3><ol><li>Contrato y link de pago, en el mismo mensaje</li><li>Tu formulario de arranque, 20 a 30 minutos</li><li>Tu canal único de WhatsApp con nosotros</li><li>Calendario compartido</li><li>Carpeta de activos</li><li>Fecha de kickoff, en menos de 7 días</li></ol></div>';
+        } else if (st.goal){
+          ev = '<div class="goal"><div class="mono">Facturación mensual total</div><strong class="wide">' + goalHTML() + '</strong><p>El rango de tu propuesta. Lo medimos cada mes contra tu línea base.</p></div>';
+        } else {
+          ev = st.cards.map(function(c){ return '<article class="card">' + thumb(c.k) + '<div><h3>' + esc(c.t) + '</h3><p>' + esc(c.p) + '</p></div></article>'; }).join("");
+        }
+        var paseRail = i === 0 ? "" : '<span class="rail-pase' + (i >= 6 ? " thick" : "") + (M.up === "nada" ? " off" : "") + '"></span>' + (st.paseDot && M.up !== "nada" ? '<span class="dot-pase"></span>' : "");
+        var w = whenText(st);
+        html += '<section class="' + cls + '" style="--col:' + col + ';--pc:' + PC[st.pc] + '" data-i="' + i + '">' +
+          '<div class="ev">' + ev + '</div>' +
+          '<div class="rails" aria-hidden="true"><span class="rail-main"></span>' + paseRail + '<span class="dot"></span></div>' +
+          '<div class="label"><div class="mono when"><span>' + esc(st.tag || "El día que firmas") + '</span>' + (w ? '<b>' + esc(w) + '</b>' : "") + '</div>' +
+          '<div class="num wide">' + esc(st.num) + (st.suf ? '<small>' + esc(st.suf) + '</small>' : "") + '</div><h3>' + esc(st.label) + '</h3></div>' +
+          '<div class="ct">' + st.ct.map(function(c){ return '<div><b>' + esc(c.t) + '</b><span>' + esc(c.w) + '</span></div>'; }).join("") + '</div>' +
+          '</section>';
+      });
+    });
+    grid.innerHTML = html;
+    labels = Array.prototype.slice.call(grid.querySelectorAll(".label"));
+
+    /* ritmo */
+    var r3 = M.up === "ht" ? {h:"Cada agenda que nace adentro", p:"Marcada en cada reporte, para tu equipo de ventas", off:false}
+           : M.up === "nada" ? {h:"Lo de arriba, después", p:"Se abre cuando los primeros resultados están sobre la mesa", off:true}
+           : {h:"Una camada de tu escalón", p:"Invitados uno a uno desde la lista del pase", off:false};
+    var monthly = "", i2;
+    for (i2 = 0; i2 < 6; i2++){ monthly += '<i class="sm" style="left:' + ((i2 + 5/30) / 6 * 100).toFixed(2) + '%"></i><i class="sm" style="left:' + ((i2 + 10/30) / 6 * 100).toFixed(2) + '%"></i>'; }
+    document.getElementById("rhythm").innerHTML =
+      '<div class="row" style="--pc:var(--c-ope)"><div><div class="mono">Cada mes</div><h3>Tu reporte el día 5, la liquidación el día 10</h3><p>Una página con tus números y tu línea base al lado</p></div><div class="track" aria-hidden="true">' + monthly + '</div></div>' +
+      '<div class="row" style="--pc:var(--c-arr)"><div><div class="mono">Cada 1 a 3 meses</div><h3>Una ventana de relanzamiento</h3><p>Miembros nuevos y el precio un escalón arriba</p></div><div class="track" aria-hidden="true"><i class="lg" style="left:8%"></i><i class="lg" style="left:42%"></i><i class="lg" style="left:76%"></i></div></div>' +
+      '<div class="row' + (r3.off ? " off" : "") + '" style="--pc:var(--c-pase)"><div><div class="mono">' + (M.up === "ht" ? "Cada mes" : "Cada 4 a 8 semanas") + '</div><h3>' + r3.h + '</h3><p>' + r3.p + '</p></div><div class="track" aria-hidden="true"><i style="left:4%"></i><i style="left:29%"></i><i style="left:54%"></i><i style="left:79%"></i></div></div>';
+
+    /* objetivo y cabecera */
+    document.getElementById("obj-h").innerHTML = goalHTML();
+    document.getElementById("hitos").innerHTML =
+      '<li><span class="mono">Día 30</span><span>' + (state.comunidad === "cero" ? "Tu comunidad lanzada, contigo al frente" : "Tu ventana abierta y el dinero recuperándose") + '</span></li>' +
+      '<li><span class="mono">Día 120</span><span>Lo que hoy facturas en un mes, replicado como recurrente</span></li>' +
+      '<li><span class="mono">Mes 6 a 12</span><span>' + goalHTML() + ' de facturación mensual total</span></li>';
+    document.getElementById("eyebrow").textContent = state.cliente ? "Lane A · para " + state.cliente : "Lane A · después de la firma";
+    setActive(Math.min(active, M.stops.length - 1));
+    spy();
+  }
+
+  function vertical(){ return window.matchMedia("(max-width: 860px)").matches; }
+  var pinned = null, pinTarget = 0, pinReached = false;
+  function maxScroll(){ return strip.scrollWidth - strip.clientWidth; }
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  /* un solo animador para todo lo que mueve la tira: rueda, botones, teclado y el envion al soltar el arrastre */
+  var anim = { target:null, pos:0, raf:0, last:0 };
+  function stopAnim(){ if (anim.raf) cancelAnimationFrame(anim.raf); anim.raf = 0; anim.target = null; }
+  function animateTo(x){
+    x = Math.max(0, Math.min(maxScroll(), x));
+    if (reduce.matches){ stopAnim(); strip.scrollLeft = x; return; }
+    if (anim.target === null){ anim.pos = strip.scrollLeft; anim.last = performance.now(); }
+    anim.target = x;
+    if (!anim.raf) anim.raf = requestAnimationFrame(step);
+  }
+  function step(now){
+    var dt = Math.min(64, Math.max(0, now - anim.last)); anim.last = now;
+    var diff = anim.target - anim.pos;
+    if (Math.abs(diff) < 0.4){ strip.scrollLeft = anim.target; anim.raf = 0; anim.target = null; return; }
+    anim.pos += diff * (1 - Math.exp(-dt / 120));
+    strip.scrollLeft = anim.pos;
+    anim.raf = requestAnimationFrame(step);
+  }
+
+  function setActive(i){
+    active = i;
+    Array.prototype.forEach.call(ov.querySelectorAll("button"), function(b, n){
+      if (n === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
+      b.parentNode.classList.toggle("after", n > i);
+    });
+    Array.prototype.forEach.call(grid.querySelectorAll(".stop"), function(el){ el.classList.toggle("is-active", +el.getAttribute("data-i") === i); });
+  }
+  /* posicion de la tira que corresponde a cada parada. Las ultimas no llegan al borde izquierdo:
+     sus puntos se reparten parejo en el tramo final, asi ninguna se saltea */
+  function thresholds(){
+    var pad = parseFloat(getComputedStyle(grid).paddingLeft) || 0, max = Math.max(0, maxScroll());
+    var nat = labels.map(function(l){ return l.offsetLeft - pad; }), n = nat.length, k = n, i;
+    for (i = 0; i < n; i++){ if (nat[i] > max - 1){ k = i; break; } }
+    if (k >= n) return nat;
+    var start = k > 0 ? nat[k - 1] : 0, out = nat.slice(0, k), steps = n - k;
+    for (i = k; i < n; i++){ out.push(start + (max - start) * ((i - k + 1) / steps)); }
+    return out;
+  }
+  function go(i){
+    i = Math.max(0, Math.min(labels.length - 1, i));
+    var el = labels[i]; if (!el) return;
+    if (vertical()) { el.scrollIntoView({block:"start"}); }
+    else {
+      pinTarget = thresholds()[i];
+      pinned = i; pinReached = Math.abs(strip.scrollLeft - pinTarget) <= 3;
+      animateTo(pinTarget);
+    }
+    setActive(i);
+  }
+  var ticking = false;
+  function spy(){
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      ticking = false; var best = 0, n, r;
+      if (vertical()){
+        for (n = 0; n < labels.length; n++){ if (labels[n].getBoundingClientRect().top <= 170) best = n; }
+      } else {
+        var atEnd = maxScroll() <= 0 || strip.scrollLeft >= maxScroll() - 2;
+        strip.classList.toggle("at-end", atEnd);
+        strip.classList.toggle("scrolled", strip.scrollLeft > 8);
+        if (pinned !== null){
+          if (Math.abs(strip.scrollLeft - pinTarget) <= 3){ pinReached = true; setActive(pinned); return; }
+          if (!pinReached) return;
+          pinned = null;
+        }
+        var t = thresholds(), x = strip.scrollLeft, bd = Infinity, dd;
+        for (n = 0; n < t.length; n++){ dd = Math.abs(x - t[n]); if (dd < bd - 0.5){ bd = dd; best = n; } }
+      }
+      setActive(best);
+    });
+  }
+
+  ov.addEventListener("click", function(e){ var b = e.target.closest("button"); if (b) go(+b.getAttribute("data-i")); });
+  document.getElementById("prev").addEventListener("click", function(){ go(active - 1); });
+  document.getElementById("next").addEventListener("click", function(){ go(active + 1); });
+  strip.addEventListener("scroll", spy, {passive:true});
+  window.addEventListener("scroll", spy, {passive:true});
+  window.addEventListener("resize", spy, {passive:true});
+
+  /* arrastrar para moverse, en lugar de la barra de desplazamiento */
+  var drag = null;
+  strip.addEventListener("pointerdown", function(e){
+    if (vertical() || e.pointerType !== "mouse" || e.button !== 0) return;
+    stopAnim();
+    drag = { x:e.clientX, left:strip.scrollLeft, moved:false, lx:e.clientX, lt:performance.now(), v:0 };
+  });
+  window.addEventListener("pointermove", function(e){
+    if (!drag) return;
+    var dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) > 4){
+      drag.moved = true; pinned = null; strip.classList.add("dragging");
+      var sel = window.getSelection && window.getSelection(); if (sel && sel.removeAllRanges) sel.removeAllRanges();
+    }
+    if (drag.moved){
+      strip.scrollLeft = drag.left - dx;
+      var now = performance.now(), dtm = now - drag.lt;
+      if (dtm > 0){ drag.v = drag.v * 0.6 + ((e.clientX - drag.lx) / dtm) * 0.4; drag.lx = e.clientX; drag.lt = now; }
+    }
+  });
+  window.addEventListener("pointerup", function(){
+    if (!drag) return;
+    var d = drag; drag = null; strip.classList.remove("dragging");
+    if (d.moved && performance.now() - d.lt < 80 && Math.abs(d.v) > 0.15) animateTo(strip.scrollLeft - d.v * 320);
+  });
+
+  /* la rueda avanza de parada en parada: una muesca, una parada. Asi nunca se saltea ninguna,
+     ni siquiera las ultimas, que comparten pocos pixeles de recorrido. En los extremos la rueda vuelve a mover la pagina. */
+  var wheelAcc = 0, wheelAt = 0;
+  strip.addEventListener("wheel", function(e){
+    if (vertical() || e.ctrlKey || maxScroll() <= 0) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { pinned = null; stopAnim(); return; }   /* gesto horizontal: lo resuelve el navegador */
+    var d = e.deltaY;
+    if (e.deltaMode === 1) d *= 40; else if (e.deltaMode === 2) d *= strip.clientWidth;
+    if (!d) return;
+    var dir = d > 0 ? 1 : -1;
+    if ((dir > 0 && active >= labels.length - 1) || (dir < 0 && active <= 0)) { wheelAcc = 0; return; }
+    e.preventDefault();
+    if (wheelAcc * dir < 0) wheelAcc = 0;
+    wheelAcc += d;
+    var now = performance.now();
+    if (Math.abs(wheelAcc) >= 50 && now - wheelAt > 170){ wheelAcc = 0; wheelAt = now; go(active + dir); }
+  }, {passive:false});
+
+  strip.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight"){ e.preventDefault(); go(active + 1); }
+    if (e.key === "ArrowLeft"){ e.preventDefault(); go(active - 1); }
+  });
+
+  /* controles */
+  var form = document.getElementById("ctrl");
+  var fCli = document.getElementById("p-cliente"), fKick = document.getElementById("p-kickoff"), fObj = document.getElementById("p-objetivo"), fUp = document.getElementById("arriba");
+  function syncInputs(){
+    document.getElementById(state.comunidad === "cero" ? "com-cero" : "com-viva").checked = true;
+    fUp.value = state.arriba; fCli.value = state.cliente; fKick.value = state.kickoff; fObj.value = state.objetivo;
+  }
+  form.addEventListener("input", function(){
+    state.comunidad = document.getElementById("com-cero").checked ? "cero" : "viva";
+    state.arriba = fUp.value; state.cliente = fCli.value.trim(); state.kickoff = fKick.value; state.objetivo = fObj.value.trim();
+    save(); render();
+    if (grid.animate && !reduce.matches) grid.animate([{opacity:.3},{opacity:1}], {duration:280, easing:"ease-out"});
+  });
+  document.getElementById("p-clear").addEventListener("click", function(){
+    state.cliente = CONFIG.cliente; state.kickoff = CONFIG.kickoff; state.objetivo = CONFIG.objetivo; save(); syncInputs(); render();
+  });
+
+  function start(){ syncInputs(); render(); }
+  if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
+})();
+</script>
