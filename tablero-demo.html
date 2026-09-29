@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tu tablero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Chivo+Mono:wght@400..600&display=swap">
+<style>
+  /* Mismos tokens que llamada-unica.html: las dos pantallas van iguales. Claro por defecto (pantalla compartida); oscuro solo si se elige. */
+  :root {
+    --bg: #EDF1F0; --surface: #FFFFFF; --panel: #F5F7F6; --ink: #0F1F1E; --muted: #566A69;
+    --line: #D3DCDA; --line-strong: #AFBEBB;
+    --accent: #5B3FC2; --on-accent: #FFFFFF; --accent-soft: #EDE8FB; --accent-ink: #3E2A8F;
+    --ok: #0B7A70; --ok-soft: #DCEFEC; --warn: #B3590B; --warn-soft: #F8E9D6;
+    --shadow: 0 1px 2px rgba(15,31,30,0.05), 0 8px 24px rgba(15,31,30,0.06);
+    --f-ui: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "Chivo Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    /* marcas de los gráficos: validadas con el script de paleta del skill dataviz sobre #FFFFFF */
+    --c-us: #5B3FC2;      /* lo cobrado con nosotros, el pase */
+    --c-in: #00A08C;      /* entra, se recupera */
+    --c-out: #B3590B;     /* se va, se pierde */
+    --c-before: #7F8F8D;  /* antes de arrancar: sin énfasis */
+    --grid: #E3E9E8; --axis: #C4CFCD;
+    --f1: #B9A6F5; --f2: #9A80E6; --f3: #7B5DD6; --f4: #5B3FC2; --f5: #3E2A8F;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B1514; --surface: #12211F; --panel: #172826; --ink: #E4EEEC; --muted: #8FA5A2;
+    --line: #24403B; --line-strong: #3A5A54;
+    --accent: #A98BFF; --on-accent: #120B2A; --accent-soft: #241B44; --accent-ink: #C9B8FF;
+    --ok: #35C4B1; --ok-soft: #123532; --warn: #F0A43C; --warn-soft: #3A2A10;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+    /* validadas sobre #12211F */
+    --c-us: #7E5CDF; --c-in: #17948A; --c-out: #C97C2E; --c-before: #5C706D;
+    --grid: #1F3330; --axis: #2E4743;
+    --f1: #5A44A8; --f2: #7A62CC; --f3: #9A80E6; --f4: #B9A6F5; --f5: #D6CBFF;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.5; margin: 0; padding: 0 20px 8rem; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  .mono { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .wide { font-stretch: 118%; font-weight: 800; letter-spacing: -0.01em; }
+  input, select, button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  p { margin: 0; }
+
+  /* ---------- cabecera ---------- */
+  .top { padding: 34px 0 18px; display: grid; gap: 14px; }
+  .top h1 { margin: 4px 0 0; font-size: clamp(1.7rem, 3.6vw, 2.5rem); line-height: 1.02; text-wrap: balance; max-width: 22ch; }
+  .top h1 span { color: var(--accent); }
+  .lede { color: var(--muted); max-width: 62ch; margin-top: 10px; }
+  .badge { display: inline-block; border: 1px solid var(--warn); color: var(--warn); border-radius: 999px; padding: 1px 9px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 2px; margin-left: 6px; }
+  .meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field input, .field select { border: 0; border-bottom: 1.5px solid var(--line-strong); background: transparent; padding: 5px 0; border-radius: 0; font-size: 15.5px; width: 100%; }
+  .field select { width: auto; padding-right: 4px; } option { color: #0F1F1E; }
+  .field input:focus-visible, .field select:focus-visible { outline: none; border-bottom-color: var(--accent); }
+  .field .sub { font-size: 12px; color: var(--muted); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+  .stepbtn { text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 10px; padding: 10px 14px; cursor: pointer; display: grid; gap: 2px; }
+  .stepbtn b { font-weight: 650; color: inherit; font-size: 15px; }
+  .stepbtn[aria-current="step"] { border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+  .stepbtn[aria-current="step"] .mono { color: var(--accent); }
+  .screen[hidden] { display: none; }
+
+  /* ---------- filtro: el momento ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .seg button { border: 0; background: transparent; padding: 8px 14px; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--muted); border-right: 1px solid var(--line); }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink); }
+  .seg button small { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: inherit; opacity: 0.8; }
+  .filters .hint { color: var(--muted); font-size: 0.9rem; max-width: 48ch; }
+
+  /* ---------- bloques ---------- */
+  .block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-top: 14px; padding: 20px 24px 22px; min-width: 0; }
+  .block.lift { box-shadow: var(--shadow); }
+  .block.panel { background: var(--panel); }
+  h2 { margin: 0 0 12px; font-size: 12px; font-family: var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  h2.strong { color: var(--ink); }
+  .head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; }
+  .head h2 { margin: 0; }
+  .row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .row2 > .block { margin-top: 14px; }
+  .empty { color: var(--muted); }
+  .empty b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- cifra principal y fichas ---------- */
+  .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px 32px; align-items: end; }
+  .hero .big { font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; margin-top: 6px; }
+  .hero .delta { margin-top: 8px; font-size: 1rem; }
+  .hero .side { color: var(--muted); border-left: 1px solid var(--line); padding-left: 24px; }
+  .hero .side b { color: var(--ink); font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px; min-width: 0; }
+  .tile .val { font-size: 1.75rem; font-weight: 650; line-height: 1.1; margin-top: 6px; letter-spacing: -0.01em; }
+  .tile .val.small { font-size: 1.1rem; color: var(--muted); font-weight: 500; margin-top: 10px; }
+  .tile .delta { font-size: 0.82rem; margin-top: 6px; color: var(--muted); }
+  .delta.up { color: var(--ok); } .delta.down { color: var(--warn); }
+  .delta .g { font-family: var(--f-mono); margin-right: 2px; }
+
+  /* ---------- gráficos ---------- */
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart .grid { stroke: var(--grid); stroke-width: 1; }
+  .chart .axis { stroke: var(--axis); stroke-width: 1; }
+  .chart .ref { stroke: var(--ink); stroke-width: 1.5; }
+  .chart .tick { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
+  .chart .dlabel { font-family: var(--f-ui); font-size: 12px; font-weight: 650; fill: var(--ink); font-variant-numeric: tabular-nums; }
+  .chart .reflabel { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink); }
+  .chart .refval { font-family: var(--f-ui); font-size: 12px; font-weight: 600; fill: var(--ink); }
+  .chart .note { font-family: var(--f-ui); font-size: 12px; fill: var(--muted); }
+  .chart .hit { fill: transparent; cursor: default; outline: none; }
+  .chart .hit:focus-visible { fill: var(--accent-soft); fill-opacity: 0.5; }
+  .chart .cat.on path { filter: brightness(1.12); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--muted); }
+  .legend .key { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+  details.tbl { margin-top: 10px; }
+  details.tbl summary { cursor: pointer; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); list-style: none; }
+  details.tbl summary::-webkit-details-marker { display: none; }
+  details.tbl summary::before { content: "+ "; }
+  details.tbl[open] summary::before { content: "· "; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.88rem; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  th { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  th:first-child, td:first-child { text-align: left; }
+  td.mut { color: var(--muted); }
+  tr.total td { font-weight: 650; border-bottom: 0; border-top: 1.5px solid var(--line-strong); }
+  tr.strong td { font-weight: 650; }
+
+  /* embudo del pase */
+  .funnel { display: grid; gap: 8px; margin-top: 6px; }
+  .frow { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) 3.5rem; gap: 12px; align-items: center; font-size: 0.9rem; }
+  .frow .fl { color: var(--muted); }
+  .ftrack { height: 18px; position: relative; }
+  .fbar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+  .frow .fv { font-weight: 650; font-variant-numeric: tabular-nums; }
+  .frow .fv.mut { color: var(--muted); font-weight: 500; }
+
+  /* movimientos y semana */
+  .moves { display: grid; gap: 0; margin-top: 2px; }
+  .mv { display: grid; grid-template-columns: 11rem minmax(0, 1fr) 5.5rem; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; align-items: baseline; }
+  .mv:last-child { border-bottom: 0; }
+  .mv .tag { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
+  .mv .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+  .mv .who b { font-weight: 600; } .mv .who span { color: var(--muted); }
+  .mv .when { text-align: right; color: var(--muted); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; }
+  .lines { display: grid; gap: 8px; margin-top: 2px; }
+  .lines p { padding-left: 14px; border-left: 2px solid var(--accent); }
+  .hitos { display: grid; gap: 6px; margin-top: 14px; color: var(--muted); font-size: 0.92rem; }
+  .hitos b { color: var(--ink); font-weight: 600; }
+
+  /* fuentes */
+  .sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 22px; margin-top: 6px; }
+  .src b { display: block; font-weight: 650; margin-bottom: 3px; }
+  .src p { color: var(--muted); font-size: 0.92rem; }
+  .fine { color: var(--muted); font-size: 0.9rem; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
+  details.how summary { cursor: pointer; font-weight: 650; list-style: none; }
+  details.how summary::-webkit-details-marker { display: none; }
+  details.how summary::before { content: "+ "; color: var(--muted); }
+  details.how[open] summary::before { content: "· "; }
+  details.how ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.92rem; display: grid; gap: 4px; }
+
+  /* reporte y liquidación */
+  .rep h3 { margin: 18px 0 8px; font-size: 1rem; font-weight: 650; }
+  .rep ol { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+  .rep ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+  .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 12rem)); gap: 12px 22px; margin-top: 8px; }
+  .liq td.amt { font-weight: 600; }
+  .liq td.neg { color: var(--warn); }
+
+  /* ---------- barra ---------- */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 24px rgba(15,31,30,0.08); padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+  .bar .inner { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 10px 18px; align-items: center; }
+  .bar .hint { color: var(--muted); font-size: 0.85rem; }
+  .util { border: 1px solid var(--line-strong); background: transparent; color: var(--ink); font-size: 0.8rem; font-weight: 600; padding: 9px 14px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+  .util:hover { border-color: var(--accent); }
+  .more { position: relative; display: flex; gap: 8px; align-items: center; }
+  .more details { position: relative; }
+  .more summary { list-style: none; cursor: pointer; border: 1px solid var(--line-strong); border-radius: 9px; padding: 9px 12px; font-size: 0.8rem; font-weight: 600; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more .menu { position: absolute; right: 0; bottom: calc(100% + 8px); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); display: grid; min-width: 14rem; padding: 6px; }
+  .more .menu button { text-align: left; border: 0; background: transparent; padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 0.9rem; }
+  .more .menu button:hover { background: var(--panel); }
+
+  /* ---------- tooltip ---------- */
+  .tip { position: fixed; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); padding: 8px 11px; font-size: 0.85rem; pointer-events: none; min-width: 10rem; }
+  .tip[hidden] { display: none; }
+  .tip .t { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .tip .r { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; }
+  .tip .k { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
+  .tip .r span { color: var(--muted); }
+  .tip .r b { font-weight: 650; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 760px) {
+    body { padding: 0 16px 10rem; }
+    .meta { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .row2, .sources, .hero { grid-template-columns: 1fr; }
+    .hero .side { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .mv { grid-template-columns: 1fr; gap: 2px; }
+    .mv .when { text-align: left; }
+    .frow { grid-template-columns: 7rem minmax(0, 1fr) 3rem; }
+    .terms { grid-template-columns: 1fr; }
+    .bar .inner { grid-template-columns: 1fr; }
+    .bar .hint { display: none; }
+  }
+</style>
+<script>(function(){var t="light";try{var m=(location.hash||"").match(/theme=(light|dark)/);if(m)t=m[1];else if(localStorage.getItem("llamada-unica-theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="mono">Lane A · Tablero compartido <span class="badge">Datos de ejemplo</span></div>
+      <h1 class="wide">Tu tablero, <span id="h-name">todos los días</span></h1>
+      <p class="lede">Lo mismo que vemos nosotros, cuando quieras. Quién entra, quién se va, cobros, tarjetas, la lista del pase y lo cobrado contra tu línea base.</p>
+    </div>
+    <div class="meta">
+      <label class="field"><span class="mono">Comunidad</span><input data-k="com" type="text" autocomplete="off" placeholder="cómo se llama"></label>
+      <label class="field"><span class="mono">Pagan hoy</span><input data-k="n.miembros" type="number" min="0" inputmode="numeric" placeholder="miembros"></label>
+      <label class="field"><span class="mono">Precio por mes</span><input data-k="n.precio" type="number" min="0" inputmode="decimal" placeholder="por miembro"></label>
+      <label class="field"><span class="mono">Moneda</span><select data-k="cur"><option value="$">USD $</option><option value="€">EUR €</option></select></label>
+      <label class="field"><span class="mono">Se fueron, por mes</span><input data-k="n.bajas" type="number" min="0" inputmode="numeric" placeholder="bajas"></label>
+      <label class="field"><span class="mono">Pagos caídos, por mes</span><input data-k="n.caidos" type="number" min="0" inputmode="numeric" placeholder="tarjetas"></label>
+      <label class="field"><span class="mono">Lo de arriba</span><input data-k="n.escalon" type="text" autocomplete="off" placeholder="escalón o programa"></label>
+      <label class="field"><span class="mono">Precio de arriba</span><input data-k="n.ticket" type="number" min="0" inputmode="decimal" placeholder="por persona"></label>
+    </div>
+    <nav class="steps" aria-label="Pantallas">
+      <button class="stepbtn" data-tab="1" type="button"><span class="mono">01 · todos los días</span><b>El tablero</b></button>
+      <button class="stepbtn" data-tab="2" type="button"><span class="mono">02 · día 5 de cada mes</span><b>El reporte del mes</b></button>
+      <button class="stepbtn" data-tab="3" type="button"><span class="mono">03 · día 10 de cada mes</span><b>La liquidación</b></button>
+    </nav>
+  </header>
+
+  <div class="filters">
+    <div class="seg" id="seg" role="group" aria-label="Momento"></div>
+    <p class="hint" id="hint"></p>
+  </div>
+
+  <!-- ================= 1 · El tablero ================= -->
+  <div class="screen" id="s1">
+    <section class="block lift hero" id="hero"></section>
+    <div class="kpis" id="kpis"></div>
+
+    <div class="row2">
+      <section class="block chart">
+        <div class="head"><h2 class="strong">Cobrado por mes, contra tu línea base</h2><div class="legend" id="lg-cobrado"></div></div>
+        <div id="ch-cobrado"></div>
+        <details class="tbl"><summary>Ver como tabla</summary><div id="tb-cobrado"></div></details>
+      </section>
+      <section class="block chart">
+        <div class="head"><h2 class="strong">Quién entra, quién se va</h2><div class="legend" id="lg-flujo"></div></div>
+        <div id="ch-flujo"></div>
+        <details class="tbl"><summary>Ver como tabla</summary><div id="tb-flujo"></div></details>
+      </section>
+    </div>
+
+    <div class="row2">
+      <section class="block chart">
+        <div class="head"><h2 class="strong">Tarjetas: caídas, recuperadas, perdidas</h2><div class="legend" id="lg-tarjetas"></div></div>
+        <div id="ch-tarjetas"></div>
+        <p class="sub" id="sub-tarjetas"></p>
+        <details class="tbl"><summary>Ver como tabla</summary><div id="tb-tarjetas"></div></details>
+      </section>
+      <section class="block">
+        <div class="head"><h2 class="strong">El pase a lo de arriba</h2><span class="mono" id="pase-mes"></span></div>
+        <div id="ch-pase"></div>
+        <p class="sub" id="sub-pase"></p>
+      </section>
+    </div>
+
+    <div class="row2">
+      <section class="block">
+        <h2 class="strong">Movimientos recientes</h2>
+        <div id="moves"></div>
+      </section>
+      <section class="block">
+        <h2 class="strong">Esta semana, en tres líneas</h2>
+        <div class="lines" id="week"></div>
+        <div class="hitos" id="hitos"></div>
+      </section>
+    </div>
+
+    <section class="block panel">
+      <h2>De dónde sale cada número</h2>
+      <div class="sources">
+        <div class="src"><b>Tu plataforma</b><p>Miembros activos, quién entra, quién se va y cuándo dejó de entrar. La leemos los dos.</p></div>
+        <div class="src"><b>Tu procesador de pagos</b><p>Lo cobrado, las tarjetas que caen y las que se recuperan. Acceso de lectura mutuo, todo el contrato.</p></div>
+        <div class="src"><b>La lista del pase</b><p>Señales, conversaciones, calificados y cerrados de cada camada. La llevamos nosotros, adentro de tu comunidad.</p></div>
+      </div>
+      <p class="fine">Tu comunidad, tus miembros, tus datos y tu contenido son tuyos y se exportan cuando quieras. El tablero es parte de los sistemas con los que operamos: trabaja para ti mientras dure el servicio.</p>
+    </section>
+
+    <details class="block how" id="how">
+      <summary>Cómo se calculan estos datos de ejemplo</summary>
+      <ul id="how-list"></ul>
+    </details>
+  </div>
+
+  <!-- ================= 2 · Reporte del día 5 ================= -->
+  <div class="screen" id="s2" hidden>
+    <section class="block lift rep" id="rep"></section>
+  </div>
+
+  <!-- ================= 3 · Liquidación del día 10 ================= -->
+  <div class="screen" id="s3" hidden>
+    <section class="block">
+      <h2>Términos del acuerdo</h2>
+      <p class="empty">Se completan en la llamada. Vacíos, la liquidación muestra la estructura y deja la cifra para después.</p>
+      <div class="terms">
+        <label class="field"><span class="mono">Fijo mensual</span><input data-k="fee.fijo" type="number" min="0" inputmode="decimal" placeholder="a definir"></label>
+        <label class="field"><span class="mono">Variable, % del crecimiento</span><input data-k="fee.pct" type="number" min="0" max="100" inputmode="decimal" placeholder="a definir"></label>
+      </div>
+    </section>
+    <section class="block lift liq" id="liq"></section>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="inner">
+    <p class="hint">Datos de ejemplo, generados con los números de arriba. En el servicio, cada cifra sale de tu plataforma y tu procesador de pagos.</p>
+    <div class="more">
+      <button class="util" id="btn-import" type="button">Traer los números de la llamada</button>
+      <button class="util" id="btn-theme" type="button" aria-label="Cambiar tema">Oscuro</button>
+      <details id="more">
+        <summary aria-label="Más">···</summary>
+        <div class="menu">
+          <button type="button" id="btn-reset">Borrar los números cargados</button>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script>
+/* ---------- estado ---------- */
+const KEY = "laneA.tablero.v1", THEME_KEY = "llamada-unica-theme", LU_KEY = "llamada-unica-v3";
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const DEFAULTS = { tab: 1, mes: 0, com: "", cur: "$", n: { miembros: "", precio: "", bajas: "", caidos: "", escalon: "", ticket: "", base: "" }, fee: { fijo: "", pct: "" } };
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+  for (const k in saved) { if (saved[k] && typeof saved[k] === "object") state[k] = Object.assign({}, state[k], saved[k]); else state[k] = saved[k]; }
+} catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+function getK(p) { return p.split(".").reduce((o, k) => (o == null ? o : o[k]), state); }
+function setK(p, v) { const a = p.split("."); let o = state; while (a.length > 1) o = o[a.shift()]; o[a[0]] = v; }
+const numOf = v => { const x = parseFloat(v); return isFinite(x) && x > 0 ? x : 0; };
+const num = k => numOf(state.n[k]);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = n => state.cur + Math.round(n).toLocaleString("es-AR");
+const cnt = n => Math.round(n).toLocaleString("es-AR");
+const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+const pl = (n, s, p) => cnt(n) + " " + (Math.round(n) === 1 ? s : p);
+const MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const MESL = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const mesIdx = off => (new Date().getMonth() + off + 1200) % 12;
+const mes = off => MES[mesIdx(off)];
+const mesL = off => MESL[mesIdx(off)];
+
+/* Los números de la llamada única viven en este mismo navegador (mismo origen): se traen solos la primera vez y con el botón. */
+function importFromCall() {
+  try {
+    const lu = JSON.parse(localStorage.getItem(LU_KEY) || "null"); if (!lu) return false;
+    const n = lu.n || {}, o = lu.o || {};
+    if (lu.com || lu.name) state.com = lu.com || lu.name;
+    if (lu.cur) state.cur = lu.cur;
+    ["miembros", "precio", "bajas", "caidos", "ticket"].forEach(k => { if (numOf(n[k])) state.n[k] = n[k]; });
+    if (numOf(o.base)) state.n.base = o.base;
+    const pick = String(o.pick || "");
+    if (pick === "1") { state.fee.fijo = o.f1; state.fee.pct = o.p1; } else if (pick === "2") { state.fee.fijo = o.f2; state.fee.pct = o.p2; }
+    save(); return true;
+  } catch (e) { return false; }
+}
+if (!num("miembros") && !num("precio")) importFromCall();
+
+/* ---------- el modelo de ejemplo ---------- */
+const EX = { miembros: 180, precio: 39, bajas: 12, caidos: 9, escalon: "Mentoría grupal", ticket: 250 };
+function inputs() {
+  const own = num("miembros") > 0 && num("precio") > 0;
+  const M0 = own ? num("miembros") : EX.miembros, P = own ? num("precio") : EX.precio;
+  const assumedB = own && !num("bajas"), assumedC = own && !num("caidos");
+  const B0 = own ? (num("bajas") || Math.max(1, Math.round(M0 * 0.06))) : EX.bajas;
+  const C0 = own ? (num("caidos") || Math.max(1, Math.round(M0 * 0.05))) : EX.caidos;
+  const T = own ? num("ticket") : EX.ticket;
+  const escalon = own ? (state.n.escalon || "").trim() : EX.escalon;
+  const base = own ? (num("base") || M0 * P) : EX.miembros * EX.precio;
+  return { own, M0, P, B0, C0, T, escalon, base, assumedB, assumedC };
+}
+function build(inp) {
+  const { M0, P, B0, C0, T, base } = inp;
+  const A = B0 + Math.round(0.7 * C0); /* su embudo, sin tocar: entran tantos como se iban */
+  const rows = [];
+  [0.97, 1.02, 1.01].forEach((f, i) => rows.push({ m: i - 3, label: mes(i - 3), pre: true, M: M0, altas: A, bajas: B0, caidos: C0, recup: null, perd: null, cobrado: Math.round(base * f), lista: null, contact: null, calif: null, invit: null, cerr: null, esc: 0 }));
+  let M = M0;
+  for (let m = 1; m <= 3; m++) {
+    const bajas = Math.max(0, Math.round(B0 * (1 - 0.15 * m)));
+    const recup = Math.round(C0 * 0.6), perd = C0 - recup;
+    M = M + A - bajas - perd;
+    const lista = Math.round(M * (m === 1 ? 0.06 : 0.10)), contact = Math.round(lista * 0.8), calif = Math.round(contact * 0.5), invit = calif;
+    const cerr = m >= 2 ? Math.max(1, Math.round(calif * 0.3)) : 0;
+    const escI = T ? cerr * T : 0;
+    rows.push({ m, label: mes(m), pre: false, M, altas: A, bajas, caidos: C0, recup, perd, cobrado: M * P + escI, lista, contact, calif, invit, cerr, esc: escI });
+  }
+  return rows;
+}
+let inp, rows, cur, prev;
+function compute() {
+  inp = inputs(); rows = build(inp);
+  const m = state.mes;
+  cur = m === 0 ? { m: 0, label: mes(0), pre: true, M: inp.M0, altas: rows[2].altas, bajas: inp.B0, caidos: inp.C0, recup: null, perd: null, cobrado: inp.base, lista: null, contact: null, calif: null, invit: null, cerr: null, esc: 0 } : rows.find(r => r.m === m);
+  prev = m <= 1 ? { M: inp.M0, bajas: inp.B0, cobrado: inp.base, recup: null, cerr: null, lista: null } : rows.find(r => r.m === m - 1);
+}
+
+/* ---------- utilidades de dibujo ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+function ticksFor(max, n) {
+  if (max <= 0) return [0, 1];
+  const raw = max / n, pow = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / pow;
+  const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * pow;
+  const out = []; for (let v = 0; v <= max + 1e-9; v += step) out.push(+v.toFixed(6));
+  if (out[out.length - 1] < max) out.push(+(out[out.length - 1] + step).toFixed(6));
+  return out;
+}
+function barUp(x, top, w, h, r) { if (h <= 0) return ""; r = Math.min(r, w / 2, h); const yb = top + h; return `M${x} ${yb}V${top + r}Q${x} ${top} ${x + r} ${top}H${x + w - r}Q${x + w} ${top} ${x + w} ${top + r}V${yb}Z`; }
+function barDown(x, y0, w, h, r) { if (h <= 0) return ""; r = Math.min(r, w / 2, h); const yb = y0 + h; return `M${x} ${y0}H${x + w}V${yb - r}Q${x + w} ${yb} ${x + w - r} ${yb}H${x + r}Q${x} ${yb} ${x} ${yb - r}Z`; }
+const sum = a => (a || []).reduce((s, x) => s + (x.v || 0), 0);
+const axisFmt = (v, money) => money ? (v >= 1000 ? state.cur + (v / 1000).toLocaleString("es-AR", { maximumFractionDigits: 1 }) + "k" : fmt(v)) : cnt(v);
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+/* tooltip: una sola, con todas las series de esa columna; también con el teclado */
+const tip = $("#tip");
+function showTip(title, rowsT, x, y) {
+  tip.innerHTML = "";
+  const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t);
+  rowsT.forEach(r => {
+    const d = document.createElement("div"); d.className = "r";
+    const k = document.createElement("i"); k.className = "k"; k.style.background = r.color || "transparent"; d.appendChild(k);
+    const s = document.createElement("span"); s.textContent = r.label; d.appendChild(s);
+    const b = document.createElement("b"); b.textContent = r.value; d.appendChild(b);
+    tip.appendChild(d);
+  });
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let left = x + 14, top = y - h - 10;
+  if (left + w > window.innerWidth - 8) left = x - w - 14;
+  if (top < 8) top = y + 16;
+  tip.style.left = left + "px"; tip.style.top = top + "px";
+}
+function hideTip() { tip.hidden = true; }
+
+/* columnas: una serie, apiladas, o espejadas (arriba entra, abajo se va) */
+function drawColumns(host, spec) {
+  host.innerHTML = "";
+  const W = Math.max(280, host.clientWidth || 600);
+  const hasDown = spec.cats.some(c => c.down && c.down.length);
+  const mL = 52, mR = spec.ref ? 84 : 14, mT = 26, mB = 30;
+  const plotH = hasDown ? 220 : 190, H = plotH + mT + mB;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img", "aria-label": spec.aria || "" }, host);
+  const upMax = Math.max(spec.ref ? spec.ref.v : 0, spec.minMax || 0, ...spec.cats.map(c => sum(c.up)), 1);
+  const downMax = hasDown ? Math.max(...spec.cats.map(c => sum(c.down)), 1) : 0;
+  /* espejado: el mismo paso arriba y abajo, para que las dos mitades se lean con la misma escala */
+  let tUp, tDown = [0];
+  if (hasDown) {
+    const step = (t => t[1] - t[0])(ticksFor(Math.max(upMax, downMax), 2));
+    const mult = max => { const o = [0]; for (let v = step; v < max + step; v += step) o.push(+v.toFixed(6)); return o; };
+    tUp = mult(upMax); tDown = mult(downMax);
+  } else tUp = ticksFor(upMax, 3);
+  const maxUp = tUp[tUp.length - 1], maxDown = tDown[tDown.length - 1];
+  const plotW = W - mL - mR, span = (maxUp + maxDown) || 1, k = plotH / span;
+  const y0 = mT + maxUp * k, yOf = v => y0 - v * k;
+  tUp.forEach(v => { const y = yOf(v); el("line", { x1: mL, x2: W - mR, y1: y, y2: y, class: v === 0 ? "axis" : "grid" }, svg); el("text", { x: mL - 8, y: y + 4, class: "tick", "text-anchor": "end" }, svg, axisFmt(v, spec.money)); });
+  if (hasDown) tDown.slice(1).forEach(v => { const y = y0 + v * k; el("line", { x1: mL, x2: W - mR, y1: y, y2: y, class: "grid" }, svg); el("text", { x: mL - 8, y: y + 4, class: "tick", "text-anchor": "end" }, svg, axisFmt(v, spec.money)); });
+  const n = spec.cats.length, slot = plotW / n, bw = Math.min(24, Math.max(10, slot * 0.5));
+  const groups = [];
+  spec.cats.forEach((c, i) => {
+    const g = el("g", { class: "cat" }, svg); groups.push(g);
+    const x = mL + slot * i + (slot - bw) / 2;
+    const ups = (c.up || []).filter(s => s.v > 0), downs = (c.down || []).filter(s => s.v > 0);
+    let acc = 0;
+    ups.forEach((s, j) => {
+      const bottom = yOf(acc) - (j > 0 ? 2 : 0), top = yOf(acc + s.v), hh = bottom - top;
+      if (hh > 0.5) el("path", { d: j === ups.length - 1 ? barUp(x, top, bw, hh, 4) : `M${x} ${bottom}V${top}H${x + bw}V${bottom}Z`, fill: cssVar(spec.colors[s.key]) }, g);
+      acc += s.v;
+    });
+    acc = 0;
+    downs.forEach((s, j) => {
+      const top = y0 + acc * k + (j > 0 ? 2 : 0), bottom = y0 + (acc + s.v) * k, hh = bottom - top;
+      if (hh > 0.5) el("path", { d: j === downs.length - 1 ? barDown(x, top, bw, hh, 4) : `M${x} ${top}H${x + bw}V${bottom}H${x}Z`, fill: cssVar(spec.colors[s.key]) }, g);
+      acc += s.v;
+    });
+    el("text", { x: mL + slot * i + slot / 2, y: H - 8, class: "tick", "text-anchor": "middle" }, svg, c.label);
+    if (i === n - 1 && !spec.noLabel) {
+      const tu = sum(c.up); if (tu > 0) el("text", { x: x + bw / 2, y: yOf(tu) - 7, class: "dlabel", "text-anchor": "middle" }, svg, spec.money ? fmt(tu) : cnt(tu));
+      const td = sum(c.down); if (td > 0) el("text", { x: x + bw / 2, y: y0 + td * k + 15, class: "dlabel", "text-anchor": "middle" }, svg, cnt(td));
+    }
+  });
+  /* una sola nota centrada sobre las columnas sin dato, para que no choque en pantallas chicas */
+  const noted = spec.cats.map((c, i) => (c.note && !sum(c.up) && !sum(c.down)) ? i : -1).filter(i => i >= 0);
+  if (noted.length) { const a = noted[0], b = noted[noted.length - 1]; el("text", { x: mL + slot * (a + b + 1) / 2, y: y0 - 10, class: "note", "text-anchor": "middle" }, svg, spec.cats[a].note); }
+  if (spec.ref) {
+    const y = yOf(spec.ref.v);
+    el("line", { x1: mL, x2: W - mR + 4, y1: y, y2: y, class: "ref" }, svg);
+    el("text", { x: W - mR + 8, y: y - 2, class: "reflabel" }, svg, spec.ref.label);
+    el("text", { x: W - mR + 8, y: y + 12, class: "refval" }, svg, fmt(spec.ref.v));
+  }
+  spec.cats.forEach((c, i) => {
+    const rect = el("rect", { x: mL + slot * i, y: mT - 12, width: slot, height: plotH + 24, class: "hit", tabindex: 0, role: "img", "aria-label": c.label + ": " + (c.tip || []).map(r => r.label + " " + r.value).join(", ") }, svg);
+    const on = (x, y) => { groups[i].classList.add("on"); showTip(c.title || c.label, c.tip || [], x, y); };
+    const off = () => { groups[i].classList.remove("on"); hideTip(); };
+    rect.addEventListener("pointerenter", e => on(e.clientX, e.clientY));
+    rect.addEventListener("pointermove", e => on(e.clientX, e.clientY));
+    rect.addEventListener("pointerleave", off);
+    rect.addEventListener("focus", () => { const b = rect.getBoundingClientRect(); on(b.left + b.width / 2, b.top + 40); });
+    rect.addEventListener("blur", off);
+  });
+}
+function legend(host, keys) {
+  host.innerHTML = keys.map(k => `<span class="key"><i class="sw" style="background:${cssVar(k.color)}"></i>${esc(k.label)}</span>`).join("");
+}
+function tableOf(host, head, body) {
+  host.innerHTML = `<table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body.map(r => `<tr>${r.map((c, i) => `<td${c === "·" ? ' class="mut"' : ""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+/* ---------- render ---------- */
+function deltaHTML(now, before, opts) {
+  /* opts: {money, upGood, vs} */
+  if (before == null || now == null) return "";
+  const d = now - before; if (!d) return `<div class="delta">Igual que ${opts.vs}</div>`;
+  const good = opts.upGood ? d > 0 : d < 0;
+  const val = opts.money ? fmt(Math.abs(d)) : cnt(Math.abs(d));
+  return `<div class="delta ${good ? "up" : "down"}"><span class="g">${d > 0 ? "▲" : "▼"}</span>${val} ${opts.vs}</div>`;
+}
+function renderHeader() {
+  $("#h-name").textContent = state.com ? state.com : "todos los días";
+  $$("[data-k]").forEach(i => { const v = getK(i.dataset.k); if (document.activeElement !== i) i.value = v == null ? "" : v; });
+  $$(".stepbtn").forEach(b => { if (+b.dataset.tab === state.tab) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+  $$(".screen").forEach((s, i) => s.hidden = i + 1 !== state.tab);
+  const segs = [{ m: 0, t: "Día 0", s: "arranque · " + mes(0) }, { m: 1, t: "Mes 1", s: mes(1) }, { m: 2, t: "Mes 2", s: mes(2) }, { m: 3, t: "Mes 3", s: mes(3) }];
+  $("#seg").innerHTML = segs.map(s => `<button type="button" data-mes="${s.m}" aria-pressed="${state.mes === s.m}">${s.t}<small>${s.s}</small></button>`).join("");
+  $("#hint").textContent = inp.own
+    ? (state.mes === 0 ? "Así se ve el día del arranque, con tus números de hoy." : `Mes ${state.mes} de operación, con ejemplos armados a partir de tus números. No es una proyección.`)
+    : "Ejemplo con una comunidad de 180 miembros a $39. Cargá los tuyos arriba, o traelos de la llamada.";
+}
+function renderHero() {
+  const h = $("#hero");
+  if (state.mes === 0) {
+    h.innerHTML = `<div><div class="mono">Tu línea base</div><div class="big">${fmt(inp.base)}</div><div class="delta">Por mes, promedio de los 90 días previos${num("base") || !inp.own ? "" : " (hoy: " + cnt(inp.M0) + " miembros por " + fmt(inp.P) + ")"}</div></div>
+      <div class="side"><p>Se fija en el contrato y de ahí se mide el crecimiento: <b>lo que ya cobras no lo tocamos</b>. Hoy pagan <b>${cnt(inp.M0)}</b> a <b>${fmt(inp.P)}</b>${inp.T ? `, y arriba está <b>${esc(inp.escalon || "lo de arriba")}</b> a <b>${fmt(inp.T)}</b>` : ""}.</p><p style="margin-top:8px">Lo que hoy nadie mide: qué tarjetas caen, por qué se va cada baja, quién está listo para el pase.</p></div>`;
+    return;
+  }
+  const g = cur.cobrado - inp.base, up = g >= 0;
+  h.innerHTML = `<div><div class="mono">Cobrado en ${mesL(cur.m)}</div><div class="big">${fmt(cur.cobrado)}</div><div class="delta ${up ? "up" : "down"}"><span class="g">${up ? "▲" : "▼"}</span>${fmt(Math.abs(g))} ${up ? "sobre" : "bajo"} la línea base (${fmt(inp.base)}, ${up ? "+" : "-"}${pct(Math.abs(g), inp.base)}%)</div></div>
+    <div class="side"><p><b>${fmt(cur.M * inp.P)}</b> de la comunidad (${cnt(cur.M)} activos por ${fmt(inp.P)})${cur.esc ? ` y <b>${fmt(cur.esc)}</b> de ${esc(inp.escalon || "lo de arriba")} (${pl(cur.cerr, "cerrado", "cerrados")})` : ""}.</p><p style="margin-top:8px">El crecimiento es lo que excede la línea base; sobre eso corre nuestro variable. Se liquida el día 10, sobre lo cobrado.</p></div>`;
+}
+function tile(label, val, extra) { return `<div class="tile"><div class="mono">${label}</div><div class="val${val === null ? " small" : ""}">${val === null ? "sin medir" : val}</div>${extra || ""}</div>`; }
+function renderKPIs() {
+  const k = $("#kpis"), m = state.mes;
+  if (m === 0) {
+    k.innerHTML = tile("Activos", cnt(cur.M), `<div class="delta">Pagan hoy</div>`)
+      + tile("MRR", fmt(cur.M * inp.P), `<div class="delta">Recurrente por mes</div>`)
+      + tile("Bajas del mes", cnt(inp.B0), `<div class="delta">${inp.assumedB ? "Supuesto: 6% de los miembros" : "Lo que se va hoy"}</div>`)
+      + tile("Tarjetas recuperadas", null, `<div class="delta">${cnt(inp.C0)} caen por mes${inp.assumedC ? " (supuesto)" : ""}, nadie las sigue</div>`)
+      + tile("El pase", null, `<div class="delta">Sin lista ni señales</div>`);
+    return;
+  }
+  k.innerHTML = tile("Activos", cnt(cur.M), deltaHTML(cur.M, prev.M, { upGood: true, vs: m === 1 ? "desde el día 0" : "que en " + mes(m - 1) }))
+    + tile("MRR", fmt(cur.M * inp.P), deltaHTML(cur.M * inp.P, prev.M * inp.P, { money: true, upGood: true, vs: m === 1 ? "desde el día 0" : "que en " + mes(m - 1) }))
+    + tile("Bajas del mes", cnt(cur.bajas), deltaHTML(cur.bajas, prev.bajas, { upGood: false, vs: m === 1 ? "que al arranque" : "que en " + mes(m - 1) }))
+    + tile("Tarjetas recuperadas", cnt(cur.recup), `<div class="delta up">${fmt(cur.recup * inp.P)} que se quedan · ${pl(cur.perd, "perdida", "perdidas")}</div>`)
+    + tile("El pase", cur.m >= 2 ? pl(cur.cerr, "cerrado", "cerrados") : cnt(cur.lista) + " en lista", `<div class="delta">${cur.m >= 2 ? cnt(cur.lista) + " en lista, " + pl(cur.calif, "calificado", "calificados") : "Primera camada en " + mes(2)}</div>`);
+}
+function renderCharts() {
+  const shown = rows.filter(r => r.pre || r.m <= state.mes);
+  /* 1 · cobrado contra la línea base */
+  drawColumns($("#ch-cobrado"), {
+    money: true, ref: { v: inp.base, label: "Línea base" }, colors: { antes: "--c-before", con: "--c-us" }, aria: "Cobrado por mes contra la línea base",
+    cats: shown.map(r => ({ label: r.label, up: [{ key: r.pre ? "antes" : "con", v: r.cobrado }], title: mesL(r.m) + (r.pre ? " · antes" : " · mes " + r.m), tip: [{ label: "Cobrado", value: fmt(r.cobrado), color: cssVar(r.pre ? "--c-before" : "--c-us") }, { label: "Línea base", value: fmt(inp.base) }, { label: r.cobrado >= inp.base ? "Crecimiento" : "Por debajo", value: fmt(Math.abs(r.cobrado - inp.base)) }] }))
+  });
+  legend($("#lg-cobrado"), [{ label: "Antes de arrancar", color: "--c-before" }, { label: "Con Lane A", color: "--c-us" }]);
+  tableOf($("#tb-cobrado"), ["Mes", ...shown.map(r => r.label)], [["Cobrado", ...shown.map(r => fmt(r.cobrado))], ["Línea base", ...shown.map(() => fmt(inp.base))], ["Diferencia", ...shown.map(r => (r.cobrado >= inp.base ? "+" : "-") + fmt(Math.abs(r.cobrado - inp.base)))]]);
+  /* 2 · entra / se va */
+  drawColumns($("#ch-flujo"), {
+    colors: { altas: "--c-in", bajas: "--c-out" }, aria: "Quién entra y quién se va, por mes",
+    cats: shown.map(r => ({ label: r.label, up: [{ key: "altas", v: r.altas }], down: [{ key: "bajas", v: r.bajas }], title: mesL(r.m) + (r.pre ? " · antes" : " · mes " + r.m), tip: [{ label: "Entraron", value: cnt(r.altas), color: cssVar("--c-in") }, { label: "Se fueron", value: cnt(r.bajas), color: cssVar("--c-out") }, { label: "Neto", value: (r.altas - r.bajas >= 0 ? "+" : "") + cnt(r.altas - r.bajas) }] }))
+  });
+  legend($("#lg-flujo"), [{ label: "Entraron", color: "--c-in" }, { label: "Se fueron", color: "--c-out" }]);
+  tableOf($("#tb-flujo"), ["Mes", ...shown.map(r => r.label)], [["Entraron", ...shown.map(r => cnt(r.altas))], ["Se fueron", ...shown.map(r => cnt(r.bajas))], ["Neto", ...shown.map(r => (r.altas - r.bajas >= 0 ? "+" : "") + cnt(r.altas - r.bajas))]]);
+  /* 3 · tarjetas */
+  drawColumns($("#ch-tarjetas"), {
+    colors: { recup: "--c-in", perd: "--c-out" }, aria: "Tarjetas caídas, recuperadas y perdidas por mes", minMax: inp.C0,
+    cats: shown.map(r => ({ label: r.label, note: r.pre ? "antes no se medía" : "", up: r.pre ? [] : [{ key: "recup", v: r.recup }, { key: "perd", v: r.perd }], title: mesL(r.m) + (r.pre ? " · antes" : " · mes " + r.m), tip: r.pre ? [{ label: "Caídas", value: cnt(r.caidos) + " (estimado)" }, { label: "Recuperadas", value: "sin medir" }] : [{ label: "Caídas", value: cnt(r.caidos) }, { label: "Recuperadas", value: cnt(r.recup), color: cssVar("--c-in") }, { label: "Perdidas", value: cnt(r.perd), color: cssVar("--c-out") }] }))
+  });
+  legend($("#lg-tarjetas"), [{ label: "Recuperadas", color: "--c-in" }, { label: "Perdidas", color: "--c-out" }]);
+  $("#sub-tarjetas").textContent = state.mes === 0
+    ? `Hoy caen unas ${cnt(inp.C0)} tarjetas por mes${inp.assumedC ? " (supuesto: 5% de los miembros)" : ""} y nadie las sigue: cada una es ${fmt(inp.P)} por mes que se va sin que nadie se entere.`
+    : `De cada 10 tarjetas caídas se recuperan 6 con seguimiento en las primeras 72 horas. Este mes: ${fmt(cur.recup * inp.P)} que se quedan.`;
+  tableOf($("#tb-tarjetas"), ["Mes", ...shown.map(r => r.label)], [["Caídas", ...shown.map(r => cnt(r.caidos))], ["Recuperadas", ...shown.map(r => r.pre ? "·" : cnt(r.recup))], ["Perdidas", ...shown.map(r => r.pre ? "·" : cnt(r.perd))]]);
+  /* 4 · el pase */
+  const p = $("#ch-pase");
+  $("#pase-mes").textContent = state.mes === 0 ? "" : mesL(cur.m);
+  if (state.mes === 0) {
+    p.innerHTML = `<p class="empty">Todavía no hay lista. Desde la semana 3 cada miembro con señal (terminó un módulo, publicó un resultado, preguntó por lo de arriba) entra acá con su score, y se ve cuántos se contactan, califican y cierran en cada camada.</p>`;
+    $("#sub-pase").textContent = inp.T ? `Lo de arriba hoy: ${inp.escalon || "sin nombre"} a ${fmt(inp.T)}. La primera camada sale en ${mes(2)}.` : "Si todavía no hay nada arriba, la lista se arma igual: es la que después llena el escalón.";
+    return;
+  }
+  const stages = [["En lista", cur.lista, "--f1"], ["Contactados", cur.contact, "--f2"], ["Calificados", cur.calif, "--f3"], ["Invitados", cur.invit, "--f4"], ["Cerrados", cur.cerr, "--f5"]];
+  const max = Math.max(1, cur.lista);
+  p.innerHTML = `<div class="funnel">${stages.map(([l, v, c]) => `<div class="frow"><span class="fl">${l}</span><div class="ftrack"><div class="fbar" style="width:${Math.max(1, v / max * 100)}%;background:${cssVar(c)}"></div></div><span class="fv${v ? "" : " mut"}">${v ? cnt(v) : "0"}</span></div>`).join("")}</div>`;
+  $("#sub-pase").textContent = cur.m === 1
+    ? `La lista se arma desde la semana 3 y la primera camada de ${inp.escalon || "lo de arriba"} sale en ${mes(2)}: por eso este mes no hay cerrados.`
+    : (inp.T ? `${pl(cur.cerr, "cerrado", "cerrados")} en la camada de ${mesL(cur.m)}: ${fmt(cur.esc)}. Los que no cerraron siguen en la lista para la próxima.` : `${pl(cur.cerr, "listo", "listos")} para lo de arriba; falta definir qué se les vende y a qué precio.`);
+}
+const NAMES = ["Valentina R.", "Nicolás P.", "Sofía G.", "Tomás A.", "Lucía M.", "Federico L.", "Carla T.", "Julián R.", "Florencia P.", "Matías O.", "Camila D.", "Sebastián H."];
+function renderMoves() {
+  const h = $("#moves");
+  if (state.mes === 0) { h.innerHTML = `<p class="empty">Todavía no hay registro. Hoy nadie anota <b>quién entra, quién se va ni por qué</b>. Desde el día 1 cada movimiento queda acá con su fecha y su motivo.</p>`; return; }
+  const m = cur.m, N = i => NAMES[(m * 3 + i) % NAMES.length];
+  const items = [
+    { k: "in", t: "Entró", who: N(0), note: "terminó la prueba y pagó", d: 1 },
+    { k: "card", t: "Tarjeta recuperada", who: N(1), note: "segundo intento, después del mensaje por privado", d: 2 },
+    { k: "out", t: "Se fue", who: N(2), note: "motivo: tiempo. Queda en la lista de rescate a 30 días", d: 3 },
+    { k: "pase", t: "Pase", who: N(3), note: m >= 2 ? `calificado, invitado a la camada de ${mes(m + 1)}` : "dos señales en 14 días, entra en la lista del pase", d: 4 },
+    { k: "in", t: "Entró", who: N(4), note: "vino recomendado por otro miembro", d: 5 },
+    { k: "risk", t: "Inactivo 14 días", who: N(5), note: "mensaje de rescate enviado", d: 6 }
+  ];
+  const col = { in: "--c-in", card: "--c-in", out: "--c-out", pase: "--c-us", risk: "--c-before" };
+  h.innerHTML = `<div class="moves">${items.map(i => `<div class="mv"><span class="tag"><i class="dot" style="background:${cssVar(col[i.k])}"></i>${i.t}</span><span class="who"><b>${i.who}</b> <span>· ${esc(i.note)}</span></span><span class="when">hace ${i.d} ${i.d === 1 ? "día" : "días"}</span></div>`).join("")}</div>`;
+}
+function renderWeek() {
+  const w = $("#week"), hi = $("#hitos");
+  if (state.mes === 0) {
+    w.innerHTML = `<p>Cada semana, tres líneas por WhatsApp: qué pasó, qué sigue, qué necesitamos de ti.</p><p>Los primeros 30 días: onboarding, mensajes en tu voz, registro de cobros y bajas, la lista del pase.</p><p>Desde ahí, operación diaria, reporte el día 5 y liquidación el día 10.</p>`;
+    hi.innerHTML = `<div><b>Día 0</b> · kickoff de 60 minutos: accesos, calendario de 30 días, reglas de aprobación.</div><div><b>Semana 2</b> · por escrito cuánto hay para recuperar, con tus datos reales.</div><div><b>Día 30</b> · fin de la fase 1; arranca la operación mensual.</div>`;
+    return;
+  }
+  const wIn = Math.max(1, Math.round(cur.altas / 4)), wOut = Math.round(cur.bajas / 4), wCard = Math.max(1, Math.round(cur.recup / 4));
+  w.innerHTML = `<p>Esta semana entraron ${cnt(wIn)}, ${wOut ? "se fueron " + cnt(wOut) : "no se fue nadie"} y recuperamos ${cnt(wCard)} ${wCard === 1 ? "tarjeta" : "tarjetas"}.</p><p>La lista del pase tiene ${pl(cur.lista, "nombre", "nombres")}, ${pl(cur.calif, "calificado", "calificados")}.</p><p>${cur.m >= 2 ? `El jueves sale el mensaje de la camada de ${mes(cur.m + 1)}.` : `El jueves va el mensaje de rescate a los inactivos de 14 días.`}</p>`;
+  hi.innerHTML = `<div><b>Día 5 de ${mes(cur.m + 1)}</b> · reporte de ${mesL(cur.m)}, una página.</div><div><b>Día 10 de ${mes(cur.m + 1)}</b> · liquidación sobre lo cobrado en ${mesL(cur.m)}.</div><div><b>${cur.m % 2 === 1 ? "Camada de " + (inp.escalon || "lo de arriba") : "Ventana de la comunidad"} en ${mes(cur.m + 1)}</b> · D-14 fecha, cupo y precio por escrito.</div>`;
+}
+function renderHow() {
+  const li = [
+    `Antes de arrancar, los miembros están estables: entran tantos como se van (bajas más tarjetas perdidas). Lo cobrado de esos meses promedia la línea base.`,
+    `Bajas: bajan 15% por mes con el rescate de inactivos y de bajas. En el mes 3 quedan en poco más de la mitad de las de hoy.`,
+    `Tarjetas: de cada 10 pagos caídos se recuperan 6 con seguimiento. Antes, sin nadie detrás, se recuperaban 3 solos y 7 se perdían.`,
+    `El pase: la lista arranca con el 6% de los miembros y llega al 10% desde el mes 2. Se contacta al 80%, califica la mitad y cierra el 30% de los calificados desde la primera camada, en el mes 2.`,
+    `Cobrado: activos por precio, más lo de arriba cuando está definido. Línea base: la que cargaste o, si no, miembros por precio.`,
+    inp.assumedB || inp.assumedC ? `No cargaste ${inp.assumedB && inp.assumedC ? "bajas ni pagos caídos" : inp.assumedB ? "bajas" : "pagos caídos"}: se asumen ${inp.assumedB ? "6% de los miembros por mes en bajas" : ""}${inp.assumedB && inp.assumedC ? " y " : ""}${inp.assumedC ? "5% en pagos caídos" : ""}.` : "",
+    `Nada de esto es una proyección ni una promesa. En el servicio, cada número sale de tu plataforma y tu procesador de pagos, y lo leemos los dos.`
+  ].filter(Boolean);
+  $("#how-list").innerHTML = li.map(t => `<li>${t}</li>`).join("");
+}
+function renderReport() {
+  const r = $("#rep");
+  if (state.mes === 0) { r.innerHTML = `<h2>Reporte del mes · día 5</h2><p class="empty">El primer reporte sale el <b>día 5 de ${mesL(2)}</b>, sobre ${mesL(1)}. Una página: los números del mes con la línea base al lado, qué hicimos en cinco líneas, insumos entregados contra comprometidos, la ventana que viene y qué necesitamos de ti. Elegí un mes arriba para ver uno de ejemplo.</p>`; return; }
+  const m = cur.m, e = inp.escalon || "lo de arriba", vs = m === 1 ? "Día 0" : mesL(m - 1);
+  const numsRows = [
+    ["Activos", cnt(cur.M), cnt(prev.M), "·"],
+    ["Entraron", cnt(cur.altas), m === 1 ? "·" : cnt(prev.altas), "·"],
+    ["Se fueron", cnt(cur.bajas), cnt(prev.bajas), "·"],
+    ["Pagos caídos", cnt(cur.caidos), m === 1 ? cnt(inp.C0) : cnt(prev.caidos), "·"],
+    ["Tarjetas recuperadas", cnt(cur.recup), prev.recup == null ? "sin medir" : cnt(prev.recup), "·"],
+    ["En lista del pase", cnt(cur.lista), prev.lista == null ? "·" : cnt(prev.lista), "·"],
+    ["Cerrados del pase", cnt(cur.cerr), prev.cerr == null ? "·" : cnt(prev.cerr), "·"],
+    ["MRR", fmt(cur.M * inp.P), fmt(prev.M * inp.P), "·"]
+  ];
+  const did = {
+    1: [`Onboarding de 72 horas andando para cada alta: ${cnt(cur.altas)} entraron este mes, todos con bienvenida, primer paso y seguimiento a los días 7, 14 y 21.`, `Registro de cobros, bajas y tarjetas desde el día 1. Antes no se medía.`, `Primer triage de la lista del pase: ${pl(cur.lista, "nombre", "nombres")} con señal, ${pl(cur.calif, "calificado", "calificados")}.`, `Rescate: ${pl(cur.recup, "tarjeta recuperada", "tarjetas recuperadas")} de ${pl(cur.caidos, "caída", "caídas")}; mensajes a los inactivos de 14 días y a las ${cnt(cur.bajas)} bajas del mes.`, `Fecha, cupo y precio de la primera camada de ${e} fijados para ${mesL(2)}.`],
+    2: [`Primera camada de ${e}: ${pl(cur.cerr, "cerrado", "cerrados")} de ${pl(cur.invit, "invitado", "invitados")}${inp.T ? ", " + fmt(cur.esc) + " cobrados" : ""}.`, `Masterclass interna del D-7 armada contigo; abrió con casos de la comunidad.`, `${pl(cur.recup, "tarjeta recuperada", "tarjetas recuperadas")} de ${pl(cur.caidos, "caída", "caídas")}.`, `Bajas: ${cnt(cur.bajas)} este mes frente a ${cnt(inp.B0)} al arranque; rescate a los 30 días en marcha.`, `Post-mortem de la camada con el embudo completo y la ventana de la comunidad fijada para ${mesL(3)}.`],
+    3: [`Ventana de la comunidad operada de D-14 a D+7, con el precio un escalón arriba para los que entran.`, `El pase siguió uno a uno fuera de camada: ${pl(cur.cerr, "cerrado", "cerrados")}; testimonios de la primera camada guardados para la segunda, en ${mesL(4)}.`, `${pl(cur.recup, "tarjeta recuperada", "tarjetas recuperadas")} de ${pl(cur.caidos, "caída", "caídas")}.`, `Bajas: ${cnt(cur.bajas)} este mes frente a ${cnt(inp.B0)} al arranque.`, `Cierre del trimestre: ${fmt(cur.cobrado)} cobrados contra una línea base de ${fmt(inp.base)}.`]
+  }[m];
+  const ins = {
+    1: [["Accesos a la plataforma y al procesador", "día 0", "entregado"], ["Aprobación de los mensajes en tu voz", "semana 2", "entregado"], ["Video de bienvenida de 2 minutos", "semana 3", "pendiente"]],
+    2: [["Fecha, cupo y precio de la camada por escrito", "D-14", "entregado"], ["Masterclass interna", "D-7", "entregado"], ["Testimonios de la camada", "fin de camada", "pendiente"]],
+    3: [["Directo de la ventana", "D-3", "entregado"], ["Grabación del módulo del mes", "semana 2", "entregado"], ["Fecha de la segunda camada", "D+7", "pendiente"]]
+  }[m];
+  const next = { 1: `Camada de ${e} en ${mesL(2)}. D-14: fecha, cupo y precio por escrito. D-7: masterclass interna.`, 2: `Ventana de la comunidad en ${mesL(3)}: miembros nuevos con el precio un escalón arriba. Un mes la comunidad hacia afuera, el siguiente el escalón hacia adentro.`, 3: `Segunda camada de ${e} en ${mesL(4)}, con los testimonios de la primera en el D-10 y el D-7.` }[m];
+  const need = { 1: [`Confirmar fecha y cupo de la camada antes del ${mes(2)} D-14.`, `Grabar el video de bienvenida de 2 minutos (el guion está listo).`], 2: [`Dar el OK a la fecha del directo de la ventana de ${mesL(3)}.`, `Tres testimonios cortos de la camada, en video o texto.`], 3: [`Confirmar cupo y precio de la segunda camada.`, `Una hora para la revisión del trimestre.`] }[m];
+  r.innerHTML = `<div class="head"><h2 class="strong">Reporte de ${mesL(m)} · día 5 de ${mesL(m + 1)}</h2><span class="mono">${esc(state.com || "tu comunidad")} · una página</span></div>
+    <h3>Los números del mes</h3>
+    <table><thead><tr><th></th><th>${mesL(m)}</th><th>${vs}</th><th>Línea base</th></tr></thead><tbody>
+    ${numsRows.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td><td${x[2] === "·" || x[2] === "sin medir" ? ' class="mut"' : ""}>${x[2]}</td><td class="mut">${x[3]}</td></tr>`).join("")}
+    <tr class="strong"><td>Cobrado</td><td>${fmt(cur.cobrado)}</td><td>${fmt(prev.cobrado)}</td><td>${fmt(inp.base)}</td></tr>
+    <tr class="total"><td>Crecimiento sobre la línea base</td><td${cur.cobrado < inp.base ? ' class="neg"' : ""}>${(cur.cobrado >= inp.base ? "+" : "-") + fmt(Math.abs(cur.cobrado - inp.base))}</td><td class="mut">${m === 1 ? "·" : (prev.cobrado >= inp.base ? "+" : "-") + fmt(Math.abs(prev.cobrado - inp.base))}</td><td class="mut">${pct(cur.cobrado - inp.base, inp.base) >= 0 ? "+" : ""}${pct(cur.cobrado - inp.base, inp.base)}%</td></tr>
+    </tbody></table>
+    <h3>Qué hicimos</h3><ol>${did.map(t => `<li>${t}</li>`).join("")}</ol>
+    <h3>Insumos: entregados contra comprometidos</h3>
+    <table><thead><tr><th>Insumo tuyo</th><th>Para</th><th>Estado</th></tr></thead><tbody>${ins.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td><td${x[2] === "pendiente" ? ' class="neg"' : ""}>${x[2]}</td></tr>`).join("")}</tbody></table>
+    <h3>La ventana que viene</h3><p>${next}</p>
+    <h3>Qué necesitamos de ti</h3><ul>${need.map(t => `<li>${t}</li>`).join("")}</ul>`;
+}
+function renderLiq() {
+  const l = $("#liq");
+  if (state.mes === 0) { l.innerHTML = `<h2>Liquidación · día 10</h2><p class="empty">La primera liquidación sale el <b>día 10 de ${mesL(2)}</b>, sobre lo cobrado en ${mesL(1)}. Siempre sobre lo cobrado, nunca sobre lo facturado: cobrado, deducciones de la lista cerrada, neto, línea base, crecimiento, variable y el arrastre si hubo un mes negativo. Elegí un mes arriba para ver una de ejemplo.</p>`; return; }
+  const fijo = numOf(state.fee.fijo), pc = numOf(state.fee.pct);
+  const ded = Math.round(cur.cobrado * 0.03), neto = cur.cobrado - ded, crec = neto - inp.base;
+  const variable = pc ? Math.round(Math.max(0, crec) * pc / 100) : null;
+  const total = fijo || variable != null ? (fijo || 0) + (variable || 0) : null;
+  const row = (k, v, cls) => `<tr><td>${k}</td><td class="amt${cls ? " " + cls : ""}">${v}</td></tr>`;
+  l.innerHTML = `<div class="head"><h2 class="strong">Liquidación de ${mesL(cur.m)} · día 10 de ${mesL(cur.m + 1)}</h2><span class="mono">sobre lo cobrado</span></div>
+    <table><tbody>
+    ${row("Cobrado en " + mesL(cur.m), fmt(cur.cobrado))}
+    ${row("Deducciones de la lista cerrada (comisiones del procesador 3%, reembolsos 0)", "-" + fmt(ded), "mut")}
+    ${row("Neto", fmt(neto))}
+    ${row("Línea base", fmt(inp.base), "mut")}
+    ${row("Crecimiento", (crec >= 0 ? "+" : "-") + fmt(Math.abs(crec)), crec < 0 ? "neg" : "")}
+    ${row("Participación variable" + (pc ? " (" + pc + "% del crecimiento)" : ""), variable == null ? "según el acuerdo" : fmt(variable), variable == null ? "mut" : "")}
+    ${row("Arrastre de meses negativos", crec < 0 ? "-" + fmt(Math.abs(crec)) + " pasa al mes siguiente" : "sin arrastre", "mut")}
+    ${row("Fijo mensual", fijo ? fmt(fijo) : "según el acuerdo", fijo ? "" : "mut")}
+    <tr class="total"><td>Total de la liquidación</td><td class="amt">${total == null ? "·" : fmt(total)}</td></tr>
+    </tbody></table>
+    <p class="fine">Se presenta el día 10 y se paga antes del día 20. Siempre sobre lo cobrado. Reembolsos o contracargos posteriores se compensan en la liquidación siguiente. Un mes con crecimiento negativo se arrastra contra los siguientes antes de que corra el variable.</p>`;
+}
+function render() {
+  compute(); renderHeader(); renderHero(); renderKPIs(); renderCharts(); renderMoves(); renderWeek(); renderHow(); renderReport(); renderLiq();
+}
+
+/* ---------- eventos ---------- */
+$$("[data-k]").forEach(i => i.addEventListener("input", () => { setK(i.dataset.k, i.value); save(); render(); }));
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-tab]"); if (t) { state.tab = +t.dataset.tab; save(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  const m = e.target.closest("[data-mes]"); if (m) { state.mes = +m.dataset.mes; save(); render(); }
+});
+$("#btn-import").addEventListener("click", () => {
+  const ok = importFromCall(); render();
+  $("#btn-import").textContent = ok ? "Traídos" : "No hay llamada guardada acá";
+  setTimeout(() => ($("#btn-import").textContent = "Traer los números de la llamada"), 1800);
+});
+$("#btn-reset").addEventListener("click", () => { state = JSON.parse(JSON.stringify(DEFAULTS)); save(); $("#more").open = false; render(); });
+
+/* claro por defecto, diga lo que diga el sistema: es una pantalla compartida. Oscuro solo si se elige acá. */
+let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+const isDark = () => theme === "dark";
+function applyTheme() { document.documentElement.setAttribute("data-theme", theme); $("#btn-theme").textContent = isDark() ? "Claro" : "Oscuro"; }
+$("#btn-theme").addEventListener("click", () => { theme = isDark() ? "light" : "dark"; try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} applyTheme(); render(); });
+
+/* #mes=3 abre en ese mes; #tab=2 en esa pantalla */
+(function () { const h = location.hash || ""; const m = h.match(/mes=([0-3])/); if (m) state.mes = +m[1]; const t = h.match(/tab=([1-3])/); if (t) state.tab = +t[1]; })();
+
+let lastW = 0;
+new ResizeObserver(() => { const w = $(".wrap").clientWidth; if (Math.abs(w - lastW) > 8) { lastW = w; render(); } }).observe($(".wrap"));
+applyTheme(); render();
+</script>
+</body>
+</html>
