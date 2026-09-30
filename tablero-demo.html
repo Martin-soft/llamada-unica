@@ -64,13 +64,30 @@
   .seg button { border: 0; background: transparent; padding: 8px 14px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--muted); border-right: 1px solid var(--line); }
   .seg button:last-child { border-right: 0; }
   .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-ink); }
+  .seg button small { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; opacity: 0.8; }
   .filters .hint { color: var(--muted); font-size: 0.9rem; }
   .filters .hint b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- grupos y fichas ---------- */
+  .group { margin-top: 22px; }
+  .ghead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin: 0 0 8px; }
+  .ghead h2 { margin: 0; color: var(--ink); }
+  .ghead .gsub { color: var(--muted); font-size: 0.85rem; }
+  .tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 12px; min-width: 0; display: grid; grid-template-rows: auto auto auto 1fr; }
+  .tile.lead { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .tile .val { font-size: 1.7rem; font-weight: 650; line-height: 1.1; margin-top: 6px; letter-spacing: -0.01em; }
+  .tile .val small { font-size: 0.9rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+  .tile .delta { font-size: 0.82rem; margin-top: 5px; color: var(--muted); min-height: 1.2em; }
+  .tile .leg { font-size: 0.78rem; color: var(--muted); margin-top: 8px; line-height: 1.3; align-self: end; }
+  .delta.up { color: var(--ok); } .delta.down { color: var(--warn); }
+  .delta .g { font-family: var(--f-mono); margin-right: 2px; }
+  .info { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--line-strong); color: var(--muted); font-size: 10px; font-family: var(--f-mono); margin-left: 6px; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; }
+  .info:hover { border-color: var(--accent); color: var(--accent); }
 
   /* ---------- bloques ---------- */
   .block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-top: 14px; padding: 20px 24px 22px; min-width: 0; }
   .block.lift { box-shadow: var(--shadow); }
-  .block.panel { background: var(--panel); }
   h2 { margin: 0 0 12px; font-size: 12px; font-family: var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
   h2.strong { color: var(--ink); }
   .head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; }
@@ -80,33 +97,19 @@
   .empty { color: var(--muted); }
   .sub { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
   .sub b { color: var(--ink); font-weight: 600; }
+  .callout { margin-top: 2px; margin-bottom: 12px; padding: 10px 14px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+  .callout .v { font-size: 1.5rem; font-weight: 750; }
 
   /* notas para Paul: apagadas por defecto, nunca en la pantalla compartida */
   .pnote { display: none; margin-top: 12px; padding: 8px 12px; border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); font-size: 0.82rem; border-radius: 0 8px 8px 0; }
   body.notes .pnote { display: block; }
-
-  /* ---------- cifra principal y fichas ---------- */
-  .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 18px 32px; align-items: end; }
-  .hero .big { font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; margin-top: 6px; }
-  .hero .delta { margin-top: 8px; font-size: 1rem; }
-  .hero .side { color: var(--muted); border-left: 1px solid var(--line); padding-left: 24px; display: grid; gap: 8px; }
-  .hero .side b { color: var(--ink); font-weight: 600; }
-  .pair { display: flex; gap: 22px; margin-top: 4px; }
-  .pair div { display: grid; }
-  .pair .v { font-size: 1.35rem; font-weight: 650; color: var(--ink); line-height: 1.1; }
-  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 14px; min-width: 0; }
-  .tile .val { font-size: 1.75rem; font-weight: 650; line-height: 1.1; margin-top: 6px; letter-spacing: -0.01em; }
-  .tile .val small { font-size: 0.95rem; font-weight: 500; color: var(--muted); margin-left: 2px; }
-  .tile .delta { font-size: 0.82rem; margin-top: 6px; color: var(--muted); }
-  .delta.up { color: var(--ok); } .delta.down { color: var(--warn); }
-  .delta .g { font-family: var(--f-mono); margin-right: 2px; }
 
   /* ---------- gráficos ---------- */
   .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
   .chart .grid { stroke: var(--grid); stroke-width: 1; }
   .chart .axis { stroke: var(--axis); stroke-width: 1; }
   .chart .ref { stroke: var(--ink); stroke-width: 1.5; }
+  .chart .avg { stroke: var(--ink); stroke-width: 1; opacity: 0.55; }
   .chart .tick { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
   .chart .mark { font-family: var(--f-mono); font-size: 9.5px; fill: var(--accent); letter-spacing: 0.04em; }
   .chart .dlabel { font-family: var(--f-ui); font-size: 12px; font-weight: 650; fill: var(--ink); font-variant-numeric: tabular-nums; }
@@ -115,18 +118,18 @@
   .chart .hit { fill: transparent; cursor: default; outline: none; }
   .chart .hit:focus-visible { fill: var(--accent-soft); fill-opacity: 0.5; }
   .chart .cat.on path { filter: brightness(1.12); }
-  .chart .lineph { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-  .chart .area { opacity: 0.1; }
-  .chart .cross { stroke: var(--line-strong); stroke-width: 1; }
+  .chart .pt { stroke: var(--surface); stroke-width: 1.5; }
+  .chart .pt.on { stroke: var(--ink); }
   .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--muted); }
   .legend .key { display: inline-flex; align-items: center; gap: 7px; }
   .legend .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .legend .sw.dot { border-radius: 50%; }
   .legend .sw.tri { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 9px solid var(--accent); border-radius: 0; background: transparent; }
   details.tbl { margin-top: 10px; }
   details.tbl summary { cursor: pointer; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); list-style: none; }
   details.tbl summary::-webkit-details-marker { display: none; }
-  details.tbl summary::before { content: "+ "; }
-  details.tbl[open] summary::before { content: "· "; }
+  details.tbl summary::before { content: "+ Ver la tabla"; }
+  details.tbl[open] summary::before { content: "· Ocultar la tabla"; }
   .tscroll { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.88rem; }
   th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -134,12 +137,16 @@
   th:first-child, td:first-child { text-align: left; }
   td.mut { color: var(--muted); }
   td.neg { color: var(--warn); }
+  td.pos { color: var(--ok); }
   tr.total td { font-weight: 650; border-bottom: 0; border-top: 1.5px solid var(--line-strong); }
   tr.strong td { font-weight: 650; }
+  tr.balance td { font-weight: 650; background: var(--panel); }
+  td .tag { display: inline-block; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); }
+  td .tag.warn { border-color: var(--warn); color: var(--warn); }
 
-  /* barras horizontales: fuentes y el pase */
+  /* barras horizontales */
   .hbars { display: grid; gap: 8px; margin-top: 6px; }
-  .hrow { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) 3.6rem; gap: 12px; align-items: center; font-size: 0.9rem; }
+  .hrow { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr) 4rem; gap: 12px; align-items: center; font-size: 0.9rem; }
   .hrow .hl { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .htrack { height: 18px; }
   .hbar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
@@ -151,18 +158,10 @@
   .lines p { padding-left: 14px; border-left: 2px solid var(--accent); }
   .hitos { display: grid; gap: 6px; margin-top: 14px; color: var(--muted); font-size: 0.92rem; }
   .hitos b { color: var(--ink); font-weight: 600; }
-  .facts { display: grid; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
-  .facts li { display: grid; grid-template-columns: 4.5rem 1fr; gap: 12px; align-items: baseline; font-size: 0.92rem; color: var(--muted); }
-  .facts li b { font-size: 1.15rem; color: var(--ink); font-weight: 650; text-align: right; font-variant-numeric: tabular-nums; }
-
-  /* fuentes */
-  .sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 22px; margin-top: 6px; }
-  .src b { display: block; font-weight: 650; margin-bottom: 3px; }
-  .src p { color: var(--muted); font-size: 0.92rem; }
-  .fine { color: var(--muted); font-size: 0.9rem; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
 
   /* reporte y liquidación */
-  .rep h3 { margin: 18px 0 8px; font-size: 1rem; font-weight: 650; }
+  .rep h3 { margin: 20px 0 6px; font-size: 1rem; font-weight: 650; }
+  .rep h3 .gsub { font-weight: 500; color: var(--muted); font-size: 0.85rem; margin-left: 8px; }
   .rep ol, .rep ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
   .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 12rem)); gap: 12px 22px; margin-top: 8px; }
   .field { display: grid; gap: 4px; min-width: 0; }
@@ -170,6 +169,14 @@
   .field input:focus-visible { outline: none; border-bottom-color: var(--accent); }
   .liq td.amt { font-weight: 600; }
   .mseg { margin-top: 14px; }
+  .gains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 14px 0 8px; }
+  .gain { background: var(--accent-soft); border-radius: 12px; padding: 16px 18px 14px; display: grid; gap: 4px; }
+  .gain .mono { color: var(--accent-ink); opacity: 0.85; }
+  .gain .v { font-size: clamp(1.8rem, 3.6vw, 2.4rem); font-weight: 750; color: var(--accent-ink); line-height: 1.05; letter-spacing: -0.01em; }
+  .gain .s { font-size: 0.85rem; color: var(--accent-ink); opacity: 0.85; }
+  .gain.ok { background: var(--ok-soft); } .gain.ok .v, .gain.ok .mono, .gain.ok .s { color: var(--ok); }
+  .gain.warn { background: var(--warn-soft); } .gain.warn .v, .gain.warn .mono, .gain.warn .s { color: var(--warn); }
+  .fine { color: var(--muted); font-size: 0.9rem; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
 
   /* ---------- barra ---------- */
   .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -6px 24px rgba(15,31,30,0.08); padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
@@ -186,25 +193,27 @@
   .more .menu button:hover { background: var(--panel); }
 
   /* ---------- tooltip ---------- */
-  .tip { position: fixed; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); padding: 8px 11px; font-size: 0.85rem; pointer-events: none; min-width: 11rem; max-width: 20rem; }
+  .tip { position: fixed; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); padding: 8px 11px; font-size: 0.85rem; pointer-events: none; min-width: 11rem; max-width: 21rem; }
   .tip[hidden] { display: none; }
   .tip .t { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
   .tip .n { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .tip .d { font-size: 0.85rem; color: var(--ink); }
   .tip .r { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; }
   .tip .k { width: 12px; height: 3px; border-radius: 2px; display: inline-block; }
   .tip .r span { color: var(--muted); }
   .tip .r b { font-weight: 650; font-variant-numeric: tabular-nums; }
 
+  @media (max-width: 900px) { .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 760px) {
     body { padding: 0 16px 8rem; }
     .brand { grid-template-columns: auto 1fr; }
     .status { grid-column: 1 / -1; text-align: left; }
     .status .live { justify-content: flex-start; }
     .steps { grid-template-columns: 1fr; }
-    .row2, .sources, .hero { grid-template-columns: 1fr; }
-    .hero .side { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 14px; }
-    .kpis { grid-template-columns: 1fr 1fr; }
-    .hrow { grid-template-columns: 6.5rem minmax(0, 1fr) 3.2rem; }
+    .row2 { grid-template-columns: 1fr; }
+    .tiles { grid-template-columns: 1fr 1fr; }
+    .gains { grid-template-columns: 1fr; }
+    .hrow { grid-template-columns: 7rem minmax(0, 1fr) 3.6rem; }
     .terms { grid-template-columns: 1fr; }
     .bar .inner { grid-template-columns: 1fr; }
     .bar .hint { display: none; }
@@ -216,7 +225,7 @@
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="avatar" id="avatar">I</div>
+      <div class="avatar">C</div>
       <div>
         <div class="mono">Grow Your Backend · Tablero compartido</div>
         <h1 class="wide" id="h-name">Comunidad de idiomas</h1>
@@ -224,7 +233,7 @@
       </div>
       <div class="status">
         <span class="live"><i></i><span id="st-read"></span></span>
-        <span id="st-src"></span>
+        <span id="st-src">Plataforma, cobros y lista del pase</span>
       </div>
     </div>
     <nav class="steps" aria-label="Pantallas">
@@ -241,43 +250,48 @@
       <p class="hint" id="hint-base"></p>
     </div>
 
-    <section class="block lift hero" id="hero"></section>
-    <div class="kpis" id="kpis"></div>
+    <section class="group" id="g-fin"></section>
+    <section class="group" id="g-cob"></section>
+    <section class="group" id="g-com"></section>
+    <section class="group" id="g-cap"></section>
+    <section class="group" id="g-ven"></section>
 
-    <section class="block chart">
-      <div class="head"><h2 class="strong">Recurrente por mes, contra la línea base</h2><div class="legend" id="lg-mrr"></div></div>
+    <section class="block chart" style="margin-top:22px">
+      <div class="head"><h2 class="strong">Recurrente por mes, contra la línea base<span class="info" data-tip="recurrente">i</span></h2><div class="legend" id="lg-mrr"></div></div>
       <div id="ch-mrr"></div>
       <p class="sub" id="sub-mrr"></p>
-      <details class="tbl"><summary>Ver como tabla</summary><div class="tscroll" id="tb-mrr"></div></details>
+      <details class="tbl" open><summary></summary><div class="tscroll" id="tb-mrr"></div></details>
       <p class="pnote" id="pn-mrr"></p>
     </section>
 
     <div class="row2">
       <section class="block chart">
-        <div class="head"><h2 class="strong">Quién entra, quién se va</h2><div class="legend" id="lg-flujo"></div></div>
+        <div class="head"><h2 class="strong">Quién entra pagando, quién se va<span class="info" data-tip="flujo">i</span></h2><div class="legend" id="lg-flujo"></div></div>
         <div id="ch-flujo"></div>
         <p class="sub" id="sub-flujo"></p>
-        <details class="tbl"><summary>Ver como tabla</summary><div class="tscroll" id="tb-flujo"></div></details>
+        <details class="tbl"><summary></summary><div class="tscroll" id="tb-flujo"></div></details>
         <p class="pnote" id="pn-flujo"></p>
       </section>
       <section class="block chart">
-        <div class="head"><h2 class="strong">Actividad en la comunidad, por semana</h2></div>
+        <div class="head"><h2 class="strong">Actividad por día<span class="info" data-tip="actividad">i</span></h2><span class="mono" id="act-avg"></span></div>
+        <div class="legend" id="lg-act" style="margin-bottom:6px"></div>
         <div id="ch-act"></div>
         <p class="sub" id="sub-act"></p>
-        <details class="tbl"><summary>Ver como tabla</summary><div class="tscroll" id="tb-act"></div></details>
+        <details class="tbl"><summary></summary><div class="tscroll" id="tb-act"></div></details>
         <p class="pnote" id="pn-act"></p>
       </section>
     </div>
 
     <div class="row2">
       <section class="block">
-        <div class="head"><h2 class="strong">Bajas anunciadas y pagos fallidos</h2><span class="mono" id="cancel-sum"></span></div>
+        <div class="head"><h2 class="strong">Bajas anunciadas y pagos fallidos<span class="info" data-tip="bajasAnunciadas">i</span></h2><span class="mono" id="cancel-sum"></span></div>
         <div class="tscroll" id="cancel"></div>
         <p class="sub" id="sub-cancel"></p>
         <p class="pnote" id="pn-cancel"></p>
       </section>
       <section class="block">
-        <div class="head"><h2 class="strong">El pase al coaching</h2><span class="mono" id="pase-price"></span></div>
+        <div class="head"><h2 class="strong">El pase al coaching<span class="info" data-tip="pase">i</span></h2><span class="mono" id="pase-price"></span></div>
+        <div class="callout" id="pase-callout"></div>
         <div id="pase"></div>
         <p class="sub" id="sub-pase"></p>
         <p class="pnote" id="pn-pase"></p>
@@ -286,7 +300,7 @@
 
     <div class="row2">
       <section class="block">
-        <div class="head"><h2 class="strong">De dónde vienen los registros</h2><span class="mono">Últimos 30 días</span></div>
+        <div class="head"><h2 class="strong">De dónde vienen los registros<span class="info" data-tip="fuentes">i</span></h2><span class="mono">Últimos 30 días</span></div>
         <div id="fuentes"></div>
         <p class="sub" id="sub-fuentes"></p>
         <p class="pnote" id="pn-fuentes"></p>
@@ -297,16 +311,6 @@
         <div class="hitos" id="hitos"></div>
       </section>
     </div>
-
-    <section class="block panel">
-      <h2>De dónde sale cada número</h2>
-      <div class="sources">
-        <div class="src"><b>La plataforma</b><p>Miembros activos, quién entra, quién se va, planes, actividad y recurrente. Lectura mutua, siempre.</p></div>
-        <div class="src"><b>Los cobros</b><p>Pagos fallidos y reintentos, bajas anunciadas con la fecha en que se pierde el acceso, lo cobrado contra la línea base.</p></div>
-        <div class="src"><b>La lista del pase</b><p>Señales, conversaciones, quién pidió lo de arriba, quién entró y quién renovó. La llevamos nosotros, adentro de la comunidad.</p></div>
-      </div>
-      <p class="fine">La comunidad, los miembros, los datos y el contenido son del fundador y se exportan cuando quiera. El tablero es parte de los sistemas con los que operamos: trabaja para él mientras dure el servicio.</p>
-    </section>
   </div>
 
   <!-- ================= 2 · Reporte del día 5 ================= -->
@@ -318,6 +322,7 @@
   <!-- ================= 3 · Liquidación del día 10 ================= -->
   <div class="screen" id="s3" hidden>
     <div class="filters mseg"><div class="seg" id="seg-mes3" role="group" aria-label="Mes"></div></div>
+    <section class="block lift liq" id="liq"></section>
     <section class="block">
       <h2>Términos del acuerdo</h2>
       <p class="empty">Vacíos, la liquidación muestra la estructura y deja la cifra para la llamada.</p>
@@ -326,7 +331,6 @@
         <label class="field"><span class="mono">Variable, % del crecimiento</span><input data-k="fee.pct" type="number" min="0" max="100" inputmode="decimal" placeholder="a definir"></label>
       </div>
     </section>
-    <section class="block lift liq" id="liq"></section>
   </div>
 </div>
 
@@ -347,10 +351,10 @@
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
 <script>
-const DATA = {"comunidad":"Comunidad de idiomas","fundador":"el fundador","plataforma":"Skool","precio":"$29/mes","leido":"2026-09-29T13:45:00-03:00","hoy":{"miembros":211,"mrr":5508,"retencion":79,"interaccion":82,"visitantes30":1508,"registros30":88,"conversion30":5.8,"nuevoMrr30":2284,"activosPago":211,"mensuales":146,"anuales":59,"cancelando":10,"pagosFallidos":2,"pagosFallidosImporte":74,"altas7d":80,"bajas30d":38,"ltvActivos":34593,"ltvMedioBaja":81,"miembrosHace30d":167,"bajas7d":9},"lineaBase":{"valor":4917,"meses":"junio, julio y agosto"},"fuentes30":[{"f":"youtube","n":58},{"f":"direct","n":19},{"f":"skool","n":4},{"f":"google","n":3},{"f":"facebook","n":2},{"f":"instagram","n":1},{"f":"affiliate","n":1}],"registrosDia":[{"d":"2026-09-01","n":1},{"d":"2026-09-07","n":1},{"d":"2026-09-09","n":1},{"d":"2026-09-11","n":2},{"d":"2026-09-13","n":1},{"d":"2026-09-23","n":2},{"d":"2026-09-24","n":1},{"d":"2026-09-25","n":1},{"d":"2026-09-27","n":63},{"d":"2026-09-28","n":6},{"d":"2026-09-29","n":9}],"cancelando":[{"pierde":"2026-10-02","importe":12,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-11","importe":24,"plan":"mensual","desde":"2026-08"},{"pierde":"2026-10-12","importe":37,"plan":"mensual","desde":"2026-07"},{"pierde":"2026-10-16","importe":37,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-16","importe":37,"plan":"mensual","desde":"2026-04"},{"pierde":"2026-10-18","importe":24,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-29","importe":229,"plan":"anual","desde":"2025-10"},{"pierde":"2026-10-30","importe":229,"plan":"anual","desde":"2025-10"},{"pierde":"2027-05-31","importe":264,"plan":"anual","desde":"2026-05"},{"pierde":"2027-09-09","importe":197,"plan":"anual","desde":"2025-09"}],"diario":{"desde":"2026-08-30","miembros":[167,164,162,161,156,153,150,150,151,151,151,148,149,149,147,147,146,146,145,145,144,143,142,142,143,140,138,138,198,201],"activos":[110,111,112,113,111,111,110,112,109,109,109,109,110,110,112,113,112,109,106,101,102,101,100,100,99,98,98,99,161,164]},"semanas":[{"w":"2025-10-06","n":1060,"d":7},{"w":"2025-10-13","n":1026,"d":7},{"w":"2025-10-20","n":940,"d":7},{"w":"2025-10-27","n":3974,"d":7},{"w":"2025-11-03","n":5330,"d":7},{"w":"2025-11-10","n":1935,"d":7},{"w":"2025-11-17","n":1201,"d":7},{"w":"2025-11-24","n":1529,"d":7},{"w":"2025-12-01","n":1180,"d":7},{"w":"2025-12-08","n":2858,"d":7},{"w":"2025-12-15","n":1716,"d":7},{"w":"2025-12-22","n":1655,"d":7},{"w":"2025-12-29","n":1961,"d":7},{"w":"2026-01-05","n":1775,"d":7},{"w":"2026-01-12","n":1293,"d":7},{"w":"2026-01-19","n":1406,"d":7},{"w":"2026-01-26","n":1465,"d":7},{"w":"2026-02-02","n":4106,"d":7},{"w":"2026-02-09","n":2866,"d":7},{"w":"2026-02-16","n":1395,"d":7},{"w":"2026-02-23","n":1111,"d":7},{"w":"2026-03-02","n":754,"d":7},{"w":"2026-03-09","n":781,"d":7},{"w":"2026-03-16","n":679,"d":7},{"w":"2026-03-23","n":670,"d":7},{"w":"2026-03-30","n":728,"d":7},{"w":"2026-04-06","n":2785,"d":7},{"w":"2026-04-13","n":2108,"d":7},{"w":"2026-04-20","n":1294,"d":7},{"w":"2026-04-27","n":1416,"d":7},{"w":"2026-05-04","n":1109,"d":7},{"w":"2026-05-11","n":1001,"d":7},{"w":"2026-05-18","n":727,"d":7},{"w":"2026-05-25","n":644,"d":7},{"w":"2026-06-01","n":601,"d":7},{"w":"2026-06-08","n":2094,"d":7},{"w":"2026-06-15","n":1104,"d":7},{"w":"2026-06-22","n":506,"d":7},{"w":"2026-06-29","n":490,"d":7},{"w":"2026-07-06","n":208,"d":7},{"w":"2026-07-13","n":247,"d":7},{"w":"2026-07-20","n":127,"d":7},{"w":"2026-07-27","n":189,"d":7},{"w":"2026-08-03","n":200,"d":7},{"w":"2026-08-10","n":117,"d":7},{"w":"2026-08-17","n":163,"d":7},{"w":"2026-08-24","n":114,"d":7},{"w":"2026-08-31","n":223,"d":7},{"w":"2026-09-07","n":125,"d":7},{"w":"2026-09-14","n":55,"d":7},{"w":"2026-09-21","n":319,"d":7},{"w":"2026-09-28","n":192,"d":2}],"meses":[{"m":"2025-09","activos":123,"altas":84,"bajas":16,"pruebas":0,"pruebasFuera":0,"anuales":36,"mrrRec":2714,"mrr":3126,"nuevo":2362,"churn":230,"react":0,"up":0,"down":0,"existente":994,"lanz":"Lanzamiento oficial (9/9)"},{"m":"2025-10","activos":154,"altas":66,"bajas":35,"pruebas":0,"pruebasFuera":0,"anuales":52,"mrrRec":3681,"mrr":3893,"nuevo":1797,"churn":1040,"react":0,"up":10,"down":0,"existente":3126,"lanz":"Segundo lanzamiento (28/10)"},{"m":"2025-11","activos":131,"altas":13,"bajas":36,"pruebas":0,"pruebasFuera":0,"anuales":53,"mrrRec":3014,"mrr":3320,"nuevo":387,"churn":953,"react":19,"up":0,"down":0,"existente":3867},{"m":"2025-12","activos":162,"altas":52,"bajas":21,"pruebas":104,"pruebasFuera":106,"anuales":61,"mrrRec":4290,"mrr":4557,"nuevo":1780,"churn":543,"react":0,"up":0,"down":0,"existente":3320,"lanz":"Lanzamiento con prueba gratis"},{"m":"2026-01","activos":142,"altas":3,"bajas":23,"pruebas":0,"pruebasFuera":0,"anuales":61,"mrrRec":3601,"mrr":3801,"nuevo":22,"churn":748,"react":0,"up":0,"down":30,"existente":4557},{"m":"2026-02","activos":198,"altas":87,"bajas":31,"pruebas":128,"pruebasFuera":128,"anuales":74,"mrrRec":4987,"mrr":5789,"nuevo":2347,"churn":715,"react":236,"up":120,"down":0,"existente":3801,"lanz":"Lanzamiento de febrero"},{"m":"2026-03","activos":156,"altas":4,"bajas":46,"pruebas":0,"pruebasFuera":0,"anuales":74,"mrrRec":3663,"mrr":4452,"nuevo":134,"churn":1500,"react":0,"up":39,"down":10,"existente":5789},{"m":"2026-04","activos":218,"altas":79,"bajas":17,"pruebas":105,"pruebasFuera":105,"anuales":79,"mrrRec":5540,"mrr":6309,"nuevo":2484,"churn":707,"react":62,"up":34,"down":0,"existente":4436,"lanz":"Lanzamiento de abril"},{"m":"2026-05","activos":197,"altas":17,"bajas":38,"pruebas":0,"pruebasFuera":0,"anuales":83,"mrrRec":5130,"mrr":5498,"nuevo":349,"churn":1568,"react":0,"up":460,"down":52,"existente":6309},{"m":"2026-06","activos":206,"altas":50,"bajas":41,"pruebas":81,"pruebasFuera":81,"anuales":83,"mrrRec":5220,"mrr":5590,"nuevo":1332,"churn":1265,"react":0,"up":37,"down":12,"existente":5498,"lanz":"Lanzamiento de junio"},{"m":"2026-07","activos":187,"altas":13,"bajas":32,"pruebas":4,"pruebasFuera":2,"anuales":82,"mrrRec":4818,"mrr":4960,"nuevo":268,"churn":951,"react":111,"up":13,"down":0,"existente":5519},{"m":"2026-08","activos":159,"altas":5,"bajas":33,"pruebas":4,"pruebasFuera":5,"anuales":75,"mrrRec":4073,"mrr":4200,"nuevo":120,"churn":927,"react":37,"up":13,"down":2,"existente":4960},{"m":"2026-09","activos":211,"altas":85,"bajas":33,"pruebas":2,"pruebasFuera":1,"anuales":59,"mrrRec":5756,"lanz":"Lanzamiento y reto de 21 días (27/9)","mrr":5508,"nuevo":2280,"nuevoAl":"al 29/9","nuevoN":82,"churn":600,"churnAl":"29/9","react":0,"up":0,"down":0,"existente":4200}],"pase":{"programa":"Coaching 1:1 de 10 semanas","precio":1047,"pidieron90":5,"adentro":2,"probaron":10,"renovaron":0,"compradores":800,"calientes":80,"proximaCamada":"noviembre, a precio nuevo"}};
+const DATA = {"comunidad":"Comunidad de idiomas","fundador":"el fundador","plataforma":"Skool","precio":"$29/mes","leido":"2026-09-29T13:45:00-03:00","hoy":{"miembros":211,"mrr":5508,"retencion":79,"interaccion":82,"visitantes30":1508,"registros30":88,"conversion30":5.8,"nuevoMrr30":2284,"activosPago":211,"mensuales":146,"anuales":59,"cancelando":10,"pagosFallidos":2,"pagosFallidosImporte":74,"altas7d":80,"bajas30d":38,"ltvActivos":34593,"ltvMedioBaja":81,"miembrosHace30d":167,"bajas7d":9,"registrosPrev30":8,"nuevoMrrPrev":120},"lineaBase":{"valor":4917,"meses":"junio, julio y agosto"},"fuentes30":[{"f":"youtube","n":58},{"f":"direct","n":19},{"f":"skool","n":4},{"f":"google","n":3},{"f":"facebook","n":2},{"f":"instagram","n":1},{"f":"affiliate","n":1}],"registrosDia":[{"d":"2026-09-01","n":1},{"d":"2026-09-07","n":1},{"d":"2026-09-09","n":1},{"d":"2026-09-11","n":2},{"d":"2026-09-13","n":1},{"d":"2026-09-23","n":2},{"d":"2026-09-24","n":1},{"d":"2026-09-25","n":1},{"d":"2026-09-27","n":63},{"d":"2026-09-28","n":6},{"d":"2026-09-29","n":9}],"cancelando":[{"pierde":"2026-10-02","importe":12,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-11","importe":24,"plan":"mensual","desde":"2026-08"},{"pierde":"2026-10-12","importe":37,"plan":"mensual","desde":"2026-07"},{"pierde":"2026-10-16","importe":37,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-16","importe":37,"plan":"mensual","desde":"2026-04"},{"pierde":"2026-10-18","importe":24,"plan":"mensual","desde":"2026-06"},{"pierde":"2026-10-29","importe":229,"plan":"anual","desde":"2025-10"},{"pierde":"2026-10-30","importe":229,"plan":"anual","desde":"2025-10"},{"pierde":"2027-05-31","importe":264,"plan":"anual","desde":"2026-05"},{"pierde":"2027-09-09","importe":197,"plan":"anual","desde":"2025-09"}],"diario":{"desde":"2026-08-30","miembros":[167,164,162,161,156,153,150,150,151,151,151,148,149,149,147,147,146,146,145,145,144,143,142,142,143,140,138,138,198,201],"activos":[110,111,112,113,111,111,110,112,109,109,109,109,110,110,112,113,112,109,106,101,102,101,100,100,99,98,98,99,161,164]},"semanas":[{"w":"2025-10-06","n":1060,"d":7},{"w":"2025-10-13","n":1026,"d":7},{"w":"2025-10-20","n":940,"d":7},{"w":"2025-10-27","n":3974,"d":7},{"w":"2025-11-03","n":5330,"d":7},{"w":"2025-11-10","n":1935,"d":7},{"w":"2025-11-17","n":1201,"d":7},{"w":"2025-11-24","n":1529,"d":7},{"w":"2025-12-01","n":1180,"d":7},{"w":"2025-12-08","n":2858,"d":7},{"w":"2025-12-15","n":1716,"d":7},{"w":"2025-12-22","n":1655,"d":7},{"w":"2025-12-29","n":1961,"d":7},{"w":"2026-01-05","n":1775,"d":7},{"w":"2026-01-12","n":1293,"d":7},{"w":"2026-01-19","n":1406,"d":7},{"w":"2026-01-26","n":1465,"d":7},{"w":"2026-02-02","n":4106,"d":7},{"w":"2026-02-09","n":2866,"d":7},{"w":"2026-02-16","n":1395,"d":7},{"w":"2026-02-23","n":1111,"d":7},{"w":"2026-03-02","n":754,"d":7},{"w":"2026-03-09","n":781,"d":7},{"w":"2026-03-16","n":679,"d":7},{"w":"2026-03-23","n":670,"d":7},{"w":"2026-03-30","n":728,"d":7},{"w":"2026-04-06","n":2785,"d":7},{"w":"2026-04-13","n":2108,"d":7},{"w":"2026-04-20","n":1294,"d":7},{"w":"2026-04-27","n":1416,"d":7},{"w":"2026-05-04","n":1109,"d":7},{"w":"2026-05-11","n":1001,"d":7},{"w":"2026-05-18","n":727,"d":7},{"w":"2026-05-25","n":644,"d":7},{"w":"2026-06-01","n":601,"d":7},{"w":"2026-06-08","n":2094,"d":7},{"w":"2026-06-15","n":1104,"d":7},{"w":"2026-06-22","n":506,"d":7},{"w":"2026-06-29","n":490,"d":7},{"w":"2026-07-06","n":208,"d":7},{"w":"2026-07-13","n":247,"d":7},{"w":"2026-07-20","n":127,"d":7},{"w":"2026-07-27","n":189,"d":7},{"w":"2026-08-03","n":200,"d":7},{"w":"2026-08-10","n":117,"d":7},{"w":"2026-08-17","n":163,"d":7},{"w":"2026-08-24","n":114,"d":7},{"w":"2026-08-31","n":223,"d":7},{"w":"2026-09-07","n":125,"d":7},{"w":"2026-09-14","n":55,"d":7},{"w":"2026-09-21","n":319,"d":7},{"w":"2026-09-28","n":192,"d":2}],"meses":[{"m":"2025-09","activos":123,"altas":84,"bajas":16,"pruebas":0,"pruebasFuera":0,"anuales":36,"mrrRec":2714,"mrr":3126,"nuevo":2362,"churn":230,"react":0,"up":0,"down":0,"existente":994,"lanz":"Lanzamiento oficial (9/9)","skAltas":84,"skBajas":16,"skTotal":126,"cobrado":6267,"pagos":108},{"m":"2025-10","activos":154,"altas":66,"bajas":35,"pruebas":0,"pruebasFuera":0,"anuales":52,"mrrRec":3681,"mrr":3893,"nuevo":1797,"churn":1040,"react":0,"up":10,"down":0,"existente":3126,"lanz":"Segundo lanzamiento (28/10)","skAltas":68,"skBajas":35,"skTotal":159,"cobrado":6693,"pagos":118},{"m":"2025-11","activos":131,"altas":13,"bajas":36,"pruebas":0,"pruebasFuera":0,"anuales":53,"mrrRec":3014,"mrr":3320,"nuevo":387,"churn":953,"react":19,"up":0,"down":0,"existente":3867,"skAltas":15,"skBajas":36,"skTotal":138,"cobrado":2533,"pagos":71},{"m":"2025-12","activos":162,"altas":52,"bajas":21,"pruebas":104,"pruebasFuera":106,"anuales":61,"mrrRec":4290,"mrr":4557,"nuevo":1780,"churn":543,"react":0,"up":0,"down":0,"existente":3320,"lanz":"Lanzamiento con prueba gratis","skAltas":160,"skBajas":128,"skTotal":170,"cobrado":6289,"pagos":106},{"m":"2026-01","activos":142,"altas":3,"bajas":23,"pruebas":0,"pruebasFuera":0,"anuales":61,"mrrRec":3601,"mrr":3801,"nuevo":22,"churn":748,"react":0,"up":0,"down":30,"existente":4557,"skAltas":5,"skBajas":24,"skTotal":151,"cobrado":3118,"pagos":76},{"m":"2026-02","activos":198,"altas":87,"bajas":31,"pruebas":128,"pruebasFuera":128,"anuales":74,"mrrRec":4987,"mrr":5789,"nuevo":2347,"churn":715,"react":236,"up":120,"down":0,"existente":3801,"lanz":"Lanzamiento de febrero","skAltas":218,"skBajas":163,"skTotal":206,"cobrado":6544,"pagos":127},{"m":"2026-03","activos":156,"altas":4,"bajas":46,"pruebas":0,"pruebasFuera":0,"anuales":74,"mrrRec":3663,"mrr":4452,"nuevo":134,"churn":1500,"react":0,"up":39,"down":10,"existente":5789,"skAltas":4,"skBajas":48,"skTotal":162,"cobrado":3023,"pagos":94},{"m":"2026-04","activos":218,"altas":79,"bajas":17,"pruebas":105,"pruebasFuera":105,"anuales":79,"mrrRec":5540,"mrr":6309,"nuevo":2484,"churn":707,"react":62,"up":34,"down":0,"existente":4436,"lanz":"Lanzamiento de abril","skAltas":183,"skBajas":121,"skTotal":224,"cobrado":6341,"pagos":142},{"m":"2026-05","activos":197,"altas":17,"bajas":38,"pruebas":0,"pruebasFuera":0,"anuales":83,"mrrRec":5130,"mrr":5498,"nuevo":349,"churn":1568,"react":0,"up":460,"down":52,"existente":6309,"skAltas":17,"skBajas":40,"skTotal":201,"cobrado":6967,"pagos":113},{"m":"2026-06","activos":206,"altas":50,"bajas":41,"pruebas":81,"pruebasFuera":81,"anuales":83,"mrrRec":5220,"mrr":5590,"nuevo":1332,"churn":1265,"react":0,"up":37,"down":12,"existente":5498,"lanz":"Lanzamiento de junio","skAltas":129,"skBajas":121,"skTotal":209,"cobrado":3970,"pagos":118},{"m":"2026-07","activos":187,"altas":13,"bajas":32,"pruebas":4,"pruebasFuera":2,"anuales":82,"mrrRec":4818,"mrr":4960,"nuevo":268,"churn":951,"react":111,"up":13,"down":0,"existente":5519,"skAltas":17,"skBajas":35,"skTotal":191,"cobrado":4117,"pagos":103},{"m":"2026-08","activos":159,"altas":5,"bajas":33,"pruebas":4,"pruebasFuera":5,"anuales":75,"mrrRec":4073,"mrr":4200,"nuevo":120,"churn":927,"react":37,"up":13,"down":2,"existente":4960,"skAltas":8,"skBajas":39,"skTotal":160,"cobrado":3028,"pagos":74},{"m":"2026-09","activos":211,"altas":85,"bajas":33,"pruebas":2,"pruebasFuera":1,"anuales":59,"mrrRec":5756,"lanz":"Lanzamiento y reto de 21 días (27/9)","mrr":5508,"nuevo":2280,"churn":600,"churnAl":"29/9","churnFuente":"lista de miembros (Skool publica el componente al cierre)","nuevoAl":"al 29/9","nuevoN":82,"nuevoFuente":"lista de miembros (Skool: $2.284 a 30 días)","react":0,"up":0,"down":0,"planCambiosNota":"Skool los publica al cierre; $0 hasta ahí","existente":4200,"skAltas":79,"skBajas":37,"skTotal":202,"cobrado":5961,"pagos":147}],"pase":{"programa":"Coaching 1:1 de 10 semanas","precio":1047,"pidieron90":5,"adentro":2,"probaron":10,"renovaron":0,"compradores":800,"calientes":80,"proximaCamada":"noviembre, a precio nuevo","compraron":10,"generado":10470},"dias":[{"d":"2025-10-06","n":62},{"d":"2025-10-07","n":140},{"d":"2025-10-08","n":145},{"d":"2025-10-09","n":275},{"d":"2025-10-10","n":208},{"d":"2025-10-11","n":96},{"d":"2025-10-12","n":134},{"d":"2025-10-13","n":154},{"d":"2025-10-14","n":196},{"d":"2025-10-15","n":75},{"d":"2025-10-16","n":176},{"d":"2025-10-17","n":146},{"d":"2025-10-18","n":115},{"d":"2025-10-19","n":164},{"d":"2025-10-20","n":100},{"d":"2025-10-21","n":118},{"d":"2025-10-22","n":73},{"d":"2025-10-23","n":147},{"d":"2025-10-24","n":179},{"d":"2025-10-25","n":157},{"d":"2025-10-26","n":166},{"d":"2025-10-27","n":139},{"d":"2025-10-28","n":260},{"d":"2025-10-29","n":463},{"d":"2025-10-30","n":621},{"d":"2025-10-31","n":596},{"d":"2025-11-01","n":902},{"d":"2025-11-02","n":993},{"d":"2025-11-03","n":1036},{"d":"2025-11-04","n":1314},{"d":"2025-11-05","n":849},{"d":"2025-11-06","n":1036},{"d":"2025-11-07","n":487},{"d":"2025-11-08","n":321},{"d":"2025-11-09","n":287},{"d":"2025-11-10","n":311},{"d":"2025-11-11","n":324},{"d":"2025-11-12","n":205},{"d":"2025-11-13","n":232},{"d":"2025-11-14","n":432},{"d":"2025-11-15","n":242},{"d":"2025-11-16","n":189},{"d":"2025-11-17","n":302},{"d":"2025-11-18","n":129},{"d":"2025-11-19","n":174},{"d":"2025-11-20","n":117},{"d":"2025-11-21","n":164},{"d":"2025-11-22","n":163},{"d":"2025-11-23","n":152},{"d":"2025-11-24","n":169},{"d":"2025-11-25","n":189},{"d":"2025-11-26","n":223},{"d":"2025-11-27","n":206},{"d":"2025-11-28","n":274},{"d":"2025-11-29","n":334},{"d":"2025-11-30","n":134},{"d":"2025-12-01","n":294},{"d":"2025-12-02","n":254},{"d":"2025-12-03","n":67},{"d":"2025-12-04","n":152},{"d":"2025-12-05","n":288},{"d":"2025-12-06","n":57},{"d":"2025-12-07","n":68},{"d":"2025-12-08","n":154},{"d":"2025-12-09","n":156},{"d":"2025-12-10","n":728},{"d":"2025-12-11","n":581},{"d":"2025-12-12","n":411},{"d":"2025-12-13","n":344},{"d":"2025-12-14","n":484},{"d":"2025-12-15","n":247},{"d":"2025-12-16","n":285},{"d":"2025-12-17","n":242},{"d":"2025-12-18","n":405},{"d":"2025-12-19","n":162},{"d":"2025-12-20","n":121},{"d":"2025-12-21","n":254},{"d":"2025-12-22","n":370},{"d":"2025-12-23","n":337},{"d":"2025-12-24","n":240},{"d":"2025-12-25","n":139},{"d":"2025-12-26","n":179},{"d":"2025-12-27","n":218},{"d":"2025-12-28","n":172},{"d":"2025-12-29","n":409},{"d":"2025-12-30","n":226},{"d":"2025-12-31","n":225},{"d":"2026-01-01","n":330},{"d":"2026-01-02","n":246},{"d":"2026-01-03","n":241},{"d":"2026-01-04","n":284},{"d":"2026-01-05","n":271},{"d":"2026-01-06","n":103},{"d":"2026-01-07","n":303},{"d":"2026-01-08","n":406},{"d":"2026-01-09","n":291},{"d":"2026-01-10","n":227},{"d":"2026-01-11","n":174},{"d":"2026-01-12","n":339},{"d":"2026-01-13","n":135},{"d":"2026-01-14","n":140},{"d":"2026-01-15","n":255},{"d":"2026-01-16","n":181},{"d":"2026-01-17","n":140},{"d":"2026-01-18","n":103},{"d":"2026-01-19","n":339},{"d":"2026-01-20","n":276},{"d":"2026-01-21","n":136},{"d":"2026-01-22","n":104},{"d":"2026-01-23","n":174},{"d":"2026-01-24","n":152},{"d":"2026-01-25","n":225},{"d":"2026-01-26","n":236},{"d":"2026-01-27","n":338},{"d":"2026-01-28","n":167},{"d":"2026-01-29","n":90},{"d":"2026-01-30","n":255},{"d":"2026-01-31","n":117},{"d":"2026-02-01","n":262},{"d":"2026-02-02","n":370},{"d":"2026-02-03","n":359},{"d":"2026-02-04","n":361},{"d":"2026-02-05","n":665},{"d":"2026-02-06","n":1010},{"d":"2026-02-07","n":657},{"d":"2026-02-08","n":684},{"d":"2026-02-09","n":812},{"d":"2026-02-10","n":471},{"d":"2026-02-11","n":474},{"d":"2026-02-12","n":198},{"d":"2026-02-13","n":288},{"d":"2026-02-14","n":285},{"d":"2026-02-15","n":338},{"d":"2026-02-16","n":245},{"d":"2026-02-17","n":197},{"d":"2026-02-18","n":222},{"d":"2026-02-19","n":213},{"d":"2026-02-20","n":157},{"d":"2026-02-21","n":173},{"d":"2026-02-22","n":188},{"d":"2026-02-23","n":164},{"d":"2026-02-24","n":107},{"d":"2026-02-25","n":86},{"d":"2026-02-26","n":189},{"d":"2026-02-27","n":222},{"d":"2026-02-28","n":157},{"d":"2026-03-01","n":186},{"d":"2026-03-02","n":211},{"d":"2026-03-03","n":90},{"d":"2026-03-04","n":89},{"d":"2026-03-05","n":100},{"d":"2026-03-06","n":92},{"d":"2026-03-07","n":96},{"d":"2026-03-08","n":76},{"d":"2026-03-09","n":103},{"d":"2026-03-10","n":113},{"d":"2026-03-11","n":107},{"d":"2026-03-12","n":99},{"d":"2026-03-13","n":146},{"d":"2026-03-14","n":125},{"d":"2026-03-15","n":88},{"d":"2026-03-16","n":159},{"d":"2026-03-17","n":98},{"d":"2026-03-18","n":78},{"d":"2026-03-19","n":102},{"d":"2026-03-20","n":51},{"d":"2026-03-21","n":105},{"d":"2026-03-22","n":86},{"d":"2026-03-23","n":99},{"d":"2026-03-24","n":60},{"d":"2026-03-25","n":87},{"d":"2026-03-26","n":55},{"d":"2026-03-27","n":147},{"d":"2026-03-28","n":146},{"d":"2026-03-29","n":76},{"d":"2026-03-30","n":84},{"d":"2026-03-31","n":80},{"d":"2026-04-01","n":101},{"d":"2026-04-02","n":176},{"d":"2026-04-03","n":97},{"d":"2026-04-04","n":67},{"d":"2026-04-05","n":123},{"d":"2026-04-06","n":66},{"d":"2026-04-07","n":46},{"d":"2026-04-08","n":95},{"d":"2026-04-09","n":418},{"d":"2026-04-10","n":715},{"d":"2026-04-11","n":570},{"d":"2026-04-12","n":875},{"d":"2026-04-13","n":554},{"d":"2026-04-14","n":456},{"d":"2026-04-15","n":319},{"d":"2026-04-16","n":265},{"d":"2026-04-17","n":173},{"d":"2026-04-18","n":158},{"d":"2026-04-19","n":183},{"d":"2026-04-20","n":268},{"d":"2026-04-21","n":222},{"d":"2026-04-22","n":109},{"d":"2026-04-23","n":106},{"d":"2026-04-24","n":152},{"d":"2026-04-25","n":228},{"d":"2026-04-26","n":209},{"d":"2026-04-27","n":173},{"d":"2026-04-28","n":230},{"d":"2026-04-29","n":181},{"d":"2026-04-30","n":162},{"d":"2026-05-01","n":199},{"d":"2026-05-02","n":287},{"d":"2026-05-03","n":184},{"d":"2026-05-04","n":315},{"d":"2026-05-05","n":114},{"d":"2026-05-06","n":120},{"d":"2026-05-07","n":89},{"d":"2026-05-08","n":82},{"d":"2026-05-09","n":215},{"d":"2026-05-10","n":174},{"d":"2026-05-11","n":151},{"d":"2026-05-12","n":91},{"d":"2026-05-13","n":120},{"d":"2026-05-14","n":92},{"d":"2026-05-15","n":261},{"d":"2026-05-16","n":140},{"d":"2026-05-17","n":146},{"d":"2026-05-18","n":103},{"d":"2026-05-19","n":82},{"d":"2026-05-20","n":70},{"d":"2026-05-21","n":174},{"d":"2026-05-22","n":47},{"d":"2026-05-23","n":148},{"d":"2026-05-24","n":103},{"d":"2026-05-25","n":184},{"d":"2026-05-26","n":85},{"d":"2026-05-27","n":33},{"d":"2026-05-28","n":93},{"d":"2026-05-29","n":106},{"d":"2026-05-30","n":58},{"d":"2026-05-31","n":85},{"d":"2026-06-01","n":180},{"d":"2026-06-02","n":84},{"d":"2026-06-03","n":66},{"d":"2026-06-04","n":94},{"d":"2026-06-05","n":26},{"d":"2026-06-06","n":46},{"d":"2026-06-07","n":105},{"d":"2026-06-08","n":181},{"d":"2026-06-09","n":148},{"d":"2026-06-10","n":368},{"d":"2026-06-11","n":418},{"d":"2026-06-12","n":257},{"d":"2026-06-13","n":311},{"d":"2026-06-14","n":411},{"d":"2026-06-15","n":321},{"d":"2026-06-16","n":245},{"d":"2026-06-17","n":141},{"d":"2026-06-18","n":58},{"d":"2026-06-19","n":142},{"d":"2026-06-20","n":98},{"d":"2026-06-21","n":99},{"d":"2026-06-22","n":128},{"d":"2026-06-23","n":65},{"d":"2026-06-24","n":66},{"d":"2026-06-25","n":47},{"d":"2026-06-26","n":62},{"d":"2026-06-27","n":39},{"d":"2026-06-28","n":99},{"d":"2026-06-29","n":121},{"d":"2026-06-30","n":44},{"d":"2026-07-01","n":92},{"d":"2026-07-02","n":94},{"d":"2026-07-03","n":53},{"d":"2026-07-04","n":19},{"d":"2026-07-05","n":67},{"d":"2026-07-06","n":51},{"d":"2026-07-07","n":35},{"d":"2026-07-08","n":25},{"d":"2026-07-09","n":20},{"d":"2026-07-10","n":20},{"d":"2026-07-11","n":26},{"d":"2026-07-12","n":31},{"d":"2026-07-13","n":68},{"d":"2026-07-14","n":37},{"d":"2026-07-15","n":16},{"d":"2026-07-16","n":18},{"d":"2026-07-17","n":8},{"d":"2026-07-18","n":27},{"d":"2026-07-19","n":73},{"d":"2026-07-20","n":21},{"d":"2026-07-21","n":15},{"d":"2026-07-22","n":27},{"d":"2026-07-23","n":6},{"d":"2026-07-24","n":27},{"d":"2026-07-25","n":20},{"d":"2026-07-26","n":11},{"d":"2026-07-27","n":56},{"d":"2026-07-28","n":20},{"d":"2026-07-29","n":27},{"d":"2026-07-30","n":26},{"d":"2026-07-31","n":19},{"d":"2026-08-01","n":27},{"d":"2026-08-02","n":14},{"d":"2026-08-03","n":60},{"d":"2026-08-04","n":32},{"d":"2026-08-05","n":41},{"d":"2026-08-06","n":15},{"d":"2026-08-07","n":20},{"d":"2026-08-08","n":17},{"d":"2026-08-09","n":15},{"d":"2026-08-10","n":20},{"d":"2026-08-11","n":44},{"d":"2026-08-12","n":23},{"d":"2026-08-13","n":1},{"d":"2026-08-14","n":4},{"d":"2026-08-15","n":3},{"d":"2026-08-16","n":22},{"d":"2026-08-17","n":49},{"d":"2026-08-18","n":13},{"d":"2026-08-19","n":23},{"d":"2026-08-20","n":49},{"d":"2026-08-21","n":5},{"d":"2026-08-22","n":5},{"d":"2026-08-23","n":19},{"d":"2026-08-24","n":41},{"d":"2026-08-25","n":5},{"d":"2026-08-26","n":12},{"d":"2026-08-27","n":0},{"d":"2026-08-28","n":7},{"d":"2026-08-29","n":31},{"d":"2026-08-30","n":18},{"d":"2026-08-31","n":30},{"d":"2026-09-01","n":34},{"d":"2026-09-02","n":32},{"d":"2026-09-03","n":21},{"d":"2026-09-04","n":28},{"d":"2026-09-05","n":19},{"d":"2026-09-06","n":59},{"d":"2026-09-07","n":31},{"d":"2026-09-08","n":6},{"d":"2026-09-09","n":36},{"d":"2026-09-10","n":24},{"d":"2026-09-11","n":9},{"d":"2026-09-12","n":7},{"d":"2026-09-13","n":12},{"d":"2026-09-14","n":28},{"d":"2026-09-15","n":23},{"d":"2026-09-16","n":0},{"d":"2026-09-17","n":0},{"d":"2026-09-18","n":4},{"d":"2026-09-19","n":0},{"d":"2026-09-20","n":0},{"d":"2026-09-21","n":4},{"d":"2026-09-22","n":10},{"d":"2026-09-23","n":4},{"d":"2026-09-24","n":5},{"d":"2026-09-25","n":3},{"d":"2026-09-26","n":35},{"d":"2026-09-27","n":258},{"d":"2026-09-28","n":141},{"d":"2026-09-29","n":51}],"cobradoFuente":"estimado: cada pago de cada miembro ubicado en su mes por plan, fecha de alta y total pagado; antes de la comisión de la plataforma"};
 
 /* ---------- estado ---------- */
-const KEY = "laneA.tablero.v2", THEME_KEY = "llamada-unica-theme", LU_KEY = "llamada-unica-v3";
+const KEY = "laneA.tablero.v3", THEME_KEY = "llamada-unica-theme", LU_KEY = "llamada-unica-v3";
 const $ = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const DEFAULTS = { tab: 1, per: 12, mes: "2026-08", notes: false, fee: { fijo: "", pct: "" } };
@@ -361,7 +365,7 @@ function getK(p) { return p.split(".").reduce((o, k) => (o == null ? o : o[k]), 
 function setK(p, v) { const a = p.split("."); let o = state; while (a.length > 1) o = o[a.shift()]; o[a[0]] = v; }
 const numOf = v => { const x = parseFloat(v); return isFinite(x) && x > 0 ? x : 0; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const fmt = n => "$" + Math.round(n).toLocaleString("es-AR");
+const fmt = n => (n < 0 ? "-" : "") + "$" + Math.round(Math.abs(n)).toLocaleString("es-AR");
 const cnt = n => Math.round(n).toLocaleString("es-AR");
 const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
 const pl = (n, s, p) => cnt(n) + " " + (Math.round(n) === 1 ? s : p);
@@ -370,32 +374,71 @@ const MESL = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "a
 const ym2 = ym => MES[+ym.slice(5, 7) - 1] + (ym.slice(0, 4) === "2025" ? " 25" : "");
 const ymL = ym => MESL[+ym.slice(5, 7) - 1];
 const dmy = iso => { const [y, m, d] = iso.slice(0, 10).split("-").map(Number); return d + " " + MES[m - 1]; };
-/* si en este navegador hay una llamada única guardada, sus cifras de fijo y variable se traen para la liquidación */
+function prevYm(ym) { const [y, m] = ym.split("-").map(Number); return m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`; }
+function nextYm(ym) { const [y, m] = ym.split("-").map(Number); return m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`; }
 (function () { try { const lu = JSON.parse(localStorage.getItem(LU_KEY) || "null"); if (!lu || state.fee.fijo) return; const o = lu.o || {}, pick = String(o.pick || ""); if (pick === "1") { state.fee.fijo = o.f1; state.fee.pct = o.p1; } else if (pick === "2") { state.fee.fijo = o.f2; state.fee.pct = o.p2; } } catch (e) {} })();
 
 const D = DATA, H = D.hoy, M = D.meses, LAST = M[M.length - 1], PREV = M[M.length - 2];
 const base = D.lineaBase.valor;
 const byM = ym => M.find(x => x.m === ym);
 const partial = r => !!r.churnAl;
-/* el inicio del mes es el cierre del mes anterior (lo que espera quien suma a mano); si Skool arranca de otra cifra, la diferencia va a Ajustes */
 const inicio = r => { const i = M.indexOf(r); return i > 0 ? M[i - 1].mrr : r.existente; };
 const adj = r => inicio(r) == null ? null : r.mrr - (inicio(r) + (r.nuevo || 0) - (r.churn || 0) + (r.up || 0) - (r.down || 0) + (r.react || 0));
 const sgn = (v, neg) => (v === 0 ? "$0" : (neg ? "-" : "+") + fmt(Math.abs(v)));
 const compRows = r => {
   const a = adj(r), p = partial(r);
   return [
-    ["Inicio del mes", inicio(r) != null ? fmt(inicio(r)) : "·"],
-    ["Nuevo" + (r.nuevoAl ? " (" + r.nuevoAl + ")" : ""), r.nuevo != null ? sgn(r.nuevo) : "·", "--c-in"],
-    ["Perdido por bajas" + (r.churnAl ? " (al " + r.churnAl + ")" : ""), r.churn != null ? sgn(r.churn, true) : "·", "--c-out"],
-    ["Subieron de plan", r.up != null ? sgn(r.up) : "·"],
-    ["Bajaron de plan", r.down != null ? sgn(r.down, true) : "·"],
-    ["Reactivaciones", r.react != null ? sgn(r.react) : "·"],
-    ["Ajustes de Skool" + (p ? " (al " + r.churnAl + ")" : ""), a == null ? "·" : (Math.abs(a) < 2 ? "$0" : sgn(a, a < 0))],
-    [p ? "Recurrente hoy" : "Recurrente a fin de mes", fmt(r.mrr), "--c-us", true]
+    ["Inicio del mes", inicio(r) != null ? fmt(inicio(r)) : "·", null, "inicio"],
+    ["Nuevo" + (r.nuevoAl ? " (" + r.nuevoAl + ")" : ""), r.nuevo != null ? sgn(r.nuevo) : "·", "--c-in", "nuevo"],
+    ["Perdido por bajas" + (r.churnAl ? " (al " + r.churnAl + ")" : ""), r.churn != null ? sgn(r.churn, true) : "·", "--c-out", "perdido"],
+    ["Subieron de plan", r.up != null ? sgn(r.up) : "·", null, "subieron"],
+    ["Bajaron de plan", r.down != null ? sgn(r.down, true) : "·", null, "bajaron"],
+    ["Reactivaciones", r.react != null ? sgn(r.react) : "·", null, "react"],
+    ["Ajustes de la plataforma" + (p ? " (al " + r.churnAl + ")" : ""), a == null ? "·" : (Math.abs(a) < 2 ? "$0" : sgn(a, a < 0)), null, "ajustes"],
+    [p ? "Recurrente hoy" : "Recurrente a fin de mes", fmt(r.mrr), "--c-us", "recurrente"]
   ];
 };
-const name = () => D.comunidad;
-const owner = () => D.fundador;
+const cancelMes = D.cancelando.filter(c => c.plan === "mensual").reduce((s, c) => s + c.importe, 0), cancelAnu = D.cancelando.filter(c => c.plan === "anual").reduce((s, c) => s + c.importe, 0);
+const weeksFull = D.semanas.filter(w => w.d === 7), wLast = weeksFull[weeksFull.length - 1], wPrev = weeksFull[weeksFull.length - 2];
+
+/* leyendas de cada número: una línea, en las fichas y en el tooltip "i" */
+const DESC = {
+  recurrente: "Lo que cobra por mes con los planes activos, según la plataforma. Los anuales cuentan por doceavo.",
+  inicio: "El recurrente con el que cerró el mes anterior.",
+  nuevo: "Recurrente de los que entraron pagando en el mes.",
+  perdido: "Recurrente de los que se dieron de baja en el mes. La plataforma lo descuenta el día en que anuncian la baja.",
+  subieron: "Miembros que pasaron a un plan más caro en el mes.",
+  bajaron: "Miembros que pasaron a un plan más barato en el mes.",
+  react: "Miembros que se habían ido y volvieron a pagar.",
+  ajustes: "Diferencia entre el arranque que publica la plataforma y el cierre del mes anterior.",
+  lineaBase: "Promedio del recurrente de los tres meses previos. El variable corre solo sobre lo que la supere.",
+  cobrado: "Pagos entrados en el mes, antes de la comisión de la plataforma. Reconstruido pago por pago desde la lista de miembros.",
+  perdidoCash: "Recurrente de los que se fueron en el mes: lo que deja de entrar desde el mes siguiente.",
+  riesgo: "Pagos que fallaron y la plataforma está reintentando. Si nadie escribe, se pierden.",
+  upsell: "Lo cobrado por lo de arriba (el coaching) desde que existe: compras por precio.",
+  bajas: "Miembros que dejaron de pagar en el mes.",
+  bajasAnunciadas: "Miembros que ya pidieron la baja y pierden el acceso cuando termina su período pagado.",
+  fallidos: "Cobros que no pasaron y están en reintento.",
+  recuperos: "Tarjetas recuperadas con seguimiento en las 72 horas. Hoy nadie lo hace.",
+  recuperosUp: "Bajas que, al escribirles, pasaron a lo de arriba en vez de irse.",
+  activos: "Miembros con acceso hoy, según la plataforma.",
+  retencion: "Recurrente vivo al final del mes pasado sobre el que había al inicio.",
+  interaccion: "Miembros que entraron a la comunidad en el último mes sobre el total.",
+  actividad: "Posts, comentarios y entradas por día. Cada punto es un día del período.",
+  planes: "Cuántos pagan por mes y cuántos por año.",
+  visitantes: "Visitas únicas a la página de la comunidad en 30 días.",
+  registros: "Los que entraron en 30 días, pagando o en prueba.",
+  conversion: "Registros sobre visitantes, últimos 30 días.",
+  nuevoMrr: "Recurrente sumado por los que entraron en 30 días.",
+  fuentes: "De dónde venían los que se registraron en los últimos 30 días.",
+  compraron: "Personas que compraron el coaching desde que existe.",
+  pidieron: "Pidieron el coaching en los últimos 90 días, por el formulario.",
+  adentro: "Están en el coaching hoy.",
+  renovaron: "De los que lo terminaron, cuántos volvieron a comprar.",
+  calientes: "Escribieron preguntando por la comunidad en 90 días, sin que hubiera un llamado a la acción.",
+  flujo: "Arriba, los que entraron pagando en el mes; abajo, los que se dieron de baja. Sin contar pruebas gratis.",
+  pase: "El camino de la comunidad a lo de arriba: quién compró, quién pidió, quién renovó."
+};
 
 /* ---------- utilidades de dibujo ---------- */
 const NS = "http://www.w3.org/2000/svg";
@@ -415,10 +458,11 @@ const axisFmt = (v, money) => money ? (v >= 1000 ? "$" + (v / 1000).toLocaleStri
 const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
 const tip = $("#tip");
-function showTip(title, rowsT, x, y, note) {
+function showTip(title, rowsT, x, y, note, desc) {
   tip.innerHTML = "";
-  const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t);
-  rowsT.forEach(r => {
+  if (title) { const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t); }
+  if (desc) { const d = document.createElement("div"); d.className = "d"; d.textContent = desc; tip.appendChild(d); }
+  (rowsT || []).forEach(r => {
     const d = document.createElement("div"); d.className = "r";
     const k = document.createElement("i"); k.className = "k"; k.style.background = r.color || "transparent"; d.appendChild(k);
     const s = document.createElement("span"); s.textContent = r.label; d.appendChild(s);
@@ -434,8 +478,10 @@ function showTip(title, rowsT, x, y, note) {
   tip.style.left = left + "px"; tip.style.top = top + "px";
 }
 function hideTip() { tip.hidden = true; }
+/* el "i" de cada campo: la leyenda al pasar el mouse */
+document.addEventListener("pointerover", e => { const i = e.target.closest(".info"); if (i) showTip("", [], e.clientX, e.clientY, "", DESC[i.dataset.tip] || ""); });
+document.addEventListener("pointerout", e => { if (e.target.closest(".info")) hideTip(); });
 
-/* columnas: una serie, apiladas o espejadas; marcas bajo el eje para los meses con lanzamiento */
 function drawColumns(host, spec) {
   host.innerHTML = "";
   const W = Math.max(280, host.clientWidth || 600);
@@ -492,97 +538,119 @@ function drawColumns(host, spec) {
     rect.addEventListener("blur", off);
   });
 }
-/* línea: una serie, lavado de área, cruz que busca la X más cercana */
-function drawLine(host, spec) {
+/* dispersión: cada punto es un día; color por distancia al promedio (normal, el doble, cuatro veces) */
+function drawScatter(host, spec) {
   host.innerHTML = "";
-  const W = Math.max(280, host.clientWidth || 600), mL = 46, mR = 14, mT = 22, mB = 30, plotH = 200, HH = plotH + mT + mB;
+  const W = Math.max(280, host.clientWidth || 600), mL = 46, mR = 14, mT = 18, mB = 30, plotH = 210, HH = plotH + mT + mB;
   const svg = el("svg", { viewBox: `0 0 ${W} ${HH}`, width: W, height: HH, role: "img", "aria-label": spec.aria || "" }, host);
-  const pts = spec.points, n = pts.length, max = Math.max(1, ...pts.map(p => p.v)), t = ticksFor(max, 3), top = t[t.length - 1];
-  const plotW = W - mL - mR, xOf = i => mL + (n > 1 ? plotW * i / (n - 1) : plotW / 2), yOf = v => mT + plotH - v / top * plotH;
+  const pts = spec.points, n = pts.length, avg = spec.avg, max = Math.max(1, ...pts.map(p => p.v)), t = ticksFor(max, 3), top = t[t.length - 1];
+  const plotW = W - mL - mR, xOf = i => mL + 6 + (n > 1 ? (plotW - 12) * i / (n - 1) : plotW / 2), yOf = v => mT + plotH - v / top * plotH;
   t.forEach(v => { const y = yOf(v); el("line", { x1: mL, x2: W - mR, y1: y, y2: y, class: v === 0 ? "axis" : "grid" }, svg); el("text", { x: mL - 8, y: y + 4, class: "tick", "text-anchor": "end" }, svg, axisFmt(v)); });
-  const color = cssVar(spec.color);
-  const path = pts.map((p, i) => (i ? "L" : "M") + xOf(i).toFixed(1) + " " + yOf(p.v).toFixed(1)).join("");
-  el("path", { d: path + `L${xOf(n - 1).toFixed(1)} ${yOf(0)}L${xOf(0).toFixed(1)} ${yOf(0)}Z`, fill: color, class: "area" }, svg);
-  el("path", { d: path, stroke: color, class: "lineph" }, svg);
+  el("line", { x1: mL, x2: W - mR, y1: yOf(avg), y2: yOf(avg), class: "avg" }, svg);
+  el("text", { x: W - mR, y: yOf(avg) - 5, class: "tick", "text-anchor": "end" }, svg, "promedio " + cnt(avg));
+  const colorOf = v => cssVar(v >= avg * 4 ? "--c-out" : v >= avg * 2 ? "--c-in" : "--c-us");
+  const r = n > 200 ? 3 : n > 100 ? 3.5 : 4.5;
+  const dots = pts.map((p, i) => el("circle", { cx: xOf(i).toFixed(1), cy: yOf(p.v).toFixed(1), r, fill: colorOf(p.v), class: "pt" }, svg));
   const every = Math.max(1, Math.round(n / 6));
   pts.forEach((p, i) => { if ((i % every === 0 && n - 1 - i > every * 0.6) || i === n - 1) el("text", { x: xOf(i), y: HH - 8, class: "tick", "text-anchor": i === n - 1 ? "end" : i === 0 ? "start" : "middle" }, svg, p.label); });
-  const lastY = yOf(pts[n - 1].v);
-  el("circle", { cx: xOf(n - 1), cy: lastY, r: 4.5, fill: color, stroke: cssVar("--surface"), "stroke-width": 2 }, svg);
-  el("text", { x: xOf(n - 1) - 8, y: lastY - 9, class: "dlabel", "text-anchor": "end" }, svg, cnt(pts[n - 1].v));
-  const cross = el("line", { x1: 0, x2: 0, y1: mT, y2: mT + plotH, class: "cross", visibility: "hidden" }, svg);
-  const dot = el("circle", { cx: 0, cy: 0, r: 4.5, fill: color, stroke: cssVar("--surface"), "stroke-width": 2, visibility: "hidden" }, svg);
   const hit = el("rect", { x: mL, y: mT - 10, width: plotW, height: plotH + 20, class: "hit", tabindex: 0, role: "img", "aria-label": spec.aria || "" }, svg);
-  const at = (i, cx, cy) => { cross.setAttribute("x1", xOf(i)); cross.setAttribute("x2", xOf(i)); cross.setAttribute("visibility", "visible"); dot.setAttribute("cx", xOf(i)); dot.setAttribute("cy", yOf(pts[i].v)); dot.setAttribute("visibility", "visible"); showTip(pts[i].title || pts[i].label, [{ label: spec.name, value: cnt(pts[i].v), color }], cx, cy, pts[i].note); };
-  const off = () => { cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); hideTip(); };
-  hit.addEventListener("pointermove", e => { const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left) * (W / r.width); const i = Math.max(0, Math.min(n - 1, Math.round((px - mL) / (plotW / Math.max(1, n - 1))))); at(i, e.clientX, e.clientY); });
+  let cur = -1;
+  const at = (i, cx, cy) => { if (cur >= 0) dots[cur].classList.remove("on"); cur = i; dots[i].classList.add("on"); const p = pts[i]; showTip(p.title || p.label, [{ label: spec.name, value: cnt(p.v), color: colorOf(p.v) }, { label: "Promedio del período", value: cnt(avg) }], cx, cy, p.v >= avg * 4 ? "Cuatro veces el promedio o más." : p.v >= avg * 2 ? "El doble del promedio o más." : ""); };
+  const off = () => { if (cur >= 0) dots[cur].classList.remove("on"); cur = -1; hideTip(); };
+  hit.addEventListener("pointermove", e => { const rb = svg.getBoundingClientRect(); const px = (e.clientX - rb.left) * (W / rb.width); const i = Math.max(0, Math.min(n - 1, Math.round((px - mL - 6) / ((plotW - 12) / Math.max(1, n - 1))))); at(i, e.clientX, e.clientY); });
   hit.addEventListener("pointerleave", off);
   hit.addEventListener("focus", () => { const b = hit.getBoundingClientRect(); at(n - 1, b.right - 40, b.top + 40); });
   hit.addEventListener("blur", off);
 }
-function legend(host, keys) { host.innerHTML = keys.map(k => `<span class="key"><i class="sw${k.tri ? " tri" : ""}" style="${k.tri ? "" : "background:" + cssVar(k.color)}"></i>${esc(k.label)}</span>`).join(""); }
-function tableOf(host, head, body) { host.innerHTML = `<table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body.map(r => `<tr>${r.map(c => `<td${c === "·" ? ' class="mut"' : ""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`; }
+function legend(host, keys) { host.innerHTML = keys.map(k => `<span class="key"><i class="sw${k.tri ? " tri" : ""}${k.dot ? " dot" : ""}" style="${k.tri ? "" : "background:" + cssVar(k.color)}"></i>${esc(k.label)}</span>`).join(""); }
+function tableOf(host, head, body, opts) {
+  const o = opts || {};
+  host.innerHTML = `<table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body.map((r, ri) => `<tr${o.strong && o.strong.includes(ri) ? ' class="strong"' : ""}>${r.map((c, ci) => `<td${c === "·" ? ' class="mut"' : ""}>${ci === 0 && o.desc && o.desc[ri] ? esc(c) + `<span class="info" data-tip="${o.desc[ri]}">i</span>` : esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
 function hbars(host, rows, colors, fmtV) {
   const max = Math.max(1, ...rows.map(r => r.v));
-  host.innerHTML = `<div class="hbars">${rows.map((r, i) => `<div class="hrow"><span class="hl">${esc(r.label)}</span><div class="htrack"><div class="hbar" style="width:${Math.max(1, r.v / max * 100)}%;background:${cssVar(colors[i % colors.length])}"></div></div><span class="hv">${fmtV ? fmtV(r) : cnt(r.v)}</span></div>`).join("")}</div>`;
+  host.innerHTML = `<div class="hbars">${rows.map((r, i) => `<div class="hrow"><span class="hl">${esc(r.label)}${r.desc ? `<span class="info" data-tip="${r.desc}">i</span>` : ""}</span><div class="htrack"><div class="hbar" style="width:${Math.max(1, r.v / max * 100)}%;background:${cssVar(colors[i % colors.length])}"></div></div><span class="hv">${fmtV ? fmtV(r) : cnt(r.v)}</span></div>`).join("")}</div>`;
 }
 function deltaHTML(now, before, o) {
-  if (before == null || now == null) return "";
-  const d = now - before; if (!d) return `<div class="delta">Igual que ${o.vs}</div>`;
+  if (before == null || now == null) return `<div class="delta">${o.none || ""}</div>`;
+  const d = now - before; if (!d) return `<div class="delta">Igual ${o.vs}</div>`;
   const good = o.upGood ? d > 0 : d < 0;
   return `<div class="delta ${good ? "up" : "down"}"><span class="g">${d > 0 ? "▲" : "▼"}</span>${o.money ? fmt(Math.abs(d)) : cnt(Math.abs(d))} ${o.vs}</div>`;
 }
+const tile = (label, val, delta, descKey, lead) => `<div class="tile${lead ? " lead" : ""}"><div class="mono">${label}${descKey ? `<span class="info" data-tip="${descKey}">i</span>` : ""}</div><div class="val">${val}</div>${delta || '<div class="delta"></div>'}<div class="leg">${descKey ? esc(DESC[descKey]) : ""}</div></div>`;
+const group = (host, title, sub, tilesHTML, extra) => { host.innerHTML = `<div class="ghead"><h2 class="strong">${title}</h2><span class="gsub">${sub}</span></div><div class="tiles">${tilesHTML}</div>${extra || ""}`; };
 
 /* ---------- render ---------- */
 function renderHeader() {
-  $("#h-name").textContent = name(); $("#avatar").textContent = "C";
-  document.title = "Tablero compartido";
   $("#h-lede").textContent = `${D.plataforma} · ${D.precio} · ${cnt(H.miembros)} miembros · desde septiembre de 2025`;
   const read = new Date(D.leido);
   $("#st-read").textContent = `Leído el ${read.getDate()} de ${MESL[read.getMonth()]}, ${String(read.getHours()).padStart(2, "0")}:${String(read.getMinutes()).padStart(2, "0")}`;
-  $("#st-src").textContent = "Plataforma, cobros y lista del pase";
   $$(".stepbtn").forEach(b => { if (+b.dataset.tab === state.tab) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
   $$(".screen").forEach((s, i) => s.hidden = i + 1 !== state.tab);
   $("#seg-per").innerHTML = [3, 6, 12].map(p => `<button type="button" data-per="${p}" aria-pressed="${state.per === p}">${p} meses</button>`).join("");
-  $("#hint-base").innerHTML = `Línea base <b>${fmt(base)}</b> por mes · promedio de ${esc(D.lineaBase.meses)}`;
-  const mesesCerrados = [{ ym: "2026-08", t: "Agosto", s: "cerrado" }, { ym: "2026-09", t: "Septiembre", s: "en curso" }];
-  ["#seg-mes2", "#seg-mes3"].forEach(s => $(s).innerHTML = mesesCerrados.map(m => `<button type="button" data-mes="${m.ym}" aria-pressed="${state.mes === m.ym}">${m.t}<small style="display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;opacity:.8">${m.s}</small></button>`).join(""));
+  $("#hint-base").innerHTML = `Línea base <b>${fmt(base)}</b> por mes · promedio de ${esc(D.lineaBase.meses)}<span class="info" data-tip="lineaBase">i</span>`;
+  const meses = [{ ym: "2026-08", t: "Agosto", s: "cerrado" }, { ym: "2026-09", t: "Septiembre", s: "en curso" }];
+  ["#seg-mes2", "#seg-mes3"].forEach(s => $(s).innerHTML = meses.map(m => `<button type="button" data-mes="${m.ym}" aria-pressed="${state.mes === m.ym}">${m.t}<small>${m.s}</small></button>`).join(""));
   $("#btn-notes").textContent = "Notas para Paul: " + (state.notes ? "encendidas" : "apagadas");
   document.body.classList.toggle("notes", !!state.notes);
-  $("#bar-hint").textContent = `${name()} · lo mismo que ve ${owner()}, cuando quiera.`;
+  $("#bar-hint").textContent = `${D.comunidad} · lo mismo que ve ${D.fundador}, cuando quiera.`;
 }
-function renderHero() {
-  const g = H.mrr - base, up = g >= 0;
-  $("#hero").innerHTML = `<div><div class="mono">Recurrente hoy</div><div class="big">${fmt(H.mrr)}</div><div class="delta ${up ? "up" : "down"}"><span class="g">${up ? "▲" : "▼"}</span>${fmt(Math.abs(g))} ${up ? "sobre" : "bajo"} la línea base (${fmt(base)}, ${up ? "+" : "-"}${pct(Math.abs(g), base)}%)</div></div>
-    <div class="side"><p><b>${cnt(H.mensuales)}</b> en plan mensual y <b>${cnt(H.anuales)}</b> anuales, en tres niveles. En 30 días entraron <b>${cnt(H.registros30)}</b> de ${cnt(H.visitantes30)} visitantes (${String(H.conversion30).replace(".", ",")}%), <b>${fmt(H.nuevoMrr30)}</b> de recurrente nuevo.</p>
-    <div class="pair"><div><span class="mono">Retención</span><span class="v">${H.retencion}%</span></div><div><span class="mono">Interacción</span><span class="v">${H.interaccion}%</span></div><div><span class="mono">Bajas en 30 días</span><span class="v">${cnt(H.bajas30d)}</span></div></div>
-    <p class="pnote">Skool · Estadísticas · Panel de control, leído el 29/9. Recurrente, retención (79%: recurrente vivo al final del mes pasado sobre el del inicio), interacción, visitantes, registros y recurrente nuevo son de Skool. Planes: contados de la lista de miembros. Línea base: promedio del recurrente de junio, julio y agosto según Skool ($5.590, $4.960, $4.200). El fundador dijo $3.500 en la auditoría del 14/9, de memoria; el panel decía más.</p></div>`;
-}
-function renderKPIs() {
-  const cancelMes = D.cancelando.filter(c => c.plan === "mensual").reduce((s, c) => s + c.importe, 0), cancelAnu = D.cancelando.filter(c => c.plan === "anual").reduce((s, c) => s + c.importe, 0);
-  const tile = (label, val, extra) => `<div class="tile"><div class="mono">${label}</div><div class="val">${val}</div>${extra || ""}</div>`;
-  $("#kpis").innerHTML = tile("Activos", cnt(H.miembros), deltaHTML(H.miembros, H.miembrosHace30d, { upGood: true, vs: "en 30 días" }))
-    + tile("Bajas del mes", cnt(LAST.bajas), `<div class="delta">${pct(LAST.bajas, PREV.activos)}% de la base · ${cnt(PREV.bajas)} en ${ymL(PREV.m)}</div>`)
-    + tile("Bajas anunciadas", cnt(H.cancelando), `<div class="delta down">${fmt(cancelMes)}/mes y ${fmt(cancelAnu)}/año que se van</div>`)
-    + tile("Pagos fallidos", cnt(H.pagosFallidos), `<div class="delta down">${fmt(H.pagosFallidosImporte)}/mes en reintento, sin seguimiento</div>`)
-    + tile("El pase", cnt(D.pase.pidieron90) + `<small>pidieron</small>`, `<div class="delta">${cnt(D.pase.adentro)} adentro · ${cnt(D.pase.renovaron)} de ${cnt(D.pase.probaron)} renovaron</div>`);
+function renderGroups() {
+  const g = LAST.mrr - base;
+  group($("#g-fin"), "Finanzas", "lo que entra, lo que se va y lo que está en riesgo",
+    tile("Recurrente hoy", fmt(H.mrr), deltaHTML(H.mrr, base, { money: true, upGood: true, vs: "sobre la línea base (" + pct(Math.abs(g), base) + "%)" }), "recurrente", true)
+    + tile("Cobrado en el mes", "≈" + fmt(LAST.cobrado), deltaHTML(LAST.cobrado, PREV.cobrado, { money: true, upGood: true, vs: "que en " + ymL(PREV.m) }), "cobrado")
+    + tile("Perdido por bajas", fmt(LAST.churn), deltaHTML(LAST.churn, PREV.churn, { money: true, upGood: false, vs: "que en " + ymL(PREV.m) }), "perdidoCash")
+    + tile("En riesgo por tarjetas", fmt(H.pagosFallidosImporte) + "<small>/mes</small>", `<div class="delta down">${pl(H.pagosFallidos, "pago fallido", "pagos fallidos")} en reintento</div>`, "riesgo")
+    + tile("Cobrado por el coaching", fmt(D.pase.generado), `<div class="delta">${cnt(D.pase.compraron)} compras a ${fmt(D.pase.precio)}, desde que existe</div>`, "upsell"),
+    `<p class="pnote">Recurrente y línea base: Skool. Cobrado: reconstruido pago por pago desde la lista de miembros (plan, fecha de alta, total pagado por cada uno); los payouts los ve solo el dueño en Skool, el admin no. El fundador dijo $5.498 de payouts en junio; la reconstrucción da $3.970 antes de comisiones: la diferencia puede ser el coaching cobrado por otra vía o el momento en que Skool paga. Coaching: 10 compras a $1.047 según la auditoría del 14/9; en la lista hay planes VIP de $264 a $950 al año y uno de $310 al mes que parecen ese ticket.</p>`);
+  group($("#g-cob"), "Cobros", "bajas, tarjetas y recuperos del mes",
+    tile("Bajas del mes", cnt(LAST.bajas), deltaHTML(LAST.bajas, PREV.bajas, { upGood: false, vs: "que en " + ymL(PREV.m) }), "bajas")
+    + tile("Bajas anunciadas", cnt(H.cancelando), `<div class="delta down">${fmt(cancelMes)}/mes y ${fmt(cancelAnu)}/año que se van</div>`, "bajasAnunciadas")
+    + tile("Pagos fallidos", cnt(H.pagosFallidos), `<div class="delta down">${fmt(H.pagosFallidosImporte)}/mes en reintento</div>`, "fallidos")
+    + tile("Recuperos", "0", `<div class="delta">Sin seguimiento hoy</div>`, "recuperos")
+    + tile("Recuperos con upsell", "0", `<div class="delta">Sin contraoferta hoy</div>`, "recuperosUp"),
+    `<p class="pnote">Bajas del mes: lista de miembros (33 al 29/9). Bajas anunciadas: pestaña Cancelando (10, con fecha en que pierden el acceso). Pagos fallidos: campo de reintento en dos miembros a $37. Recuperos: no existen porque nadie los hace; son las dos filas que llenamos nosotros desde el día 1.</p>`);
+  group($("#g-com"), "Comunidad", "quiénes están y cuánto se mueven",
+    tile("Activos", cnt(H.miembros), deltaHTML(H.miembros, H.miembrosHace30d, { upGood: true, vs: "en 30 días" }), "activos")
+    + tile("Retención", H.retencion + "<small>%</small>", `<div class="delta">Del recurrente, mes a mes</div>`, "retencion")
+    + tile("Interacción", H.interaccion + "<small>%</small>", `<div class="delta">Entraron en el último mes</div>`, "interaccion")
+    + tile("Actividad de la semana", cnt(wLast.n), deltaHTML(wLast.n, wPrev.n, { upGood: true, vs: "que la semana anterior" }), "actividad")
+    + tile("Planes", cnt(H.mensuales) + "<small>mensuales</small>", `<div class="delta">${cnt(H.anuales)} anuales, en tres niveles</div>`, "planes"),
+    `<p class="pnote">Activos, retención e interacción: Skool · Panel de control (79% y 82% son definiciones de Skool). Actividad: acciones por día del grupo según Skool, sumadas por semana completa. Planes: contados en la lista de miembros.</p>`);
+  group($("#g-cap"), "Captación", "últimos 30 días, según la plataforma",
+    tile("Visitantes", cnt(H.visitantes30), `<div class="delta">A la página de la comunidad</div>`, "visitantes")
+    + tile("Registros", cnt(H.registros30), deltaHTML(H.registros30, H.registrosPrev30, { upGood: true, vs: "que los 30 días previos" }), "registros")
+    + tile("Conversión", String(H.conversion30).replace(".", ",") + "<small>%</small>", `<div class="delta">Registros sobre visitantes</div>`, "conversion")
+    + tile("Recurrente nuevo", fmt(H.nuevoMrr30), deltaHTML(H.nuevoMrr30, H.nuevoMrrPrev, { money: true, upGood: true, vs: "que en " + ymL(PREV.m) }), "nuevoMrr")
+    + tile("Del directo", cnt(D.registrosDia.reduce((a, b) => (b.n > a.n ? b : a)).n), `<div class="delta">Registros el día del lanzamiento</div>`, "registros"),
+    `<p class="pnote">Skool · Panel de control · Crecimiento, últimos 30 días. Los 30 días previos: 8 registros según la serie mensual de miembros de Skool (agosto). Recurrente nuevo de agosto: $120, serie de MRR.</p>`);
+  group($("#g-ven"), "Ventas", "el pase de la comunidad a lo de arriba",
+    tile("Compraron el coaching", cnt(D.pase.compraron), `<div class="delta up">${fmt(D.pase.generado)} cobrados</div>`, "compraron", true)
+    + tile("Pidieron en 90 días", cnt(D.pase.pidieron90), `<div class="delta">Por el formulario</div>`, "pidieron")
+    + tile("Están adentro", cnt(D.pase.adentro), `<div class="delta">Una llamada por semana cada uno</div>`, "adentro")
+    + tile("Renovaron", cnt(D.pase.renovaron) + "<small>de " + cnt(D.pase.probaron) + "</small>", `<div class="delta down">Nadie volvió a comprar</div>`, "renovaron")
+    + tile("Lista caliente", cnt(D.pase.calientes), `<div class="delta">60 en las últimas dos semanas</div>`, "calientes"),
+    `<p class="pnote">Todo de la auditoría del 14/9, dicho por el fundador. Es la parte que la plataforma no mide: la lista que llevamos nosotros.</p>`);
 }
 function renderCharts() {
   const shown = M.slice(-state.per);
   drawColumns($("#ch-mrr"), {
     money: true, ref: { v: base, label: "Línea base" }, colors: { mrr: "--c-us" }, marks: true, aria: "Recurrente por mes contra la línea base",
-    cats: shown.map(r => ({ label: ym2(r.m), short: MES[+r.m.slice(5, 7) - 1], mark: !!r.lanz, up: [{ key: "mrr", v: r.mrr }], title: ymL(r.m) + " " + r.m.slice(0, 4), note: (r.lanz || "") + (partial(r) ? " · Mes en curso: nuevo y bajas salen de la lista de miembros; los cambios de plan los publica Skool al cierre y hasta ahí van en $0. Skool ya descuenta a quien anunció la baja aunque siga adentro: eso es la mayor parte del ajuste." : ""), tip: compRows(r).filter(x => x[1] !== "·" && (x[1] !== "$0" || partial(r))).map(x => ({ label: x[0], value: x[1], color: x[2] ? cssVar(x[2]) : null })).concat([{ label: "Línea base", value: fmt(base) }]) }))
+    cats: shown.map(r => ({ label: ym2(r.m), short: MES[+r.m.slice(5, 7) - 1], mark: !!r.lanz, up: [{ key: "mrr", v: r.mrr }], title: ymL(r.m) + " " + r.m.slice(0, 4), note: (r.lanz || "") + (partial(r) ? " · Mes en curso: nuevo y bajas salen de la lista de miembros; los cambios de plan los publica la plataforma al cierre y hasta ahí van en $0. La plataforma ya descuenta a quien anunció la baja aunque siga adentro: eso es la mayor parte del ajuste." : ""), tip: compRows(r).filter(x => x[1] !== "·" && (x[1] !== "$0" || partial(r))).map(x => ({ label: x[0], value: x[1], color: x[2] ? cssVar(x[2]) : null })).concat([{ label: "Línea base", value: fmt(base) }]) }))
   });
   legend($("#lg-mrr"), [{ label: "Recurrente a fin de mes", color: "--c-us" }, { label: "Mes con lanzamiento", tri: true }]);
   const peak = M.reduce((a, b) => (b.mrr > a.mrr ? b : a));
   $("#sub-mrr").innerHTML = `Cada lanzamiento sube el recurrente y en dos meses se va: el pico fue <b>${fmt(peak.mrr)}</b> en ${ymL(peak.m)}, y en ${ymL(PREV.m)} estaba en <b>${fmt(PREV.mrr)}</b>. Lo que se pierde por bajas cada mes: entre ${fmt(Math.min(...M.filter(r => r.churn).map(r => r.churn)))} y ${fmt(Math.max(...M.filter(r => r.churn).map(r => r.churn)))}.`;
   {
-    const labels = ["Inicio del mes", "Nuevo", "Perdido por bajas", "Subieron de plan", "Bajaron de plan", "Reactivaciones", "Ajustes de Skool", "Recurrente a fin de mes"];
+    const labels = ["Inicio del mes", "Nuevo", "Perdido por bajas", "Subieron de plan", "Bajaron de plan", "Reactivaciones", "Ajustes de la plataforma", "Recurrente a fin de mes"];
+    const keys = ["inicio", "nuevo", "perdido", "subieron", "bajaron", "react", "ajustes", "recurrente"];
     const body = labels.map((l, i) => [l, ...shown.map(r => { const x = compRows(r)[i]; return x[1] + (i === 1 && r.nuevoAl ? " " + r.nuevoAl : "") + (i === 2 && r.churnAl ? " al " + r.churnAl : "") + (i === 6 && partial(r) ? " al " + r.churnAl : "") + (i === 7 && partial(r) ? " hoy" : ""); })]);
-    body.push(["Contra la línea base", ...shown.map(r => (r.mrr >= base ? "+" : "-") + fmt(Math.abs(r.mrr - base)))]);
-    tableOf($("#tb-mrr"), ["Mes", ...shown.map(r => ym2(r.m))], body);
-    $("#tb-mrr tbody tr:nth-child(8)").classList.add("strong");
+    body.push(["Cobrado en el mes", ...shown.map(r => "≈" + fmt(r.cobrado))]); keys.push("cobrado");
+    body.push(["Contra la línea base", ...shown.map(r => (r.mrr >= base ? "+" : "-") + fmt(Math.abs(r.mrr - base)))]); keys.push("lineaBase");
+    tableOf($("#tb-mrr"), ["Mes", ...shown.map(r => ym2(r.m))], body, { strong: [7], desc: keys });
   }
-  $("#pn-mrr").textContent = "Serie oficial de Skool (Estadísticas), septiembre 2025 a agosto 2026, con sus componentes: nuevo, churn, reactivación, upgrade y downgrade. Septiembre 2026 es el recurrente de hoy y el nuevo de los últimos 30 días; lo perdido por bajas de septiembre ($600, 33 bajas al 29/9) sale de la lista de miembros, porque Skool publica ese componente al cerrar el mes. En los meses cerrados las dos fuentes coinciden a menos de $120. Cada mes cierra por identidad: inicio más nuevo, subas y reactivaciones, menos bajas y bajas de plan. Cuando el inicio que publica Skool no es igual al cierre del mes anterior (abril arranca $16 abajo de marzo, julio $72 abajo de junio), la diferencia va a la fila Ajustes de Skool. En septiembre (mes en curso) el nuevo sale de la lista de miembros (82 altas pagas, $2.280; Skool dice $2.284 a 30 días), las bajas también ($600), no hay reactivaciones vistas, y los cambios de plan quedan en $0 hasta que Skool cierre el mes. El ajuste de septiembre (-$372) es sobre todo esto: Skool descuenta del recurrente a los 10 que anunciaron la baja ($248 por mes) el día en que la anuncian, aunque sigan adentro hasta octubre; el resto (-$124) es la diferencia habitual de conteo. Los lanzamientos vienen de lo que contó el fundador en las llamadas del 9/9 y el 14/9: oficial 9/9/25, segundo 28/10/25, con prueba gratis en diciembre, febrero, abril y junio de 2026, y el reto de 21 días el 27/9/26.";
+  $("#pn-mrr").textContent = "Serie oficial de Skool (Estadísticas), septiembre 2025 a agosto 2026, con sus componentes: nuevo, churn, reactivación, upgrade y downgrade. Cada mes cierra por identidad desde el cierre anterior; cuando Skool arranca el mes de otra cifra (abril -$16, julio -$71) la diferencia va a Ajustes. Septiembre: nuevo de la lista de miembros (82 altas pagas, $2.280; Skool dice $2.284 a 30 días), bajas $600 al 29/9, sin reactivaciones vistas, cambios de plan en $0 hasta el cierre; el ajuste (-$372) es sobre todo Skool descontando a los 10 que anunciaron la baja ($248 por mes). Lanzamientos: lo que contó el fundador el 9/9 y el 14/9. Cobrado: estimado, ver Finanzas.";
 
   drawColumns($("#ch-flujo"), {
     colors: { altas: "--c-in", bajas: "--c-out" }, aria: "Quién entra pagando y quién se va, por mes",
@@ -591,67 +659,95 @@ function renderCharts() {
   legend($("#lg-flujo"), [{ label: "Entraron pagando", color: "--c-in" }, { label: "Se fueron", color: "--c-out" }]);
   const avgB = Math.round(M.slice(-6).reduce((s, r) => s + r.bajas, 0) / 6);
   $("#sub-flujo").innerHTML = `Se van <b>${cnt(avgB)} por mes</b> de promedio en el último semestre, alrededor del 20% de la base. Entre lanzamientos entran ${cnt(byM("2026-08").altas)} o ${cnt(byM("2026-07").altas)}; en un lanzamiento, ${cnt(byM("2026-09").altas)}.`;
-  tableOf($("#tb-flujo"), ["Mes", ...shown.map(r => ym2(r.m))], [["Entraron pagando", ...shown.map(r => cnt(r.altas))], ["En prueba gratis", ...shown.map(r => r.pruebas ? cnt(r.pruebas) : "·")], ["Se fueron", ...shown.map(r => cnt(r.bajas))], ["Activos a fin de mes", ...shown.map(r => cnt(r.activos))]]);
-  $("#pn-flujo").textContent = "Reconstruido de la lista de miembros de Skool (206 activos, 10 cancelando, 843 dados de baja): fecha de alta aprobada, plan, fecha de baja y las pruebas gratis que no convirtieron. Solo cuenta a quien pagó alguna vez. Las cifras de Skool y las de esta reconstrucción no coinciden al dólar (Skool cuenta por estado de suscripción).";
+  tableOf($("#tb-flujo"), ["Mes", ...shown.map(r => ym2(r.m))], [["Entraron pagando", ...shown.map(r => cnt(r.altas))], ["En prueba gratis", ...shown.map(r => r.pruebas ? cnt(r.pruebas) : "·")], ["Se fueron", ...shown.map(r => cnt(r.bajas))], ["Activos a fin de mes", ...shown.map(r => cnt(r.activos))]], { desc: ["nuevo", "registros", "bajas", "activos"] });
+  $("#pn-flujo").textContent = "Reconstruido de la lista de miembros (206 activos, 10 cancelando, 843 dados de baja): fecha de alta aprobada, plan, fecha de baja y las pruebas gratis que no convirtieron. Solo cuenta a quien pagó alguna vez. La serie de miembros de Skool cuenta también las pruebas: septiembre 79 nuevos y 37 bajas según Skool.";
 
-  const wk = D.semanas.filter(w => w.d === 7).slice(-(state.per === 3 ? 13 : state.per === 6 ? 26 : 52));
-  drawLine($("#ch-act"), { color: "--c-us", name: "Acciones en la semana", aria: "Actividad semanal en la comunidad", points: wk.map(w => ({ label: dmy(w.w), v: w.n, title: "Semana del " + dmy(w.w) + " " + w.w.slice(0, 4) })) });
-  const wmax = wk.reduce((a, b) => (b.n > a.n ? b : a)), wlast = wk[wk.length - 1];
-  $("#sub-act").innerHTML = `Posts, comentarios y entradas por semana. El pico fue la semana del <b>${dmy(wmax.w)}</b> con ${cnt(wmax.n)}; la última semana completa, ${cnt(wlast.n)}. Con la comunidad quieta entre lanzamientos, la actividad cae a menos de 100 por semana.`;
-  tableOf($("#tb-act"), ["Semana", ...wk.slice(-12).map(w => dmy(w.w))], [["Acciones", ...wk.slice(-12).map(w => cnt(w.n))]]);
-  $("#pn-act").textContent = "Skool · actividad diaria del grupo (daily_activities) desde el 6/10/2025, sumada por semana. Semanas completas de lunes a domingo.";
+  const nDays = state.per === 3 ? 91 : state.per === 6 ? 182 : 365;
+  const days = D.dias.slice(-nDays), avg = Math.round(days.reduce((s, d) => s + d.n, 0) / days.length);
+  drawScatter($("#ch-act"), { name: "Acciones en el día", avg, aria: "Actividad por día en la comunidad", points: days.map(d => ({ label: dmy(d.d), v: d.n, title: dmy(d.d) + " " + d.d.slice(0, 4) })) });
+  legend($("#lg-act"), [{ label: "Normal", color: "--c-us", dot: true }, { label: "El doble del promedio", color: "--c-in", dot: true }, { label: "Cuatro veces o más", color: "--c-out", dot: true }]);
+  $("#act-avg").textContent = `Promedio: ${cnt(avg)} por día`;
+  const dmax = days.reduce((a, b) => (b.n > a.n ? b : a)), outliers = days.filter(d => d.n >= avg * 4).length, dbl = days.filter(d => d.n >= avg * 2 && d.n < avg * 4).length;
+  $("#sub-act").innerHTML = `Posts, comentarios y entradas por día. En ${state.per} meses, ${pl(outliers, "día", "días")} con cuatro veces el promedio o más y ${cnt(dbl)} con el doble: son los lanzamientos y los retos. El máximo fue el <b>${dmy(dmax.d)}</b> con ${cnt(dmax.n)}.`;
+  const lastDays = days.slice(-14);
+  tableOf($("#tb-act"), ["Día", ...lastDays.map(d => dmy(d.d))], [["Acciones", ...lastDays.map(d => cnt(d.n))]], { desc: ["actividad"] });
+  $("#pn-act").textContent = "Skool · actividad diaria del grupo (daily_activities) desde el 6/10/2025. Colores: normal, el doble del promedio del período, cuatro veces o más. El promedio cambia con el período elegido.";
 }
 function renderCancel() {
   const rows = D.cancelando.slice().sort((a, b) => (a.pierde < b.pierde ? -1 : 1));
-  const mes = rows.filter(c => c.plan === "mensual").reduce((s, c) => s + c.importe, 0), anu = rows.filter(c => c.plan === "anual").reduce((s, c) => s + c.importe, 0);
-  $("#cancel-sum").textContent = `${cnt(rows.length)} personas`;
-  $("#cancel").innerHTML = `<table><thead><tr><th>Pierde el acceso</th><th>Plan</th><th>Desde</th><th>Importe</th></tr></thead><tbody>${rows.map(c => `<tr><td>${dmy(c.pierde)}${c.pierde.slice(0, 4) !== "2026" ? " " + c.pierde.slice(0, 4) : ""}</td><td class="mut">${c.plan}</td><td class="mut">${ym2(c.desde)}</td><td>${fmt(c.importe)}${c.plan === "anual" ? "/año" : "/mes"}</td></tr>`).join("")}<tr class="total"><td>Se va sin que nadie escriba</td><td></td><td></td><td>${fmt(mes)}/mes y ${fmt(anu)}/año</td></tr></tbody></table>`;
-  $("#sub-cancel").innerHTML = `Además, <b>${pl(H.pagosFallidos, "pago fallido", "pagos fallidos")}</b> en reintento por ${fmt(H.pagosFallidosImporte)}/mes. Cada nombre de esta lista recibe un mensaje de una persona en la semana en que aparece; hoy no lo recibe nadie.`;
-  $("#pn-cancel").textContent = "Pestaña Cancelando de Miembros: la fecha es el fin del período ya pagado (cuando pierde el acceso) y el importe es el del plan. Pagos fallidos: dos miembros con campo de reintento de cobro (uno activo, uno cancelando), los dos a $37. Sin nombres a propósito.";
+  $("#cancel-sum").textContent = `${cnt(rows.length + H.pagosFallidos)} personas`;
+  const fallidos = Array.from({ length: H.pagosFallidos }, () => ({ importe: H.pagosFallidosImporte / H.pagosFallidos }));
+  $("#cancel").innerHTML = `<table><thead><tr><th>Tipo</th><th>Qué pasa</th><th>Plan</th><th>Importe</th></tr></thead><tbody>${rows.map(c => `<tr><td><span class="tag">Baja anunciada</span></td><td>Acceso hasta el ${dmy(c.pierde)}${c.pierde.slice(0, 4) !== "2026" ? " " + c.pierde.slice(0, 4) : ""}</td><td class="mut">${c.plan}, desde ${ym2(c.desde)}</td><td>${fmt(c.importe)}${c.plan === "anual" ? "/año" : "/mes"}</td></tr>`).join("")}${fallidos.map(f => `<tr><td><span class="tag warn">Pago fallido</span></td><td>En reintento, sin mensaje</td><td class="mut">mensual</td><td>${fmt(f.importe)}/mes</td></tr>`).join("")}<tr class="total"><td colspan="3">Se va sin que nadie escriba</td><td>${fmt(cancelMes + H.pagosFallidosImporte)}/mes<br>${fmt(cancelAnu)}/año</td></tr></tbody></table>`;
+  $("#sub-cancel").innerHTML = `<b>Baja anunciada</b>: ya pidió irse y pierde el acceso cuando termina lo pagado. <b>Pago fallido</b>: la tarjeta no pasó y la plataforma reintenta. A los dos les escribe una persona en la semana en que aparecen; hoy no lo hace nadie.`;
+  $("#pn-cancel").textContent = "Pestaña Cancelando de Miembros: la fecha es el fin del período ya pagado y el importe es el del plan. Pagos fallidos: dos miembros con campo de reintento de cobro, los dos a $37; su fecha de alta no se muestra a propósito. Sin nombres.";
 }
 function renderPase() {
   const P = D.pase;
-  $("#pase-price").textContent = fmt(P.precio);
-  hbars($("#pase"), [{ label: "Compradores históricos", v: P.compradores }, { label: "Lista caliente (90 días)", v: P.calientes }, { label: "Pidieron el coaching", v: P.pidieron90 }, { label: "Están adentro", v: P.adentro }, { label: "Renovaron", v: P.renovaron }], ["--f1", "--f2", "--f3", "--f4", "--f5"], r => r.v ? cnt(r.v) : "0");
-  $("#sub-pase").innerHTML = `${esc(P.programa)} a <b>${fmt(P.precio)}</b>. ${cnt(P.probaron)} lo probaron y ninguno renovó; ${cnt(P.pidieron90)} lo pidieron en los últimos 90 días y el formulario se lee cuando se puede. Próxima camada: ${esc(P.proximaCamada)}.`;
-  $("#pn-pase").textContent = "Auditoría del 14/9, dicho por el fundador: coaching de 10 semanas a $1.047, 10 lo probaron, 0 renovaron, 5 pidieron en 90 días, 2 adentro, congelado hasta noviembre; 800 compradores históricos y 80 en lista caliente (60 en las dos semanas en que volvió a publicar). Esta es la parte que la plataforma no mide: es la lista que llevamos nosotros.";
+  $("#pase-price").textContent = P.programa + " · " + fmt(P.precio);
+  $("#pase-callout").innerHTML = `<span class="v">${fmt(P.generado)}</span><span>cobrados por el coaching: ${cnt(P.compraron)} compras a ${fmt(P.precio)}</span>`;
+  hbars($("#pase"), [{ label: "Compradores históricos", v: P.compradores, desc: "compraron" }, { label: "Lista caliente (90 días)", v: P.calientes, desc: "calientes" }, { label: "Compraron el coaching", v: P.compraron, desc: "compraron" }, { label: "Pidieron en 90 días", v: P.pidieron90, desc: "pidieron" }, { label: "Están adentro", v: P.adentro, desc: "adentro" }, { label: "Renovaron", v: P.renovaron, desc: "renovaron" }], ["--f1", "--f2", "--f3", "--f3", "--f4", "--f5"], r => r.v ? cnt(r.v) : "0");
+  $("#sub-pase").innerHTML = `De ${cnt(P.compradores)} personas que compraron algo alguna vez, ${cnt(P.compraron)} llegaron al coaching y ninguna renovó. ${cnt(P.pidieron90)} lo pidieron en los últimos 90 días y el formulario se lee cuando se puede. Próxima camada: ${esc(P.proximaCamada)}.`;
+  $("#pn-pase").textContent = "Auditoría del 14/9, dicho por el fundador: coaching de 10 semanas a $1.047, 10 lo probaron, 0 renovaron, 5 pidieron en 90 días, 2 adentro, congelado hasta noviembre; 800 compradores históricos y 80 en lista caliente. Lo cobrado por el coaching es compras por precio; la cifra exacta la tiene él.";
 }
 function renderFuentes() {
-  const rows = D.fuentes30.map(f => ({ label: { youtube: "YouTube", direct: "Directo", skool: "Red de Skool", google: "Google", facebook: "Facebook", instagram: "Instagram", affiliate: "Afiliados" }[f.f] || f.f, v: f.n }));
+  const rows = D.fuentes30.map(f => ({ label: { youtube: "YouTube", direct: "Directo", skool: "Red de la plataforma", google: "Google", facebook: "Facebook", instagram: "Instagram", affiliate: "Afiliados" }[f.f] || f.f, v: f.n }));
   const tot = rows.reduce((s, r) => s + r.v, 0);
   hbars($("#fuentes"), rows, ["--c-us"], r => `${cnt(r.v)} <small>${pct(r.v, tot)}%</small>`);
   $("#sub-fuentes").innerHTML = `<b>${cnt(H.registros30)}</b> registros de ${cnt(H.visitantes30)} visitantes. El día del directo entraron ${cnt(D.registrosDia.reduce((a, b) => (b.n > a.n ? b : a)).n)}; el resto del mes, uno o dos por día.`;
   $("#pn-fuentes").textContent = "Skool · Panel de control · De dónde vienen tus registros, últimos 30 días, y registros por día.";
 }
 function renderWeek() {
-  const bajasSem = H.bajas7d;
-  $("#week").innerHTML = `<p>Esta semana entraron ${cnt(H.altas7d)} pagando: el reto de 21 días arrancó el 27 y el 1 de octubre empieza el módulo.</p><p>Se fueron ${cnt(bajasSem)} y hay ${cnt(H.cancelando)} bajas anunciadas para octubre; ${pl(H.pagosFallidos, "tarjeta", "tarjetas")} en reintento.</p><p>El jueves va el primer mensaje a los que no arrancaron el reto a las 48 horas.</p>`;
+  $("#week").innerHTML = `<p>Esta semana entraron ${cnt(H.altas7d)} pagando: el reto de 21 días arrancó el 27 y el 1 de octubre empieza el módulo.</p><p>Se fueron ${cnt(H.bajas7d)} y hay ${cnt(H.cancelando)} bajas anunciadas para octubre; ${pl(H.pagosFallidos, "tarjeta", "tarjetas")} en reintento.</p><p>El jueves va el primer mensaje a los que no arrancaron el reto a las 48 horas.</p>`;
   $("#hitos").innerHTML = `<div><b>1 de octubre</b> · arranca el reto; quién no empezó a las 48 horas recibe un mensaje.</div><div><b>Día 5 de octubre</b> · reporte de septiembre, una página.</div><div><b>Día 10 de octubre</b> · liquidación sobre lo cobrado en septiembre.</div><div><b>Día 22</b> · contraoferta del reto: hoy no tiene dueño.</div>`;
 }
 function renderReport() {
   const r = byM(state.mes), p = byM(prevYm(state.mes)), enCurso = state.mes === "2026-09";
-  const row = (k, a, b, c) => `<tr><td>${k}</td><td>${a}</td><td class="mut">${b}</td><td class="mut">${c == null ? "·" : c}</td></tr>`;
+  const row = (k, a, b, c, key, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td>${k}${key ? `<span class="info" data-tip="${key}">i</span>` : ""}</td><td>${a}</td><td class="mut">${b}</td><td class="mut">${c == null ? "·" : c}</td></tr>`;
+  const cr = compRows(r), cp = compRows(p);
+  const actMes = ym => D.dias.filter(d => d.d.startsWith(ym)).reduce((s, d) => s + d.n, 0);
   const hechos = enCurso
-    ? [`Lanzamiento el 26 y directo el 27: ${cnt(r.altas)} entraron pagando en el mes, ${cnt(byM("2026-09").altas - 8)} de ellos en tres días.`, `El recurrente pasó de ${fmt(p.mrr)} a ${fmt(r.mrr)}: ${fmt(r.nuevo)} nuevos en 30 días.`, `Se fueron ${cnt(r.bajas)} hasta el ${r.churnAl}, el mismo ritmo que en agosto: ${fmt(r.churn)} de recurrente que se va, más ${fmt(248)} por mes de los ${cnt(H.cancelando)} que anunciaron la baja. Nadie les escribió.`, `${cnt(H.cancelando)} bajas anunciadas para octubre y ${cnt(H.pagosFallidos)} pagos fallidos en reintento.`, `Registros por fuente: YouTube dos de cada tres, directo uno de cada cinco.`]
-    : [`Sin lanzamiento: entraron ${cnt(r.altas)} pagando y ${cnt(r.pruebas)} en prueba.`, `Se fueron ${cnt(r.bajas)}: ${fmt(r.churn)} de recurrente perdido, contra ${fmt(r.nuevo)} nuevo.`, `El recurrente cerró en ${fmt(r.mrr)}, ${fmt(p.mrr - r.mrr)} menos que en julio y ${fmt(byM("2026-04").mrr - r.mrr)} debajo del pico de abril.`, `Activos a fin de mes: ${cnt(r.activos)}, ${cnt(r.anuales)} de ellos anuales.`, `Actividad en mínimos: menos de 100 acciones por semana casi todo el mes.`];
+    ? [`Lanzamiento el 26 y directo el 27: ${cnt(r.altas)} entraron pagando en el mes, ${cnt(r.altas - 8)} de ellos en tres días.`, `El recurrente pasó de ${fmt(p.mrr)} a ${fmt(r.mrr)}: ${fmt(r.nuevo)} nuevos en el mes.`, `Se fueron ${cnt(r.bajas)} hasta el ${r.churnAl}, el mismo ritmo que en agosto: ${fmt(r.churn)} de recurrente que se va, más ${fmt(cancelMes)} por mes de los ${cnt(H.cancelando)} que anunciaron la baja. Nadie les escribió.`, `${cnt(H.pagosFallidos)} pagos fallidos en reintento por ${fmt(H.pagosFallidosImporte)} al mes.`, `Registros por fuente: YouTube dos de cada tres, directo uno de cada cinco.`]
+    : [`Sin lanzamiento: entraron ${cnt(r.altas)} pagando y ${cnt(r.pruebas)} en prueba.`, `Se fueron ${cnt(r.bajas)}: ${fmt(r.churn)} de recurrente perdido, contra ${fmt(r.nuevo)} nuevo.`, `El recurrente cerró en ${fmt(r.mrr)}, ${fmt(p.mrr - r.mrr)} menos que en julio y ${fmt(byM("2026-04").mrr - r.mrr)} debajo del pico de abril.`, `Activos a fin de mes: ${cnt(r.activos)}, ${cnt(r.anuales)} de ellos anuales.`, `Actividad en mínimos: ${cnt(actMes(r.m))} acciones en el mes, menos de 100 por semana casi todo el mes.`];
   const ventana = enCurso ? "Reto de 21 días del 1 al 30 de octubre, con reembolso a quien cumpla 20 de 21 y una contraoferta el día 22. El coaching reabre en noviembre a precio nuevo." : "Lanzamiento el 26 de septiembre con directo el 27, sin prueba gratis por primera vez en 2026, y reto de 21 días desde el 1 de octubre.";
   const pend = ["La contraoferta del día 22 del reto no tiene dueño.", "Los pagos fallidos y las bajas anunciadas no reciben mensaje.", "El nuevo publica su gráfica de pronunciación y nadie le da seguimiento.", "El formulario del coaching se lee cuando se puede; cinco pidieron en 90 días."];
-  $("#rep").innerHTML = `<div class="head"><h2 class="strong">Reporte de ${ymL(state.mes)} · día 5 de ${ymL(nextYm(state.mes))}</h2><span class="mono">${esc(name())} · una página${enCurso ? " · mes en curso" : ""}</span></div>
-    <h3>Los números del mes</h3>
+  const bal = r.mrr - inicio(r), balP = p.mrr - inicio(p), pp = byM(prevYm(p.m));
+  $("#rep").innerHTML = `<div class="head"><h2 class="strong">Reporte de ${ymL(state.mes)} · día 5 de ${ymL(nextYm(state.mes))}</h2><span class="mono">${esc(D.comunidad)} · una página${enCurso ? " · mes en curso" : ""}</span></div>
+    <h3>Finanzas<span class="gsub">recurrente, cobrado y línea base</span></h3>
     <div class="tscroll"><table><thead><tr><th></th><th>${ymL(state.mes)}</th><th>${ymL(p.m)}</th><th>Línea base</th></tr></thead><tbody>
-    ${row("Activos a fin de mes", cnt(r.activos), cnt(p.activos))}
-    ${row("Entraron pagando", cnt(r.altas), cnt(p.altas))}
-    ${row("Entraron en prueba", cnt(r.pruebas), cnt(p.pruebas))}
-    ${row("Se fueron", cnt(r.bajas), cnt(p.bajas))}
-    ${row("Anuales activos", cnt(r.anuales), cnt(p.anuales))}
-    ${compRows(r).slice(0, 7).map((x, i) => row(x[0], x[1], compRows(p)[i][1])).join("")}
-    <tr class="strong"><td>${partial(r) ? "Recurrente hoy" : "Recurrente a fin de mes"}</td><td>${fmt(r.mrr)}</td><td>${fmt(p.mrr)}</td><td>${fmt(base)}</td></tr>
-    <tr class="total"><td>Contra la línea base</td><td${r.mrr < base ? ' class="neg"' : ""}>${(r.mrr >= base ? "+" : "-") + fmt(Math.abs(r.mrr - base))}</td><td class="mut">${(p.mrr >= base ? "+" : "-") + fmt(Math.abs(p.mrr - base))}</td><td class="mut">${r.mrr >= base ? "+" : "-"}${pct(Math.abs(r.mrr - base), base)}%</td></tr>
+    ${cr.slice(0, 7).map((x, i) => row(x[0], x[1], cp[i][1], null, x[3])).join("")}
+    ${row(enCurso ? "Recurrente hoy" : "Recurrente a fin de mes", fmt(r.mrr), fmt(p.mrr), fmt(base), "recurrente", "strong")}
+    ${row("Balance del recurrente en el mes", (bal >= 0 ? "+" : "-") + fmt(Math.abs(bal)), (balP >= 0 ? "+" : "-") + fmt(Math.abs(balP)), null, null, "balance")}
+    ${row("Cobrado en el mes", "≈" + fmt(r.cobrado), "≈" + fmt(p.cobrado), null, "cobrado")}
+    ${row("Contra la línea base", (r.mrr >= base ? "+" : "-") + fmt(Math.abs(r.mrr - base)), (p.mrr >= base ? "+" : "-") + fmt(Math.abs(p.mrr - base)), (r.mrr >= base ? "+" : "-") + pct(Math.abs(r.mrr - base), base) + "%", "lineaBase", "total")}
+    </tbody></table></div>
+    <h3>Cobros<span class="gsub">bajas, tarjetas y recuperos</span></h3>
+    <div class="tscroll"><table><thead><tr><th></th><th>${ymL(state.mes)}</th><th>${ymL(p.m)}</th><th></th></tr></thead><tbody>
+    ${row("Se fueron", cnt(r.bajas), cnt(p.bajas), null, "bajas")}
+    ${row("Bajas anunciadas al cierre", enCurso ? cnt(H.cancelando) : "·", "·", null, "bajasAnunciadas")}
+    ${row("Pagos fallidos en reintento", enCurso ? cnt(H.pagosFallidos) : "·", "·", null, "fallidos")}
+    ${row("Recuperos", "0", "0", null, "recuperos")}
+    ${row("Recuperos con upsell", "0", "0", null, "recuperosUp")}
+    ${row("Balance de cobros", "-" + cnt(r.bajas) + " miembros", "-" + cnt(p.bajas) + " miembros", null, null, "balance")}
+    </tbody></table></div>
+    <h3>Comunidad<span class="gsub">quiénes están y cuánto se mueven</span></h3>
+    <div class="tscroll"><table><thead><tr><th></th><th>${ymL(state.mes)}</th><th>${ymL(p.m)}</th><th></th></tr></thead><tbody>
+    ${row("Activos a fin de mes", cnt(r.activos), cnt(p.activos), null, "activos")}
+    ${row("Entraron pagando", cnt(r.altas), cnt(p.altas), null, "nuevo")}
+    ${row("Entraron en prueba", cnt(r.pruebas), cnt(p.pruebas), null, "registros")}
+    ${row("Anuales activos", cnt(r.anuales), cnt(p.anuales), null, "planes")}
+    ${row("Acciones en el mes", cnt(actMes(r.m)), cnt(actMes(p.m)), null, "actividad")}
+    ${row("Balance de miembros", (r.activos - p.activos >= 0 ? "+" : "") + cnt(r.activos - p.activos), (p.activos - pp.activos >= 0 ? "+" : "") + cnt(p.activos - pp.activos), null, null, "balance")}
+    </tbody></table></div>
+    <h3>Ventas<span class="gsub">el pase al coaching</span></h3>
+    <div class="tscroll"><table><thead><tr><th></th><th>${ymL(state.mes)}</th><th>${ymL(p.m)}</th><th>Histórico</th></tr></thead><tbody>
+    ${row("Compraron el coaching", "sin registro", "sin registro", cnt(D.pase.compraron), "compraron")}
+    ${row("Cobrado por el coaching", "sin registro", "sin registro", fmt(D.pase.generado), "upsell")}
+    ${row("Pidieron el coaching", "·", "·", cnt(D.pase.pidieron90) + " en 90 días", "pidieron")}
     </tbody></table></div>
     <h3>Qué pasó</h3><ol>${hechos.map(t => `<li>${t}</li>`).join("")}</ol>
     <h3>La ventana que viene</h3><p>${ventana}</p>
     <h3>Pendientes sin dueño</h3><ul>${pend.map(t => `<li>${t}</li>`).join("")}</ul>
-    <p class="pnote">Números: Skool (recurrente y sus componentes) y la lista de miembros (activos, altas, pruebas, bajas, anuales). Los hechos y los pendientes salen de la auditoría del 14/9 y de la llamada del 9/9. En un cliente firmado, "Qué pasó" se llama "Qué hicimos" y trae los insumos entregados contra comprometidos.</p>`;
+    <p class="pnote">Números: Skool (recurrente y sus componentes) y la lista de miembros (activos, altas, pruebas, bajas, anuales, cobrado estimado). Los hechos y los pendientes salen de la auditoría del 14/9 y de la llamada del 9/9. Ventas por mes: el coaching no se registra en ningún lado hoy; en un cliente firmado sale de la lista del pase. En un cliente firmado, "Qué pasó" se llama "Qué hicimos" y trae los insumos entregados contra comprometidos.</p>`;
 }
 function renderLiq() {
   const r = byM(state.mes), enCurso = state.mes === "2026-09";
@@ -659,25 +755,29 @@ function renderLiq() {
   const cobrado = r.mrr, ded = Math.round(cobrado * 0.029 + r.activos * 0.30), neto = cobrado - ded, crec = neto - base;
   const variable = pc ? Math.round(Math.max(0, crec) * pc / 100) : null;
   const total = fijo || variable != null ? (fijo || 0) + (variable || 0) : null;
+  const queda = total == null ? null : neto - total;
   const row = (k, v, cls) => `<tr><td>${k}</td><td class="amt${cls ? " " + cls : ""}">${v}</td></tr>`;
   $("#liq").innerHTML = `<div class="head"><h2 class="strong">Liquidación de ${ymL(state.mes)} · día 10 de ${ymL(nextYm(state.mes))}</h2><span class="mono">sobre lo cobrado${enCurso ? " · mes en curso" : ""}</span></div>
+    <div class="gains">
+      <div class="gain ${crec >= 0 ? "ok" : "warn"}"><span class="mono">Crecimiento sobre la línea base</span><span class="v">${(crec >= 0 ? "+" : "-") + fmt(Math.abs(crec))}</span><span class="s">${crec >= 0 ? "Neto por encima de " + fmt(base) : "Por debajo de " + fmt(base) + ": este mes no hay variable"}</span></div>
+      <div class="gain"><span class="mono">Te queda</span><span class="v">${queda == null ? fmt(neto) : fmt(queda)}</span><span class="s">${queda == null ? "Neto cobrado; la liquidación se define en la llamada" : "Neto de " + fmt(neto) + " menos la liquidación de " + fmt(total)}</span></div>
+      <div class="gain ${crec >= 0 ? "" : "ok"}"><span class="mono">Variable de este mes</span><span class="v">${variable == null ? "·" : fmt(variable)}</span><span class="s">${variable == null ? "Según el acuerdo" : crec >= 0 ? pc + "% del crecimiento" : "Sin crecimiento, sin variable"}</span></div>
+    </div>
     <table><tbody>
     ${row("Recurrente cobrado en " + ymL(state.mes), fmt(cobrado))}
     ${row("Deducciones de la lista cerrada (comisión de la plataforma, 2,9% más $0,30 por cobro)", "-" + fmt(ded), "mut")}
     ${row("Neto", fmt(neto))}
     ${row("Línea base", fmt(base), "mut")}
-    ${row("Crecimiento", (crec >= 0 ? "+" : "-") + fmt(Math.abs(crec)), crec < 0 ? "neg" : "")}
+    ${row("Crecimiento", (crec >= 0 ? "+" : "-") + fmt(Math.abs(crec)), crec < 0 ? "neg" : "pos")}
     ${row("Participación variable" + (pc ? " (" + pc + "% del crecimiento)" : ""), variable == null ? "según el acuerdo" : (crec < 0 ? "$0: no hubo crecimiento" : fmt(variable)), variable == null ? "mut" : "")}
     ${row("Arrastre de meses negativos", crec < 0 ? "-" + fmt(Math.abs(crec)) + " pasa al mes siguiente" : "sin arrastre", "mut")}
     ${row("Fijo mensual", fijo ? fmt(fijo) : "según el acuerdo", fijo ? "" : "mut")}
     <tr class="total"><td>Total de la liquidación</td><td class="amt">${total == null ? "·" : fmt(total)}</td></tr>
     </tbody></table>
     <p class="fine">Se presenta el día 10 y se paga antes del día 20. Siempre sobre lo cobrado, nunca sobre lo facturado. Un mes por debajo de la línea base no genera variable y se arrastra contra los siguientes. Reembolsos o contracargos posteriores se compensan en la liquidación siguiente.</p>
-    <p class="pnote">Cobrado: el recurrente de Skool a fin de mes (Skool no expone el cobrado del mes; en un cliente firmado sale del procesador). Deducciones: la comisión de Skool Pro. Agosto queda por debajo de la línea base a propósito: muestra que sin crecimiento no hay variable.</p>`;
+    <p class="pnote">Cobrado: el recurrente de Skool a fin de mes (Skool no muestra el cobrado del mes a un admin; en un cliente firmado sale del procesador). Deducciones: la comisión de Skool Pro. Agosto queda por debajo de la línea base a propósito: muestra que sin crecimiento no hay variable.</p>`;
 }
-function prevYm(ym) { const [y, m] = ym.split("-").map(Number); return m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`; }
-function nextYm(ym) { const [y, m] = ym.split("-").map(Number); return m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`; }
-function render() { renderHeader(); renderHero(); renderKPIs(); renderCharts(); renderCancel(); renderPase(); renderFuentes(); renderWeek(); renderReport(); renderLiq(); $$("[data-k]").forEach(i => { const v = getK(i.dataset.k); if (document.activeElement !== i) i.value = v == null ? "" : v; }); }
+function render() { renderHeader(); renderGroups(); renderCharts(); renderCancel(); renderPase(); renderFuentes(); renderWeek(); renderReport(); renderLiq(); $$("[data-k]").forEach(i => { const v = getK(i.dataset.k); if (document.activeElement !== i) i.value = v == null ? "" : v; }); }
 
 /* ---------- eventos ---------- */
 $$("[data-k]").forEach(i => i.addEventListener("input", () => { setK(i.dataset.k, i.value); save(); renderLiq(); }));
