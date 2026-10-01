@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>MomlifeCamila, operada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Chivo+Mono:wght@400..600&display=swap">
+<style>
+  /* Light only, by decision (Martín, 29/9): the page ignores the viewer's dark theme. */
+  :root, :root[data-theme="dark"], :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #EDF1F0; --surface: #FFFFFF; --panel: #F5F7F6; --ink: #0F1F1E; --muted: #566A69;
+    --line: #D3DCDA; --line-strong: #AFBEBB;
+    --accent: #5B3FC2; --accent-soft: #EDE8FB; --accent-ink: #3E2A8F;
+    --ok: #0B7A70; --ok-soft: #DCEFEC; --warn: #B3590B; --warn-soft: #F8E9D6;
+    --core: #C24F00;
+    --shadow: 0 1px 2px rgba(15,31,30,0.05), 0 8px 24px rgba(15,31,30,0.06);
+    --f-ui: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "Chivo Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.55; padding-block: 0 4rem; padding-inline: 20px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .mono { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .wide { font-stretch: 116%; font-weight: 800; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  a { color: var(--accent-ink); }
+
+  .top { padding: 40px 0 8px; display: grid; gap: 12px; }
+  .tag { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tag i { width: 10px; height: 10px; border-radius: 50%; background: var(--core); display: inline-block; }
+  .top h1 { margin: 0; font-size: clamp(1.8rem, 4.2vw, 2.6rem); line-height: 1.04; text-wrap: balance; max-width: 20ch; }
+  .top h1 span { color: var(--accent); }
+  .lead { font-size: 1.08rem; max-width: 62ch; color: var(--ink); }
+  .lead b { font-weight: 600; }
+
+  section { margin-top: 44px; display: grid; gap: 16px; }
+  section > h2 { margin: 0; font-size: 1.35rem; line-height: 1.15; text-wrap: balance; }
+  section > .mono { margin-bottom: -8px; }
+  .prose { max-width: 62ch; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .split { grid-template-columns: 1fr; } }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+  .box h3 { margin: 0; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+  .box h3::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--ok); }
+  .box.warn h3::before { background: var(--warn); }
+  .box ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+  .box li { padding-left: 2px; }
+
+  .tbl { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+  thead th { border-top: 0; background: var(--panel); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  td.n { font-variant-numeric: tabular-nums; font-weight: 600; }
+  td.none { color: var(--warn); font-weight: 600; }
+  td.cap { color: var(--muted); font-size: 0.92rem; background: var(--panel); }
+  tr { break-inside: avoid; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .do { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+  .do h3 { margin: 0; font-size: 1rem; line-height: 1.2; display: flex; gap: 10px; align-items: baseline; }
+  .do h3 em { font-style: normal; font-family: var(--f-mono); font-size: 11px; color: var(--accent-ink); letter-spacing: 0.06em; }
+  .do p { color: var(--ink); font-size: 0.96rem; }
+  .do .why { color: var(--muted); font-size: 0.9rem; }
+
+  .do.more { grid-column: 1 / -1; background: transparent; border: 1.5px dashed var(--line-strong); text-align: center; justify-items: center; padding: 14px 18px; }
+  .do.more h3 { color: var(--accent-ink); }
+  .do.more h3::before { content: "+"; display: inline-block; margin-right: 8px; font-weight: 800; }
+  .do.more p { color: var(--muted); }
+  .yours { background: var(--accent-soft); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; }
+  .yours h3 { margin: 0; font-size: 1rem; color: var(--accent-ink); }
+  .yours p { max-width: 62ch; }
+  .idea { background: var(--ok-soft); border-radius: 10px; padding: 18px 20px; display: grid; gap: 8px; }
+  .idea h3 { margin: 0; font-size: 1rem; color: var(--ok); }
+  .idea p { max-width: 62ch; }
+
+  .pay { display: grid; gap: 10px; max-width: 62ch; }
+  .pay .row { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
+  .pay .row i { width: 12px; height: 12px; border-radius: 50%; background: var(--ok); margin-top: 7px; display: inline-block; }
+  .pay .row b { font-weight: 700; }
+  .pay .say { margin-top: 6px; padding: 14px 18px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 10px 10px 0; }
+
+  .check { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; max-width: 62ch; }
+  .check li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+  .check li::before { content: ""; width: 14px; height: 14px; border: 1.5px solid var(--line-strong); border-radius: 3px; margin-top: 5px; display: inline-block; }
+  .sign { margin-top: 28px; color: var(--muted); font-size: 0.92rem; }
+
+  @media print {
+    @page { margin: 12mm 14mm; }
+    body { background: #fff; color: #111; padding-inline: 0; padding-block: 0; font-size: 10.5px; line-height: 1.38; }
+    .wrap { max-width: none; }
+    .top { padding-top: 0; gap: 8px; }
+    .top h1 { font-size: 1.9rem; }
+    .lead { font-size: 0.98rem; }
+    section { margin-top: 14px; gap: 8px; }
+    .do { padding: 11px 13px; }
+    section > h2 { font-size: 1.15rem; }
+    .split, .grid { gap: 10px; }
+    .box, .do { padding: 12px 14px; break-inside: avoid; }
+    .box ul { gap: 5px; }
+    th, td { padding: 4px 9px; }
+    .top h1 { max-width: 30ch; }
+    .yours, .idea { padding: 11px 14px; }
+    .pay { gap: 6px; }
+    .pay .say { padding: 9px 13px; }
+    .sign { margin-top: 14px; }
+    .tbl, .yours, .idea, .pay, .check { break-inside: avoid; }
+    section > .mono, section > h2, section > h2 + .prose { break-after: avoid; }
+    section.newpage { break-before: page; }
+    section.keep { break-inside: avoid; }
+    .grid { gap: 8px; }
+    .do p { font-size: 0.9rem; }
+    .do .why { font-size: 0.84rem; }
+    .box, .do, table, .yours, .idea, .pay .say { box-shadow: none; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="mono tag"><i></i>Para Camila Haushalter · MomlifeCamila · octubre de 2026 · Grow Your Backend</div>
+    <h1 class="wide">Lo que haríamos en <span>MomlifeCamila</span>, con el personalizado al centro</h1>
+    <p class="lead">Me dijiste dos cosas: que tu foco es el personalizado y que $1.500 no tenía sentido para lo que hoy deja Skool. Tenías razón en las dos. Este es el documento de lo que vimos en la llamada: el servicio completo que te conté, más lo de Instagram que me pediste, con un fijo de $500 por mes y el porcentaje solo sobre lo que crezca. <b>Lo que ya entra hoy es tuyo y no lo tocamos.</b></p>
+  </header>
+
+  <section>
+    <div class="mono">De dónde partimos</div>
+    <h2 class="wide">Tu tiempo, para la que paga más. La comunidad, para la que todavía no.</h2>
+    <div class="split">
+      <div class="box">
+        <h3>Lo que funciona</h3>
+        <ul>
+          <li>El personalizado se vende: 19 ventas en 34 llamadas tomadas en septiembre.</li>
+          <li>Ocho de cada diez alumnas logran resultados, y lo cuentan en la pestaña de motivación.</li>
+          <li>Las chicas participan y suben sus resultados solas. Eso es lo más difícil de construir.</li>
+          <li>Te gusta crear contenido y se te da bien. Eso no lo tocamos.</li>
+        </ul>
+      </div>
+      <div class="box warn">
+        <h3>Lo que hoy no está haciendo nadie</h3>
+        <ul>
+          <li>No hay una regla escrita de quién va a la cita y quién a la comunidad: qué CTA poner, qué pregunta hace ManyChat, quién sigue la conversación.</li>
+          <li>Del plan de $29 al personalizado pasó una sola que sepas. Es el número para el que construiste la comunidad y todavía no existe.</li>
+          <li>El 30 de septiembre, tres alumnas ya habían avisado que se iban. Nadie les había escrito.</li>
+          <li>25 mujeres empezaron la prueba gratis y se fueron sin pasar del onboarding.</li>
+          <li>Las cuotas del personalizado en Stripe dependen de que te acuerdes de cancelar la suscripción.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Tus números, 30 de septiembre</th><th>Hoy</th></tr></thead>
+        <tbody>
+          <tr><td>En el plan personalizado, a $347</td><td class="n">60 activas</td></tr>
+          <tr><td>Cita de evaluación</td><td class="n">$29, la puerta al personalizado</td></tr>
+          <tr><td>Llamadas de septiembre</td><td class="n">32 agendadas · 4 ausencias · 19 cierres en 34 tomadas, con las de Cami</td></tr>
+          <tr><td>Comunidad en Skool</td><td class="n">100 miembros: 31 pagan $29 al mes, 5 el anual de $119, 10 en prueba gratis, el resto entró por invitación desde el personalizado</td></tr>
+          <tr><td>Bajas anunciadas</td><td class="n">3, en la pestaña Cancelando</td></tr>
+          <tr><td>De cada CTA, cuántas llegan a la cita</td><td class="none">sin medir</td></tr>
+          <tr><td>Del plan de $29 al personalizado</td><td class="none">sin medir</td></tr>
+          <tr><td>Tarjetas rechazadas, pagos recuperados</td><td class="none">sin medir</td></tr>
+          <tr><td class="cap" colspan="2">Lo que dice "sin medir" es lo primero que resolvemos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="newpage">
+    <div class="mono">Qué haríamos nosotros</div>
+    <h2 class="wide">Operamos la comunidad por dentro, todos los días</h2>
+    <p class="prose">No enseñamos a hacerlo. Lo hacemos nosotros y te presentamos los números cada mes en palabras. La primera pieza es la nueva; las otras siete son las que te conté en la llamada. ManyChat solo abre la conversación. De ahí en adelante escribe una persona: Lali a las que llegan por Instagram, nosotros a las de la comunidad, como desde tu cuenta.</p>
+    <div class="grid">
+      <div class="do">
+        <h3><em>1</em>De Instagram a la cita o a la comunidad</h3>
+        <p>Una palabra en tus historias y reels, y una sola pregunta de ManyChat. Según la respuesta, la mujer va a la cita de evaluación o a la comunidad de $29. A la que va a la cita, Lali le escribe ese mismo día con un guion. Medimos cada palabra hasta la venta. Si vuelves a hacer anuncios, el mismo seguimiento te dice qué anuncio trajo citas y cuál no.</p>
+        <p class="why">En tres semanas se sabe qué CTA trae citas y cuál no.</p>
+      </div>
+      <div class="do">
+        <h3><em>2</em>Un onboarding que se termina</h3>
+        <p>Un video de tres a cinco minutos fijado arriba con los primeros pasos, y las preguntas de entrada de Skool activadas para tener el mail y el WhatsApp de cada una. Un mensaje por privado a cada alumna nueva, en prueba o pagando, hasta que vio el video y dio los primeros pasos. Quien termina la prueba sin comprar recibe un mensaje: primero para recuperarla, después para saber qué le faltó.</p>
+        <p class="why">Hoy 25 se fueron ahí y casi ninguna respondió después.</p>
+      </div>
+      <div class="do">
+        <h3><em>3</em>Bajas anunciadas y tarjetas, cada día</h3>
+        <p>Miramos la pestaña Cancelando todos los días. A cada una, un mensaje por privado y, si hace falta, una llamada corta. Tres salidas posibles: renueva, pasa directo al personalizado, o se va y nos deja el porqué. Tarjeta rechazada: el mismo día, un mensaje y otro link de pago, no solo el mail de Skool.</p>
+        <p class="why">Es la palanca más barata y hoy no la mueve nadie.</p>
+      </div>
+      <div class="do">
+        <h3><em>4</em>El avance de cada alumna</h3>
+        <p>Una barra por alumna con cuánto avanzó en la ruta (reconectar, rehabilitar, fortalecer). Quien va atrasada recibe un mensaje: qué pasó, en qué te trabaste. Ahí también se ve en qué módulo se frenan todas, para saber qué contenido falta.</p>
+        <p class="why">Que la excusa "no entendí la plataforma" desaparezca.</p>
+      </div>
+      <div class="do">
+        <h3><em>5</em>El pase al personalizado</h3>
+        <p>Una ficha por alumna: lo que publica, lo que escribe por privado, cuánto avanzó. Con eso, cada mes, la lista de quién está lista para la cita de evaluación, y se la invita una por una, nunca con un anuncio en el feed. Se mide cuántas pasan.</p>
+        <p class="why">Es para lo que construiste la comunidad.</p>
+      </div>
+      <div class="do">
+        <h3><em>6</em>Los números, en palabras</h3>
+        <p>Un tablero con tus datos, actualizado todo el tiempo: quién entra, quién se va, cobros, llamadas, el pase, y qué CTA trajo cada cita. El reporte del día 5 de cada mes viene en conclusiones, "entraron 48 de 60", y no en planillas.</p>
+        <p class="why">Tú tomas las decisiones. Nosotros te traemos el número ya traducido.</p>
+      </div>
+      <div class="do">
+        <h3><em>7</em>Cobros que no fallan</h3>
+        <p>Las cuotas del personalizado con registro y aviso: cuando una alumna terminó de pagar, se corta la suscripción ese día, sin que dependa de tu memoria. Alternativas de pago para las tarjetas que Skool o Stripe rechazan, sobre todo desde Latinoamérica. Todo lo cobrado, venga de donde venga, en el mismo tablero.</p>
+        <p class="why">Una cuota de más o una tarjeta rechazada no deberían ser una alumna menos.</p>
+      </div>
+      <div class="do">
+        <h3><em>8</em>Lanzamientos preparados</h3>
+        <p>Cada dos o tres meses, un lanzamiento: se cierra la puerta, se junta a las que quieren entrar en un grupo de WhatsApp con los casos de las chicas, y se abre con fecha y precio pensados, un escalón arriba cada vez. Lo armamos nosotros; de ti necesitamos el directo. En lugar de tener la comunidad abierta todo el año.</p>
+        <p class="why">La comunidad crece por camadas, no por goteo.</p>
+      </div>
+      <div class="do more">
+        <h3>Y lo que haga falta cada mes</h3>
+        <p>Estas ocho piezas son la base, no el límite. Las plantillas de onboarding y las dinámicas de retos y premios que mencionó Paul van incluidas.</p>
+      </div>
+    </div>
+    <div class="idea">
+      <h3>Una idea que salió el 30, para probar con cuidado</h3>
+      <p>Que la cita de evaluación de $29 sea también la entrada a la comunidad, como pago recurrente, y que la cita llegue con condiciones (cierto tiempo adentro o cierto avance). Cambia el guion de la cita y hay que medirlo antes de generalizarlo. Se prueba dentro del mismo flujo, en el primer mes.</p>
+    </div>
+    <div class="yours">
+      <h3>Qué sigue en tus manos</h3>
+      <p>Tu contenido, tus historias, tus clases y tus llamadas. Qué publicar y cuándo lo decides tú, o quien te ayude con Instagram: nosotros no hacemos contenido. Lali sigue seteando y Cami sigue cerrando. Precios, ofertas y cualquier texto que salga hacia las chicas salen solo con tu OK.</p>
+    </div>
+  </section>
+
+  <section class="keep">
+    <div class="mono">Cómo trabajamos</div>
+    <h2 class="wide">Dos personas adentro, un canal, un tablero y un reporte</h2>
+    <p class="prose">Somos dos, Paul y Martín. Los primeros 30 días se arma la base: el flujo de ManyChat y el guion de seguimiento, el onboarding, los mensajes, el registro de cobros y bajas, las cuotas de Stripe, la ficha de cada alumna y la lista del pase. Desde ahí, operación mensual con un solo canal de WhatsApp contigo y el reporte el día 5. Tu comunidad, tus alumnas, tus datos y tu contenido son tuyos y quedan contigo, siempre. Los sistemas con los que operamos, los flujos, el tablero y las automatizaciones, son nuestros y trabajan para ti mientras dure el servicio.</p>
+  </section>
+
+  <section class="keep">
+    <div class="mono">Cómo se paga</div>
+    <h2 class="wide">Si no crece, casi no cobramos</h2>
+    <div class="pay">
+      <div class="row"><i></i><p><b>$500 por mes, fijo, desde la firma.</b> Es el servicio completo, no una versión recortada. Bajó de $1.500 porque esa diferencia la pasamos al porcentaje.</p></div>
+      <div class="row"><i></i><p><b>30% solo de lo que crezca por encima de tu línea base.</b> La línea base es el promedio de lo que cobraste en los últimos 90 días, neto de reembolsos, comisiones de Skool y Stripe e impuestos, y queda escrita en el contrato. Si no crece, no hay porcentaje.</p></div>
+      <div class="row"><i></i><p><b>Son dos líneas base, independientes:</b> una para la comunidad de $29 y otra para el personalizado. El crecimiento se mide por separado en cada una, y el 30% también.</p></div>
+      <p class="say">Un ejemplo con números redondos. Si el personalizado promedia $5.000 por mes y un mes cobra $7.000, el 30% corre sobre los $2.000 de diferencia: $600. De los $2.000 nuevos te quedan $1.400, y los $5.000 de siempre son tuyos enteros. Lo mismo, por separado, con la comunidad.</p>
+      <div class="row"><i></i><p><b>Mínimo de tres meses.</b> Después, mes a mes. Si decides no seguir, 30 días de aviso, y te quedas con tu comunidad, tus alumnas, tus datos y tu contenido, que siempre fueron tuyos.</p></div>
+      <div class="row"><i></i><p>Este precio es más bajo que el que cobramos normalmente, y va a cambio de poder contar tu caso con cifras reales más adelante. Qué se publica y qué no, lo decides tú.</p></div>
+    </div>
+  </section>
+
+  <section class="keep">
+    <div class="mono">El siguiente paso</div>
+    <h2 class="wide">Si avanzamos, esto es lo que pasa</h2>
+    <ul class="check">
+      <li>Te mandamos el contrato, con la línea base de cada cosa escrita, y el link del primer pago.</li>
+      <li>Para fijar las dos líneas base necesitamos lo cobrado en julio, agosto y septiembre, por separado: la comunidad en Skool y el personalizado en Stripe. Con acceso de lectura a los dos lo sacamos nosotros.</li>
+      <li>Accesos: administrador en Skool, lectura en Stripe y tu cuenta de ManyChat. Los pedimos en un formulario de 20 minutos.</li>
+      <li>Arrancamos el lunes siguiente a la firma por tres cosas: las bajas anunciadas, las cuotas de Stripe y el flujo de ManyChat.</li>
+    </ul>
+    <p class="prose">Este documento y su precio valen hasta el 14 de octubre. Después tus números cambian, y la línea base también.</p>
+    <p class="sign">Paul Castañeda y Martín Salinas · Grow Your Backend</p>
+  </section>
+</div>
+
+</body>
+</html>
