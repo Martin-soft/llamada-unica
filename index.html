@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Tu comunidad hoy</title>
+<title>Tu negocio hoy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Chivo+Mono:wght@400..600&display=swap">
@@ -159,6 +159,7 @@
   .price .pfix { font-family: var(--f-mono); font-size: 2.2rem; font-weight: 600; line-height: 1.05; color: var(--accent); font-variant-numeric: tabular-nums; margin-top: 4px; }
   .price .pfix small { font-family: var(--f-ui); font-size: 0.85rem; font-weight: 500; color: var(--muted); margin-left: 4px; }
   .price .pvar { font-size: 1rem; font-weight: 600; }
+  .price .pbuy { font-size: 0.8rem; color: var(--muted); font-family: var(--f-mono); }
   .price .pkeep { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line-strong); display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
   .price .pkeep b { color: var(--ink); font-weight: 500; }
   .price .pkeep .ok { grid-column: 1 / -1; color: var(--ok); font-weight: 600; }
@@ -217,7 +218,7 @@
   <header class="top">
     <div>
       <div class="mono">Lane A · 45 minutos, con tus números</div>
-      <h1 class="wide">Tu comunidad hoy, <span id="h-name">y lo que sigue</span></h1>
+      <h1 class="wide">Tu negocio hoy, <span id="h-name">y lo que sigue</span></h1>
     </div>
     <div class="meta">
       <label class="field"><span class="mono">Nombre</span><input id="f-name" type="text" autocomplete="off"></label>
@@ -236,8 +237,9 @@
   <div class="screen" id="s1">
     <section class="block lift">
       <!-- no spoken lines on the shared screen: Paul frames the call in his own words (the invitation says it already) -->
-      <p class="note">Encuadre, con tus palabras: tus números, por cada uno algo que podés hacer vos, y al final cómo trabajamos y cuánto sale, o te lo digo. "¿Te sirve?"</p>
+      <p class="note">Encuadre, con tus palabras: primero qué te pesa, después tus números y por cada uno algo que podés hacer vos, y al final cómo trabajamos y cuánto sale, o te lo digo. "¿Te sirve?" La primera pregunta es abierta: preguntás y te callás, no la contestes vos. Si contesta corto: "¿y si sigue igual seis meses más, qué pasa?"</p>
       <div class="fields">
+        <label class="field"><span class="mono">Antes de los números: ¿qué es lo que más te pesa hoy en el negocio?</span><textarea data-k="t.pesa" rows="1" placeholder="lo que sea: la venta, el tiempo, la plata, la comunidad"></textarea></label>
         <label class="field"><span class="mono">¿Qué tenés adelante en las próximas cuatro semanas?</span><textarea data-k="g.adelante" rows="1" placeholder="viaje, lanzamiento, socio"></textarea></label>
         <label class="field"><span class="mono">¿Esto lo decidís vos, o hay alguien más?</span><textarea data-k="g.decide" rows="1"></textarea></label>
       </div>
@@ -318,7 +320,7 @@
       <section class="block">
         <h2 class="strong">Lo que haríamos</h2>
         <ol class="three">
-          <li><span><strong>Días 1 a 30.</strong> Arrancamos por <strong id="prio-echo">lo que más se te va</strong>. En la semana 2 tenés por escrito cuánto hay para recuperar, con tus datos reales.</span></li>
+          <li><span id="paso1"><strong>Días 1 a 30.</strong> Arrancamos por <strong>lo que más se te va</strong>. En la semana 2 tenés por escrito cuánto hay para recuperar, con tus datos reales.</span></li>
           <li><span><strong>Todos los días.</strong> Cobros, bienvenidas y la lista del pase. Reporte el día 5 y liquidación el día 10 de cada mes.</span></li>
           <li><span><strong>Cada 1 a 3 meses.</strong> Una ventana con miembros nuevos y el precio un escalón arriba, y el pase a lo que vendés arriba, por camadas.</span></li>
         </ol>
@@ -332,17 +334,19 @@
             <span class="mono">Primera</span>
             <span class="pfix"><span id="p1f"></span><small>por mes</small></span>
             <span class="pvar">más el <span id="p1p"></span>% de lo que crezca</span>
+            <span class="pbuy" id="b1"></span>
             <span class="pkeep" id="k1"></span>
           </button>
           <button class="price" data-pick="2" type="button">
             <span class="mono">Segunda</span>
             <span class="pfix"><span id="p2f"></span><small>por mes</small></span>
             <span class="pvar">más el <span id="p2p"></span>% de lo que crezca</span>
+            <span class="pbuy" id="b2"></span>
             <span class="pkeep" id="k2"></span>
           </button>
         </div>
         <ul class="terms">
-          <li>Lo que ya entra hoy es tuyo y no lo toco: el porcentaje corre solo sobre lo que crezca por encima de tu línea base, que hoy ronda <strong id="base-echo"></strong> por mes. El número exacto es el promedio de tus últimos 90 días y queda fijo en el contrato.</li>
+          <li>Hoy, entre la comunidad y lo de arriba, te entran alrededor de <strong id="total-echo"></strong> por mes. Eso es tuyo y no lo toco: el porcentaje corre solo sobre lo que crezca por encima de tu línea base, que hoy ronda <strong id="base-echo"></strong> por mes. El número exacto es el promedio de tus últimos 90 días y queda fijo en el contrato.</li>
           <li>Sin pago de arranque. El fijo corre desde la firma, por adelantado, y el mes uno es el arranque. El porcentaje se liquida el día 10 sobre lo cobrado el mes anterior y se paga el día 20.</li>
           <li>Mínimo tres meses. Después, mes a mes, y cualquiera de los dos corta con 30 días de aviso. Te llevás todo: datos, accesos, cuentas.</li>
           <li>A cambio de este precio: publicamos el caso con tus cifras reales.</li>
@@ -410,9 +414,9 @@ const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const DEFAULTS = {
   step: 1, name: "", com: "", date: "", cur: "$", mode: "", seenFloor: false, seenOffer: false, obj: "", notes: false,
   g: { adelante: "", decide: "" },
-  n: { miembros: "", precio: "", ticket: "", cupo: "", bajas: "", caidos: "", trials: "", quedaron: "", caliente: "", compradores: "", pidieron: "", agendas: "", shows: "", cierres: "", historias: "", reels: "", costo: "" },
+  n: { miembros: "", precio: "", ticket: "", arriba: "", cupo: "", bajas: "", caidos: "", trials: "", quedaron: "", caliente: "", compradores: "", pidieron: "", agendas: "", shows: "", cierres: "", historias: "", reels: "", costo: "" },
   cobro: "vez",
-  t: { desconecto: "", proxima: "", pesa: "", distinto: "" },
+  t: { desconecto: "", proxima: "", pesa: "", distinto: "", servicio: "" },
   o: { f1: 1500, p1: 25, f2: 1000, p2: 30, base: "", pick: "", ruido: "", mes: "", resp: "", falta: "" },
   c: { accion: "", disparador: "" },
   nx: { dia: "", hora: "" }
@@ -442,8 +446,9 @@ const BLOCKS = [
       note: "Del panel, no de la página. Si hay dos cifras, va la del panel.",
       nums: [NUM("miembros", "Pagan hoy"), NUM("precio", "Precio por mes")],
       side: () => num("miembros") && num("precio") ? `Recurrente aproximado: ${fmt(num("miembros") * num("precio"))} por mes` : "" },
-    { q: "¿Qué vendés arriba, y a cuánto?", alt: "Un programa, una mentoría, un tier con más acceso. Si no hay nada, queda vacío.",
-      nums: [NUM("ticket", "Precio de arriba")], seg: true },
+    { q: "¿Qué vendés arriba, a cuánto, y cuántos por mes?", alt: "Un programa, una mentoría, un tier con más acceso. Si es mensual, los que pagan hoy; si es un pago, los que entran por mes. Si no hay nada, queda vacío.",
+      nums: [NUM("ticket", "Precio de arriba"), NUM("arriba", "Arriba, por mes")], seg: true,
+      side: () => num("ticket") && num("arriba") ? `Arriba: ${fmt(num("ticket") * num("arriba"))} por mes · hoy, en total, ${fmt(total())} por mes` : "" },
     { q: "¿A cuántos podés atender arriba a la vez?", alt: "Con tu tiempo o el de tu equipo.",
       note: "Es el techo de la cuenta del pase, no el mercado. Siempre se pregunta.",
       nums: [NUM("cupo", "A la vez")] }
@@ -490,13 +495,13 @@ const BLOCKS = [
       note: "No entra en el piso: mide lo que hay más allá de su lista. Si lo viste en el recon, lo tipeás sin preguntar.",
       nums: [NUM("historias", "Historia con pedido"), NUM("reels", "Un reel")] }
   ]},
-  { title: "Lo que más pesa hoy", rows: [
-    { q: "De todo lo que vimos, ¿qué es lo que más te pesa hoy?",
-      note: "Preguntás y te callás. No lo contestes vos. Si contesta corto: \"¿y si sigue igual seis meses más, qué pasa?\"",
-      text: "t.pesa" },
-    { q: "¿Y qué tendría que ser distinto esta vez para que eso cambie?",
-      note: "Su frase, textual y corta. Vuelve arriba de la propuesta. Si no sale: \"te pregunto derecho, ¿por qué esto no lo resolviste hasta ahora?\"",
+  { title: "Lo que tendría que ser distinto", rows: [
+    { q: "Con tus números a la vista: ¿qué tendría que ser distinto esta vez para que eso que te pesa cambie?",
+      note: "Su frase, textual y corta. Vuelve arriba de la propuesta. Si con los números lo que más le pesa cambió, corregilo arriba. Si no sale: \"te pregunto derecho, ¿por qué esto no lo resolviste hasta ahora?\"",
       text: "t.distinto", key: true },
+    { q: "Si arrancamos, lo primero que haríamos:", alt: "Con tus palabras. Es el paso uno de la propuesta.",
+      note: "Lo escribís vos, delante de él, con su dolor y sin nombres de servicio: \"que al que te escribe le conteste una persona ese día\" · \"cada tarjeta caída, otro link ese día\" · \"la postventa la hace una persona desde tu número\" · \"la cita se llena sin vos\". Retención, onboarding y pase no se dicen.",
+      text: "t.servicio" },
     { rest: true, q: "Hoy, ¿quién te lleva todo esto, y cuánto te sale por mes?", alt: "Vos, un asistente, una agencia, herramientas.",
       note: "Sirve para \"es caro\" en la propuesta. Si no lo preguntaste, la objeción se contesta con las bajas y los caídos.",
       nums: [NUM("costo", "Por mes")] }
@@ -575,6 +580,14 @@ function floor() {
   return { L, m6, m12 };
 }
 function baseline() { const b = parseFloat(state.o.base); return isFinite(b) && b > 0 ? b : num("miembros") * num("precio"); }
+function total() { return baseline() + num("ticket") * num("arriba"); }
+function paysFixed(fijo) {
+  const t = num("ticket"), p = num("precio");
+  if (!fijo) return "";
+  if (t) { const n = Math.max(1, Math.ceil(fijo / t)); return `Con ${n} venta${n > 1 ? "s" : ""} más arriba por mes, el fijo está pagado.`; }
+  if (p) { const n = Math.max(1, Math.ceil(fijo / p)); return `Con ${n} miembro${n > 1 ? "s" : ""} más, el fijo está pagado.`; }
+  return "";
+}
 function renderLedger() {
   const f = floor();
   $("#ledger").innerHTML = f.L.map(l => `<div class="litem"><span class="llabel">${l.name}</span><span class="lamt ${l.amt ? "" : "zero"}">${l.amt ? fmt(l.amt) : "·"}</span><p class="lnote ${/no se corre|parece/.test(l.note) ? "warn" : ""}">${l.note}</p></div>`).join("")
@@ -628,10 +641,14 @@ function renderOffer() {
   const d = (state.t.distinto || "").trim();
   $("#echo").innerHTML = d ? `<em>${esc(d)}</em>` : `<span class="empty">Falta anotarlo: la última pregunta de la conversación.</span>`;
   const f = floor(); const top = f.L.slice().sort((a, b) => b.amt - a.amt)[0];
-  $("#prio-echo").textContent = top && top.amt ? top.name.toLowerCase() : "lo que más se te va";
+  const sv = (state.t.servicio || "").trim(), tail = " En la semana 2 tenés por escrito cuánto hay para recuperar, con tus datos reales.";
+  $("#paso1").innerHTML = sv ? `<strong>Días 1 a 30.</strong> Lo primero: ${esc(sv)}.${tail}`
+    : `<strong>Días 1 a 30.</strong> Arrancamos por <strong>${top && top.amt ? esc(top.name.toLowerCase()) : "lo que más se te va"}</strong>.${tail}`;
   $("#p1f").textContent = fmt(state.o.f1 || 0); $("#p1p").textContent = state.o.p1;
   $("#p2f").textContent = fmt(state.o.f2 || 0); $("#p2p").textContent = state.o.p2;
   $("#base-echo").textContent = baseline() ? fmt(baseline()) : "lo que leamos de tu panel";
+  $("#total-echo").textContent = total() ? fmt(total()) : "lo que leamos de tu panel";
+  [["#b1", state.o.f1], ["#b2", state.o.f2]].forEach(([id, ff]) => { $(id).textContent = paysFixed(+ff || 0); });
   [["#k1", state.o.f1, state.o.p1], ["#k2", state.o.f2, state.o.p2]].forEach(([id, ff, pp]) => {
     if (!f.m6) { $(id).innerHTML = `<span class="hint">Con tus números de la conversación, acá aparece lo que te queda.</span>`; return; }
     const r = fairness(+ff || 0, +pp || 0, f.m6, f.m12);
@@ -711,9 +728,11 @@ function missing() {
   const m = [];
   if (!state.name.trim()) m.push("el nombre");
   if (!(num("miembros") && num("precio"))) m.push("miembros y precio (la línea base aproximada)");
+  if (!(state.t.pesa || "").trim()) m.push("lo que más le pesa, con sus palabras (la primera pregunta)");
   if (!(state.t.distinto || "").trim()) m.push("lo que tendría que ser distinto, con sus palabras");
   if (!state.mode) m.push("la compuerta del minuto 20 (seguimos u hoy no)");
   if (state.mode === "encaje") {
+    if (!(state.t.servicio || "").trim()) m.push("el paso uno, con sus palabras");
     if (!state.seenFloor) m.push("mostrar el piso con sus números");
     if (!state.seenOffer) m.push("mostrar la propuesta con la cifra");
     if (!state.o.resp) m.push("la respuesta a «¿arrancamos?»");
@@ -726,13 +745,13 @@ function summary() {
   const n = state.n, f = floor(), L = [];
   const v = (k, money) => (n[k] === "" ? "sin dato" : money ? fmt(num(k)) : n[k]);
   L.push(`${state.name || "Sin nombre"} · ${state.com || "comunidad"} · llamada única · ${state.date || "sin fecha"}`, "");
-  L.push("ENCUADRE", `Próximas cuatro semanas: ${state.g.adelante || "sin dato"}`, `Quién decide: ${state.g.decide || "sin dato"}`, "");
-  L.push("SUS NÚMEROS", `Pagan ${v("miembros")} a ${v("precio", 1)} (≈ ${baseline() ? fmt(baseline()) : "sin dato"} por mes) · arriba ${v("ticket", 1)} ${state.cobro === "mes" ? "por mes" : "una vez"} · cupo ${v("cupo")}`,
+  L.push("ENCUADRE", `Lo que más le pesa (antes de los números): ${state.t.pesa || "sin dato"}`, `Próximas cuatro semanas: ${state.g.adelante || "sin dato"}`, `Quién decide: ${state.g.decide || "sin dato"}`, "");
+  L.push("SUS NÚMEROS", `Pagan ${v("miembros")} a ${v("precio", 1)} (≈ ${baseline() ? fmt(baseline()) : "sin dato"} por mes) · arriba ${v("ticket", 1)} ${state.cobro === "mes" ? "por mes" : "una vez"} × ${v("arriba")} por mes · total hoy ≈ ${total() ? fmt(total()) : "sin dato"} · cupo ${v("cupo")}`,
     `Bajas/mes ${v("bajas")} · pagos caídos ${v("caidos")} · última desconexión: ${state.t.desconecto || "sin dato"}`,
     `Última ventana ${v("trials")} → ${v("quedaron")} · pidieron entrar (90d) ${v("caliente")} · compradores ${v("compradores")} · pidieron lo de arriba ${v("pidieron")}`,
     `Agendas ${v("agendas")} · show ${v("shows")} · cierres ${v("cierres")} · historia con pedido ${v("historias")} · reel ${v("reels")}`,
     `Próxima ventana: ${state.t.proxima || "sin dato"} · hoy le sale ${v("costo", 1)}`,
-    `Lo que más le pesa: ${state.t.pesa || "sin dato"}`, `Lo que tendría que ser distinto: ${state.t.distinto || "sin dato"}`, "");
+    `Lo que tendría que ser distinto: ${state.t.distinto || "sin dato"}`, `El paso uno, con sus palabras: ${state.t.servicio || "sin dato"}`, "");
   L.push("PISO (pecando de menos)"); f.L.forEach(l => L.push(`- ${l.name}: ${l.amt ? fmt(l.amt) : "·"} · ${l.note}`));
   L.push(`Piso mes 6: ${f.m6 ? fmt(f.m6) : "·"} · mes 12: ${f.m12 ? fmt(f.m12) : "·"}`, `Su objetivo: ${state.obj || "sin dato"}`, "");
   if (state.mode === "hoyno") {
